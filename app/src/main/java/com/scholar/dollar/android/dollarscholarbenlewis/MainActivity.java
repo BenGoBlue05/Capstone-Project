@@ -34,9 +34,10 @@ import com.scholar.dollar.android.dollarscholarbenlewis.fragment.MajorFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity  implements
-        GoogleApiClient.OnConnectionFailedListener{
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.OnConnectionFailedListener {
 
+    public static final String ANONYMOUS = "anonymous";
     private DrawerLayout mDrawerLayout;
 
     private FirebaseAuth mFirebaseAuth;
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity  implements
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         if (mFirebaseUser == null) {
-            // Not signed in, launch the Sign In activity
             startActivity(new Intent(this, SignInActivity.class));
             finish();
             return;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity  implements
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
                     = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
-            indicator.setTint(ResourcesCompat.getColor(getResources(),R.color.white,getTheme()));
+            indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -127,6 +127,34 @@ public class MainActivity extends AppCompatActivity  implements
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+            case R.id.sign_out:
+                mFirebaseAuth.signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                mFirebaseUser = null;
+                mUsername = ANONYMOUS;
+                mPhotoUrl = null;
+                startActivity(new Intent(this, SignInActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -154,22 +182,5 @@ public class MainActivity extends AppCompatActivity  implements
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
