@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.JobsFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.MajorFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeIntentService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements
                 mPhotoUrl = null;
                 startActivity(new Intent(this, SignInActivity.class));
                 return true;
+            case R.id.college_service:
+                startService(new Intent(getApplicationContext(), CollegeIntentService.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

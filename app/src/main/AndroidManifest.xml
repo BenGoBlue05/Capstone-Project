@@ -27,6 +27,9 @@
             android:name=".SignInActivity"
             android:label="@string/sign_in" />
 
+        <service
+            android:name=".service.CollegeIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
