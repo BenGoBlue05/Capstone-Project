@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis;
+package com.scholar.dollar.android.dollarscholarbenlewis.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
