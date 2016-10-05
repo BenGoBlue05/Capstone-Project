@@ -26,10 +26,14 @@
         <activity
             android:name=".SignInActivity"
             android:label="@string/sign_in" />
+        <provider
+            android:authorities="com.scholar.dollar.android.dollarscholarbenlewis.CollegeProvider"
+            android:name="com.scholar.dollar.android.dollarscholarbenlewis.provider.CollegeProvider"
+            android:exported="false"/>
 
         <service
-            android:name=".service.CollegeIntentService"
-            android:exported="false"></service>
+            android:name=".service.CollegeService"
+            android:exported="false" />
     </application>
 
 </manifest>

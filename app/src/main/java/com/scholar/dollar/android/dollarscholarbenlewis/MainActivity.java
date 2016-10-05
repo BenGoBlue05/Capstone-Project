@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.facebook.stetho.Stetho;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,7 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.JobsFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.MajorFragment;
-import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeIntentService;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Stetho.initializeWithDefaults(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
-                break;
+                return true;
             case R.id.sign_out:
                 mFirebaseAuth.signOut();
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient);
@@ -151,11 +153,12 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, SignInActivity.class));
                 return true;
             case R.id.college_service:
-                startService(new Intent(getApplicationContext(), CollegeIntentService.class));
+                startService(new Intent(getApplicationContext(), CollegeService.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     static class Adapter extends FragmentPagerAdapter {
@@ -186,4 +189,5 @@ public class MainActivity extends AppCompatActivity implements
             return mFragmentTitleList.get(position);
         }
     }
+
 }

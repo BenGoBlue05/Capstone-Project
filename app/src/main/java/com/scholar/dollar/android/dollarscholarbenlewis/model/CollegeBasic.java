@@ -10,16 +10,16 @@ import java.util.Map;
  * Created by bplewis5 on 10/3/16.
  */
 @IgnoreExtraProperties
-public class College {
+public class CollegeBasic {
     public String name;
     public int starCount = 0;
     public Map<String, Boolean> stars = new HashMap<>();
 
-    public College() {
+    public CollegeBasic() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public College(String name) {
+    public CollegeBasic(String name) {
         this.name = name;
     }
 
