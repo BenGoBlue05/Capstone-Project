@@ -10,8 +10,7 @@ import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
-import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeMainColumns;
-import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeProvider;
+import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
 
 import org.json.JSONArray;
@@ -119,7 +118,7 @@ public class CollegeService extends IntentService {
             ArrayList<CollegeMain> collegesInfo = new ArrayList<>();
             for (int i = 0; i < collegesLength; i++) {
                 JSONObject college = colleges.getJSONObject(i);
-                String id = "" + college.getInt(ID);
+                int id = college.getInt(ID);
                 String name = college.getString(NAME);
 
                 String domainUrl = college.getString(SCHOOL_URL);
@@ -149,20 +148,20 @@ public class CollegeService extends IntentService {
         Vector<ContentValues> cvVector = new Vector<>();
         Cursor cursor = null;
         for (CollegeMain college : colleges){
-            Uri uri = CollegeProvider.CollegesMain.withCollegeId(college.getId());
+            Uri uri = CollegeContract.CollegeMainEntry.buildMainWithCollegeId(college.getId());
             cursor = getContentResolver().query(uri, null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()){
                 ContentValues values = new ContentValues();
-                values.put(CollegeMainColumns.COLLEGE_ID, college.getId());
-                values.put(CollegeMainColumns.NAME, college.getName());
-                values.put(CollegeMainColumns.LOGO_URL, college.getLogoUrl());
-                values.put(CollegeMainColumns.CITY, college.getCity());
-                values.put(CollegeMainColumns.STATE, college.getState());
-                values.put(CollegeMainColumns.OWNERSHIP, college.getOwnership());
-                values.put(CollegeMainColumns.TUITION_IN_STATE, college.getTuitionInState());
-                values.put(CollegeMainColumns.TUITION_OUT_STATE, college.getTuitionOutState());
-                values.put(CollegeMainColumns.MED_EARNINGS_2012, college.getGraduationRate());
-                values.put(CollegeMainColumns.GRADUATION_RATE_6_YEAR, college.getEarnings());
+                values.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, college.getId());
+                values.put(CollegeContract.CollegeMainEntry.NAME, college.getName());
+                values.put(CollegeContract.CollegeMainEntry.LOGO_URL, college.getLogoUrl());
+                values.put(CollegeContract.CollegeMainEntry.CITY, college.getCity());
+                values.put(CollegeContract.CollegeMainEntry.STATE, college.getState());
+                values.put(CollegeContract.CollegeMainEntry.OWNERSHIP, college.getOwnership());
+                values.put(CollegeContract.CollegeMainEntry.TUITION_IN_STATE, college.getTuitionInState());
+                values.put(CollegeContract.CollegeMainEntry.TUITION_OUT_STATE, college.getTuitionOutState());
+                values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getGraduationRate());
+                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR, college.getEarnings());
 
                 cvVector.add(values);
             }
@@ -172,7 +171,7 @@ public class CollegeService extends IntentService {
             ContentValues[] cvArray = new ContentValues[cvVector.size()];
             cvVector.toArray(cvArray);
             try{
-                getContentResolver().bulkInsert(CollegeProvider.CollegesMain.CONTENT_URI, cvArray);
+                getContentResolver().bulkInsert(CollegeContract.CollegeMainEntry.CONTENT_URI, cvArray);
             } catch (IllegalArgumentException e){
                 Log.e(LOG_TAG, "CONTENT URI NOT RECOGNIZED");
             }
@@ -199,13 +198,13 @@ public class CollegeService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-//        Log.i(LOG_TAG, REQUEST_URL);
-//        try{
-//            ArrayList<CollegeMain> colleges = getCollegeInfo(REQUEST_URL);
-////            addColleges(colleges);
-//        } catch (NullPointerException e){
-//            Log.e(LOG_TAG, "NULL EXCEPTION");
-//        }
+        Log.i(LOG_TAG, REQUEST_URL);
+        try{
+            ArrayList<CollegeMain> colleges = getCollegeInfo(REQUEST_URL);
+            addColleges(colleges);
+        } catch (NullPointerException e){
+            Log.e(LOG_TAG, "NULL EXCEPTION");
+        }
     }
 
 }

@@ -5,7 +5,7 @@ package com.scholar.dollar.android.dollarscholarbenlewis.model;
  */
 
 public class CollegeMain {
-    private String id;
+    private int id;
     private String name;
     private String logoUrl;
     private String city;
@@ -16,7 +16,7 @@ public class CollegeMain {
     private int earnings;
     private double graduationRate;
 
-    public CollegeMain(String id, String name, String logoUrl, String city, String state,
+    public CollegeMain(int id, String name, String logoUrl, String city, String state,
                        int ownership, int tuitionInState, int tuitionOutState, int earnings, double graduationRate) {
         this.id = id;
         this.name = name;
@@ -30,7 +30,7 @@ public class CollegeMain {
         this.graduationRate = graduationRate;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
