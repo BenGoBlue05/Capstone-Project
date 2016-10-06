@@ -1,10 +1,16 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <string name="app_name">DollarScholarBenLewis</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="colleges">Colleges</string>
     <string name="majors">majors</string>
     <string name="jobs">Jobs</string>
+    <string name="city_state"><xliff:g id="city">%1s</xliff:g>, <xliff:g id="state">%2s</xliff:g></string>
+    <string name="tuition_cardview">Tuition: $<xliff:g id="tuition">%d</xliff:g></string>
+    <string name="earnings_cardview">Earnings: $<xliff:g id="earnings">%d</xliff:g></string>
+    <string name="public_">Public</string>
+    <string name="private_">Private</string>
+    <string name="graduation_rate_cardview">Graduation Rate: <xliff:g id="gradRate">%f</xliff:g></string>
 
 
     <!-- Strings related to login -->

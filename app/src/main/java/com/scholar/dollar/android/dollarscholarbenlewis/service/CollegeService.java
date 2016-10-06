@@ -123,7 +123,7 @@ public class CollegeService extends IntentService {
 
                 String domainUrl = college.getString(SCHOOL_URL);
                 String logoUrl = getLogo(domainUrl);
-                Log.i(LOG_TAG, logoUrl);
+//                Log.i(LOG_TAG, logoUrl);
 
                 String city = college.getString(CITY);
                 String state = college.getString(STATE);
@@ -160,13 +160,13 @@ public class CollegeService extends IntentService {
                 values.put(CollegeContract.CollegeMainEntry.OWNERSHIP, college.getOwnership());
                 values.put(CollegeContract.CollegeMainEntry.TUITION_IN_STATE, college.getTuitionInState());
                 values.put(CollegeContract.CollegeMainEntry.TUITION_OUT_STATE, college.getTuitionOutState());
-                values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getGraduationRate());
-                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR, college.getEarnings());
+                values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getEarnings());
+                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR, college.getGraduationRate());
 
                 cvVector.add(values);
             }
         }
-
+        Log.i(LOG_TAG, "NUMBER OF COLLEGES: " + cvVector.size());
         if (cvVector.size() > 0){
             ContentValues[] cvArray = new ContentValues[cvVector.size()];
             cvVector.toArray(cvArray);
@@ -184,10 +184,10 @@ public class CollegeService extends IntentService {
     public String getLogo(String domainUrl){
         String domain = domainUrl.toLowerCase();
         int indWww = domain.indexOf("www.") + 4;
-        Log.i(LOG_TAG, "" + indWww);
+//        Log.i(LOG_TAG, "" + indWww);
         if (indWww == 3) {
             indWww = domain.indexOf("web.") + 4;
-            Log.i(LOG_TAG, "" + indWww);
+//            Log.i(LOG_TAG, "" + indWww);
         }
         int indEdu = domain.indexOf(".edu") + 4;
         String baseUrl = "https://logo.clearbit.com/";

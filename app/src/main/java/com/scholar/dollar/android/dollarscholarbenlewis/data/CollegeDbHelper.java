@@ -16,7 +16,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     public static final String INTEGER_NN = " INTEGER NOT NULL";
     public static final String REAL_NN = " REAL NOT NULL";
     static final String DATABASE = "college.db";
-    private static final int VERSION = 3;
+    private static final int VERSION = 5;
     public CollegeDbHelper(Context context) {
         super(context, DATABASE, null, VERSION);
     }
@@ -42,11 +42,9 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
 
     }
 
-
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CollegeMainEntry.NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE);
         onCreate(db);
     }
 }

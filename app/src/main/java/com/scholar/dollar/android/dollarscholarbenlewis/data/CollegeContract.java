@@ -21,8 +21,7 @@ public class CollegeContract {
 
     public static final class CollegeMainEntry implements BaseColumns{
 
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_COLLEGE_MAIN).build();
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_COLLEGE_MAIN);
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COLLEGE_MAIN;
         public static final String CONTENT_ITEM_TYPE =
