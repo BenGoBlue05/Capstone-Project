@@ -3,6 +3,7 @@ package com.scholar.dollar.android.dollarscholarbenlewis.service;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
@@ -62,32 +63,40 @@ public final class CollegeDetailService extends IntentService {
 
     public void addCollege(String json, int collegeId) {
         ContentValues values = new ContentValues();
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONObject college = jsonObject.getJSONArray("results").getJSONObject(0);
-            Log.i(LOG_TAG, college.toString());
-            Log.i(LOG_TAG, college.getString(SCHOOL_URL));
-            values.put(CollegeContract.CollegeDetailEntry.COLLEGE_ID, collegeId);
-            values.put(CollegeContract.CollegeDetailEntry.MED_EARNINGS_25_PCT, college.getInt(MED_EARNINGS_10_YEARS_25_PCT));
-            values.put(CollegeContract.CollegeDetailEntry.MED_EARNINGS_75_PCT, college.getInt(MED_EARNINGS_10_YEARS_75_PCT));
-            values.put(CollegeContract.CollegeDetailEntry.SAT_MED, (int) Math.round(college.getDouble(SAT_EQUIV_AVG)));
-            values.put(CollegeContract.CollegeDetailEntry.ACT_MED, college.getDouble(ACT_MED));
-            values.put(CollegeContract.CollegeDetailEntry.ACT_25_PCT, college.getDouble(ACT_25_PERCENTILE));
-            values.put(CollegeContract.CollegeDetailEntry.ACT_75_PCT, college.getDouble(ACT_75_PERCENTILE));
-            values.put(CollegeContract.CollegeDetailEntry.UNDERGRAD_SIZE, college.getInt(UNDERGRAD_SIZE));
-            values.put(CollegeContract.CollegeDetailEntry.FAMILY_INCOME, college.getInt(MED_FAMILY_INCOME));
-            values.put(CollegeContract.CollegeDetailEntry.GRAD_RATE_4_YEARS, college.getDouble(GRADUATION_RATE_4_YEARS));
-            values.put(CollegeContract.CollegeDetailEntry.LOAN_PRINCIPAL, college.getDouble(LOAN_PRINCIPAL));
-            values.put(CollegeContract.CollegeDetailEntry.MED_DEBT_COMPLETERS, college.getDouble(MED_DEBT_COMPLETERS));
-            values.put(CollegeContract.CollegeDetailEntry.MED_MONTH_PAYMENT, college.getDouble(MED_MONTH_PAYMENT));
-            values.put(CollegeContract.CollegeDetailEntry.LOAN_STUDENTS_PCT, college.getDouble(PCT_LOAN_STUDENTS));
-            values.put(CollegeContract.CollegeDetailEntry.PELL_STUDENTS_PCT, college.getDouble(PCT_PELL_GRANT));
-            values.put(CollegeContract.CollegeDetailEntry.PRICE_CALCULATOR, college.getString(NET_PRICE_CALCULATOR_URL));
-            values.put(CollegeContract.CollegeDetailEntry.SCHOOL_URL, college.getString(SCHOOL_URL));
-            getContentResolver().insert(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_CONTENT_URI, values);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "JSON EXCEPTION: " + e);
+        Cursor cursor = getContentResolver().query(
+                CollegeContract.CollegeDetailEntry.buildDetailWithCollegeId(collegeId),
+                new String[]{CollegeContract.CollegeDetailEntry.COLLEGE_ID}, null, null, null, null);
+        if (cursor == null || !cursor.moveToFirst()){
+            try {
+                JSONObject jsonObject = new JSONObject(json);
+                JSONObject college = jsonObject.getJSONArray("results").getJSONObject(0);
+                Log.i(LOG_TAG, college.toString());
+                Log.i(LOG_TAG, college.getString(SCHOOL_URL));
+                values.put(CollegeContract.CollegeDetailEntry.COLLEGE_ID, collegeId);
+                values.put(CollegeContract.CollegeDetailEntry.MED_EARNINGS_25_PCT, college.getInt(MED_EARNINGS_10_YEARS_25_PCT));
+                values.put(CollegeContract.CollegeDetailEntry.MED_EARNINGS_75_PCT, college.getInt(MED_EARNINGS_10_YEARS_75_PCT));
+                values.put(CollegeContract.CollegeDetailEntry.SAT_MED, (int) Math.round(college.getDouble(SAT_EQUIV_AVG)));
+                values.put(CollegeContract.CollegeDetailEntry.ACT_MED, college.getDouble(ACT_MED));
+                values.put(CollegeContract.CollegeDetailEntry.ACT_25_PCT, college.getDouble(ACT_25_PERCENTILE));
+                values.put(CollegeContract.CollegeDetailEntry.ACT_75_PCT, college.getDouble(ACT_75_PERCENTILE));
+                values.put(CollegeContract.CollegeDetailEntry.UNDERGRAD_SIZE, college.getInt(UNDERGRAD_SIZE));
+                values.put(CollegeContract.CollegeDetailEntry.FAMILY_INCOME, college.getInt(MED_FAMILY_INCOME));
+                values.put(CollegeContract.CollegeDetailEntry.GRAD_RATE_4_YEARS, college.getDouble(GRADUATION_RATE_4_YEARS));
+                values.put(CollegeContract.CollegeDetailEntry.LOAN_PRINCIPAL, college.getDouble(LOAN_PRINCIPAL));
+                values.put(CollegeContract.CollegeDetailEntry.MED_DEBT_COMPLETERS, college.getDouble(MED_DEBT_COMPLETERS));
+                values.put(CollegeContract.CollegeDetailEntry.MED_MONTH_PAYMENT, college.getDouble(MED_MONTH_PAYMENT));
+                values.put(CollegeContract.CollegeDetailEntry.LOAN_STUDENTS_PCT, college.getDouble(PCT_LOAN_STUDENTS));
+                values.put(CollegeContract.CollegeDetailEntry.PELL_STUDENTS_PCT, college.getDouble(PCT_PELL_GRANT));
+                values.put(CollegeContract.CollegeDetailEntry.PRICE_CALCULATOR, college.getString(NET_PRICE_CALCULATOR_URL));
+                values.put(CollegeContract.CollegeDetailEntry.SCHOOL_URL, college.getString(SCHOOL_URL));
+                getContentResolver().insert(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_CONTENT_URI, values);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "JSON EXCEPTION: " + e);
+            }
+        } else{
+            Log.i(LOG_TAG, "COLUMNS: " + cursor.getColumnCount());
         }
+
     }
 
 

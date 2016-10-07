@@ -1,13 +1,19 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.scholar.dollar.android.dollarscholarbenlewis.DetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/detail_college_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="University of Michigan" />
+    <TextView
+        android:id="@+id/detail_college_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="umich.edu"/>
 
-</FrameLayout>
+</LinearLayout>

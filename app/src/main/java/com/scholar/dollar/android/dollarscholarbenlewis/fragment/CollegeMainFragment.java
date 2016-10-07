@@ -1,5 +1,6 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
+import com.scholar.dollar.android.dollarscholarbenlewis.activity.DetailActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 
 /**
@@ -30,7 +32,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     private Uri mUri;
     private static final int COLLEGE_LOADER = 1000;
     private CollegeAdapter mCollegeAdapter;
-    private static final String[] COLLEGE_COLUMNS = {
+    public static final String[] COLLEGE_COLUMNS = {
         CollegeContract.CollegeMainEntry.COLLEGE_ID,
                 CollegeContract.CollegeMainEntry.NAME,
                 CollegeContract.CollegeMainEntry.LOGO_URL,
@@ -58,6 +60,9 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public CollegeMainFragment() {
     }
 
+    public interface Callback{
+        public void onCollegeSelected(int collegeId);
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,7 +70,8 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         mCollegeAdapter = new CollegeAdapter(getContext(), new CollegeAdapter.CollegeAdapterOnClickHandler() {
             @Override
             public void onClick(int collegeId, CollegeAdapter.CollegeAdapterViewHolder vh) {
-                Log.i(LOG_TAG, "CLICKED");
+                Log.i(LOG_TAG, "COLLEGE ID: " + collegeId);
+                startActivity(new Intent(getContext(), DetailActivity.class).putExtra("collegeIdKey", collegeId));
             }
         });
 
@@ -77,8 +83,8 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(COLLEGE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(COLLEGE_LOADER, null, this);
     }
 
 
