@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis;
+package com.scholar.dollar.android.dollarscholarbenlewis.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,9 +28,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.JobsFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.MajorFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
 import java.util.ArrayList;
@@ -155,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.college_service:
                 startService(new Intent(getApplicationContext(), CollegeService.class));
                 return true;
+            case R.id.college_details:
+                startService(new Intent(getApplicationContext(), CollegeDetailService.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

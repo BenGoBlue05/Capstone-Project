@@ -7,8 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
@@ -31,7 +29,7 @@ import okhttp3.Response;
  * <p>
  * helper methods.
  */
-public class CollegeService extends IntentService {
+public final class CollegeService extends IntentService {
 
     public static final String BASE_URL = "https://api.data.gov/ed/collegescorecard/v1/schools.json?";
 
@@ -58,15 +56,10 @@ public class CollegeService extends IntentService {
     public static final String API_KEY = "api_key=" + BuildConfig.COLLEGE_SCORECARD_API_KEY;
     public static final String[] FILTERS = {API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER, ACT_FILTER};
     private static final String LOG_TAG = CollegeService.class.getSimpleName();
-    public final String FILTER_PARAMS = joinFilters(FILTERS);
+    public static final String FILTER_PARAMS = joinFilters(FILTERS);
     public static final String SORT_BY = "sort=2012.earnings.10_yrs_after_entry.median:desc";
     public static final String PER_PAGE = "per_page=50";
-    public String REQUEST_URL = BASE_URL + FILTER_PARAMS + FIELDS_PARAMS + "&" + SORT_BY + "&" + PER_PAGE;
-
-    private OkHttpClient mClient = new OkHttpClient();
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-
-
+    public String REQUEST_URL = createFinalUrl(BASE_URL, FILTER_PARAMS, FIELDS_PARAMS, SORT_BY, PER_PAGE);
 
     public CollegeService(String name) {
         super(name);
@@ -76,7 +69,11 @@ public class CollegeService extends IntentService {
         super("CollegeService");
     }
 
-    public String buildFieldsUrl(String[] fields) {
+    public static String createFinalUrl(String baseUrl, String filterUrl, String fieldsUrl, String sortBy, String perPage){
+        return baseUrl + filterUrl + fieldsUrl + "&" + sortBy + "&" + perPage;
+    }
+
+    public static String buildFieldsUrl(String[] fields) {
         String baseUrl = "fields=";
         for (int i = 0; i < fields.length; i++) {
             baseUrl += i == 0 ? fields[i] : "," + fields[i];
@@ -84,7 +81,7 @@ public class CollegeService extends IntentService {
         return baseUrl;
     }
 
-    public String joinFilters(String[] filters) {
+    public static String joinFilters(String[] filters) {
         String url = "";
         for (String filter : filters) {
             url += filter + "&";
@@ -92,11 +89,11 @@ public class CollegeService extends IntentService {
         return url;
     }
 
-    public String fetchColleges(String url) throws IOException {
+    public static String fetchColleges(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        try (Response response = mClient.newCall(request).execute()) {
+        try (Response response = new OkHttpClient().newCall(request).execute()) {
             return response.body().string();
         }
     }
