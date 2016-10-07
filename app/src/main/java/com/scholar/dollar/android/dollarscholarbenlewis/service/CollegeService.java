@@ -168,7 +168,7 @@ public final class CollegeService extends IntentService {
             ContentValues[] cvArray = new ContentValues[cvVector.size()];
             cvVector.toArray(cvArray);
             try{
-                getContentResolver().bulkInsert(CollegeContract.CollegeMainEntry.CONTENT_URI, cvArray);
+                getContentResolver().bulkInsert(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI, cvArray);
             } catch (IllegalArgumentException e){
                 Log.e(LOG_TAG, "CONTENT URI NOT RECOGNIZED");
             }

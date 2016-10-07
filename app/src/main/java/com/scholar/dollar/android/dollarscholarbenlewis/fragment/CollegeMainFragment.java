@@ -90,7 +90,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + " DESC";
-        Uri uri = CollegeContract.CollegeMainEntry.CONTENT_URI;
+        Uri uri = CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI;
         return new CursorLoader(getContext(), uri, COLLEGE_COLUMNS, null, null, sortOrder);
     }
 

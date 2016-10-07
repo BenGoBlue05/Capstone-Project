@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
+
+    public static String LOG_TAG = MainActivity.class.getSimpleName();
 
     public static final String ANONYMOUS = "anonymous";
     private DrawerLayout mDrawerLayout;
@@ -158,7 +161,10 @@ public class MainActivity extends AppCompatActivity implements
                 startService(new Intent(getApplicationContext(), CollegeService.class));
                 return true;
             case R.id.college_details:
-                startService(new Intent(getApplicationContext(), CollegeDetailService.class));
+                Log.i(LOG_TAG, "COLLEGE DETAILS CLICKED");
+                Intent intent = new Intent(getApplicationContext(), CollegeDetailService.class)
+                        .putExtra("collegeIdKey", 166027);
+                startService(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }

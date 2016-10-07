@@ -13,11 +13,14 @@ public class CollegeProvider extends ContentProvider {
 
     static final int COLLEGE_MAIN = 100;
     static final int COLLEGE_MAIN_WITH_ID = 101;
+    static final int COLLEGE_DETAIL = 200;
+    static final int COLLEGE_DETAIL_WITH_ID = 201;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private CollegeDbHelper mHelper;
-
-    private static final String SELECTION_COLLEGE_ID = CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE
+    private static final String SELECTION_COLLEGE_MAIN_ID = CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE
             + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
+    private static final String SELECTION_COLLEGE_DETAIL_ID = CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE
+            + "." + CollegeContract.CollegeDetailEntry.COLLEGE_ID + " = ? ";
+    private CollegeDbHelper mHelper;
 
     public CollegeProvider() {
     }
@@ -27,6 +30,8 @@ public class CollegeProvider extends ContentProvider {
         final String authority = CollegeContract.CONTENT_AUTHORITY;
         matcher.addURI(authority, CollegeContract.PATH_COLLEGE_MAIN, COLLEGE_MAIN);
         matcher.addURI(authority, CollegeContract.PATH_COLLEGE_MAIN + "/#", COLLEGE_MAIN_WITH_ID);
+        matcher.addURI(authority, CollegeContract.PATH_COLLEGE_DETAIL, COLLEGE_DETAIL);
+        matcher.addURI(authority, CollegeContract.PATH_COLLEGE_DETAIL + "/#", COLLEGE_DETAIL_WITH_ID);
         return matcher;
     }
 
@@ -36,18 +41,25 @@ public class CollegeProvider extends ContentProvider {
         final SQLiteDatabase db = mHelper.getWritableDatabase();
         int rowsDeleted;
         if (null == selection) selection = "1";
-        switch (sUriMatcher.match(uri)){
+        switch (sUriMatcher.match(uri)) {
             case COLLEGE_MAIN:
                 rowsDeleted = db.delete(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE, selection, selectionArgs);
                 break;
             case COLLEGE_MAIN_WITH_ID:
-                rowsDeleted = db.delete(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE, SELECTION_COLLEGE_ID,
+                rowsDeleted = db.delete(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE, SELECTION_COLLEGE_MAIN_ID,
+                        new String[]{uri.getLastPathSegment()});
+                break;
+            case COLLEGE_DETAIL:
+                rowsDeleted = db.delete(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE, selection, selectionArgs);
+                break;
+            case COLLEGE_DETAIL_WITH_ID:
+                rowsDeleted = db.delete(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE, SELECTION_COLLEGE_DETAIL_ID,
                         new String[]{uri.getLastPathSegment()});
                 break;
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
-        if (rowsDeleted !=0){
+        if (rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
@@ -55,11 +67,15 @@ public class CollegeProvider extends ContentProvider {
 
     @Override
     public String getType(@NonNull Uri uri) {
-        switch (sUriMatcher.match(uri)){
+        switch (sUriMatcher.match(uri)) {
             case COLLEGE_MAIN:
-                return CollegeContract.CollegeMainEntry.CONTENT_TYPE;
+                return CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_TYPE;
             case COLLEGE_MAIN_WITH_ID:
-                return CollegeContract.CollegeMainEntry.CONTENT_ITEM_TYPE;
+                return CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_ITEM_TYPE;
+            case COLLEGE_DETAIL:
+                return CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_CONTENT_TYPE;
+            case COLLEGE_DETAIL_WITH_ID:
+                return CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
@@ -69,11 +85,20 @@ public class CollegeProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         Uri returnUri;
-        switch (sUriMatcher.match(uri)){
+        long _id;
+        switch (sUriMatcher.match(uri)) {
             case COLLEGE_MAIN:
-                long _id = db.insert(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE, null, values);
-                if (_id > 0){
+                _id = db.insert(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE, null, values);
+                if (_id > 0) {
                     returnUri = CollegeContract.CollegeMainEntry.buildCollegeMainUri(_id);
+                } else {
+                    throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
+                }
+                break;
+            case COLLEGE_DETAIL:
+                _id = db.insert(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE, null, values);
+                if (_id > 0) {
+                    returnUri = CollegeContract.CollegeDetailEntry.buildCollegeDetailUri(_id);
                 } else {
                     throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
                 }
@@ -96,16 +121,29 @@ public class CollegeProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor returnCursor;
-        switch (sUriMatcher.match(uri)){
+        String collegeId;
+        switch (sUriMatcher.match(uri)) {
             case COLLEGE_MAIN:
                 returnCursor = db.query(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case COLLEGE_MAIN_WITH_ID:
-                String collegeId = uri.getLastPathSegment();
+                collegeId = uri.getLastPathSegment();
                 returnCursor = db.query(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE,
                         projection,
-                        SELECTION_COLLEGE_ID,
+                        SELECTION_COLLEGE_MAIN_ID,
+                        new String[]{collegeId},
+                        null, null, sortOrder);
+                break;
+            case COLLEGE_DETAIL:
+                returnCursor = db.query(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case COLLEGE_DETAIL_WITH_ID:
+                collegeId = uri.getLastPathSegment();
+                returnCursor = db.query(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE,
+                        projection,
+                        SELECTION_COLLEGE_DETAIL_ID,
                         new String[]{collegeId},
                         null, null, sortOrder);
                 break;
@@ -122,19 +160,27 @@ public class CollegeProvider extends ContentProvider {
                       String[] selectionArgs) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         int rowsUpdated;
-        switch (sUriMatcher.match(uri)){
+        switch (sUriMatcher.match(uri)) {
             case COLLEGE_MAIN:
                 rowsUpdated = db.update(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE,
                         values, selection, selectionArgs);
                 break;
             case COLLEGE_MAIN_WITH_ID:
                 rowsUpdated = db.update(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE,
-                        values, SELECTION_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
+                        values, SELECTION_COLLEGE_MAIN_ID, new String[]{uri.getLastPathSegment()});
+                break;
+            case COLLEGE_DETAIL:
+                rowsUpdated = db.update(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE,
+                        values, selection, selectionArgs);
+                break;
+            case COLLEGE_DETAIL_WITH_ID:
+                rowsUpdated = db.update(CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE,
+                        values, SELECTION_COLLEGE_DETAIL_ID, new String[]{uri.getLastPathSegment()});
                 break;
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
-        if (rowsUpdated != 0){
+        if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
@@ -143,7 +189,7 @@ public class CollegeProvider extends ContentProvider {
     @Override
     public int bulkInsert(@NonNull Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mHelper.getWritableDatabase();
-        switch(sUriMatcher.match(uri)){
+        switch (sUriMatcher.match(uri)) {
             case COLLEGE_MAIN:
                 db.beginTransaction();
                 int returnCount = 0;
