@@ -12,6 +12,17 @@
     <string name="private_">Private</string>
     <string name="graduation_rate_cardview">Graduation Rate: <xliff:g id="gradRate">%f</xliff:g></string>
     <string name="college_id_key" translatable="false">collegeId</string>
+    <string name="undergrads">Undergraduates: <xliff:g id="undergrads">$1s</xliff:g></string>
+
+    <string name="finance">Finance</string>
+    <string name="admissions">Admissions</string>
+    <string name="graduation_rates">Graduation Rates</string>
+    <string name="four_year_grad_rate">Four-year: <xliff:g id="grad_rate">%f</xliff:g></string>
+    <string name="six_year_grad_rate">Six-year: <xliff:g id="grad_rate">%f</xliff:g></string>
+    <string name="act">ACT: <xliff:g id="score">%d</xliff:g></string>
+    <string name="sat">SAT: <xliff:g id="score">%d</xliff:g></string>
+    <string name="debt">Loan principal upon entering repayment: $<xliff:g id="debt">%d</xliff:g></string>
+    <string name="mp">Median loan debt of completers in monthly payments (10-year amortization plan): $<xliff:g id="payment">%d</xliff:g></string>
 
 
     <!-- Strings related to login -->

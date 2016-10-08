@@ -1,19 +1,53 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.scholar.dollar.android.dollarscholarbenlewis.DetailFragment">
 
-    <TextView
-        android:id="@+id/detail_college_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="University of Michigan" />
-    <TextView
-        android:id="@+id/detail_college_url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="umich.edu"/>
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/detail_logo_iv"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/detail_college_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            tools:text="University of Michigan" />
+
+        <TextView
+            android:id="@+id/detail_city_state_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Ann Arbor, MI" />
+
+        <TextView
+            android:id="@+id/detail_ownership_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Public" />
+
+        <TextView
+            android:id="@+id/detail_size_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Undergraduates: 20,000" />
+
+        <include layout="@layout/include_finance" />
+
+        <include layout="@layout/include_admissions" />
+
+        <include layout="@layout/include_graduation" />
+
+    </LinearLayout>
+
+
+</ScrollView>

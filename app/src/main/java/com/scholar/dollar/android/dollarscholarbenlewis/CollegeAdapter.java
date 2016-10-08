@@ -63,7 +63,7 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         int tuitionIs = mCursor.getInt(CollegeMainFragment.TUITION_IN_STATE);
         int tuitionOs = mCursor.getInt(CollegeMainFragment.TUITION_OUT_STATE);
         int earnings = mCursor.getInt(CollegeMainFragment.EARNINGS);
-        double gradRate = mCursor.getDouble(CollegeMainFragment.GRAD_RATE);
+        double gradRate = mCursor.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS);
 
         holder.mNameTV.setText(name);
         holder.mCityStateTV.setText(mContext.getString(R.string.city_state, city, state));

@@ -20,6 +20,7 @@ import com.scholar.dollar.android.dollarscholarbenlewis.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.activity.DetailActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
 /**
  * Created by bplewis5 on 10/3/16.
@@ -54,7 +55,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public static final int TUITION_IN_STATE = 6;
     public static final int TUITION_OUT_STATE = 7;
     public static final int EARNINGS = 8;
-    public static final int GRAD_RATE = 9;
+    public static final int GRAD_RATE_6_YEARS = 9;
 
 
     public CollegeMainFragment() {
@@ -84,6 +85,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getContext().startService(new Intent(getContext(), CollegeService.class));
         getLoaderManager().initLoader(COLLEGE_LOADER, null, this);
     }
 
