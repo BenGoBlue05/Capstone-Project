@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.scholar.dollar.android.dollarscholarbenlewis.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.activity.DetailActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.activity.MainActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
@@ -30,8 +31,14 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
     public static final String LOG_TAG = CollegeMainFragment.class.getSimpleName();
 
+    private String mSelection;
+    private String[] mSelectionArgs;
+    public static final String OWNERSHIP_SELECTION =
+            CollegeContract.CollegeMainEntry.OWNERSHIP + " = ?";
+
     private Uri mUri;
     private static final int COLLEGE_LOADER = 1000;
+    public static final String PUBLIC_COLLEGES_BOOLEAN_KEY = "publicBoolean";
     private CollegeAdapter mCollegeAdapter;
     public static final String[] COLLEGE_COLUMNS = {
         CollegeContract.CollegeMainEntry.COLLEGE_ID,
@@ -75,7 +82,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 startActivity(new Intent(getContext(), DetailActivity.class).putExtra("collegeIdKey", collegeId));
             }
         });
-
         recyclerView.setAdapter(mCollegeAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -83,9 +89,20 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSelectionArgs = getArguments() != null ?
+                getArguments().getStringArray(MainActivity.PUBLIC_COLLEGES_SELECTION_KEY) : null;
+        mSelection = mSelectionArgs != null ? OWNERSHIP_SELECTION : null;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Intent publicCollegesIntent = new Intent(getContext(), CollegeService.class)
+                .putExtra(PUBLIC_COLLEGES_BOOLEAN_KEY, true);
         getContext().startService(new Intent(getContext(), CollegeService.class));
+        getContext().startService(publicCollegesIntent);
         getLoaderManager().initLoader(COLLEGE_LOADER, null, this);
     }
 
@@ -99,7 +116,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + " DESC";
         Uri uri = CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI;
-        return new CursorLoader(getContext(), uri, COLLEGE_COLUMNS, null, null, sortOrder);
+        return new CursorLoader(getContext(), uri, COLLEGE_COLUMNS, mSelection, mSelectionArgs, sortOrder);
     }
 
     @Override

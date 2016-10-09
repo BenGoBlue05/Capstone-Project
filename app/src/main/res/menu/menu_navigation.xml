@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="all">
         <item
-            android:title="One" />
+            android:title="@string/public_" />
         <item
-            android:title="Two" />
+            android:title="@string/private_" />
         <item
             android:title="Three" />
     </group>

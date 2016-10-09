@@ -1,5 +1,5 @@
 <resources xmlns:xliff="http://schemas.android.com/tools">
-    <string name="app_name">DollarScholarBenLewis</string>
+    <string name="app_name">Dollar Scholar</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="colleges">Colleges</string>
@@ -13,6 +13,7 @@
     <string name="graduation_rate_cardview">Graduation Rate: <xliff:g id="gradRate">%f</xliff:g></string>
     <string name="college_id_key" translatable="false">collegeId</string>
     <string name="undergrads">Undergraduates: <xliff:g id="undergrads">$1s</xliff:g></string>
+    <string name = "favorites">Favorites</string>
 
     <string name="finance">Finance</string>
     <string name="admissions">Admissions</string>

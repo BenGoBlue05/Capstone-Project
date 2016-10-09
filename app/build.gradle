@@ -21,7 +21,7 @@ android {
     }
 
     buildTypes.each {
-        it.buildConfigField 'String', 'COLLEGE_SCORECARD_API_KEY', MY_API_KEYS
+        it.buildConfigField 'String', 'COLLEGE_SCORECARD_API_KEY', MY_API_KEY
     }
 }
 

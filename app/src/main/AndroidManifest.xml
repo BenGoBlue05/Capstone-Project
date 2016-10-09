@@ -41,7 +41,7 @@
             android:name=".service.CollegeDetailService"
             android:exported="false" />
 
-        <activity android:name=".activity.DetailActivity"></activity>
+        <activity android:name=".activity.DetailActivity" />
     </application>
 
 </manifest>

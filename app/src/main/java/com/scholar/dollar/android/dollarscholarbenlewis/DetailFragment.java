@@ -4,8 +4,10 @@ package com.scholar.dollar.android.dollarscholarbenlewis;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -50,6 +52,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @BindView(R.id.act_tv) TextView mActTV;
     @BindView(R.id.sat_tv) TextView mSatTV;
     @BindView(R.id.detail_logo_iv) ImageView mLogoIV;
+    @BindView(R.id.detail_collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;
     public DetailFragment() {
         // Required empty public constructor
     }
@@ -60,7 +63,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mCollegeId = getActivity().getIntent().getIntExtra("collegeIdKey", -1);
         mContext = getContext();
         if (mCollegeId != -1){
-            getContext().startService(new Intent(getContext(), CollegeDetailService.class)
+            mContext.startService(new Intent(getContext(), CollegeDetailService.class)
                     .putExtra("collegeIdKey", mCollegeId));
             getLoaderManager().initLoader(MAIN_INFO_CURSOR_ID, null, this);
             getLoaderManager().initLoader(DETAIL_CURSOR_ID, null, this);
@@ -89,6 +92,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, view);
+        mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
         return view;
     }
 
@@ -115,7 +119,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
         switch (loader.getId()){
             case MAIN_INFO_CURSOR_ID:
-                mNameTV.setText(data.getString(CollegeMainFragment.NAME));
+                String name = data.getString(CollegeMainFragment.NAME);
+                mCollapsingToolbar.setTitle(name);
+                mNameTV.setText(name);
                 mCityStateTV.setText(mContext.getString(R.string.city_state,
                         data.getString(CollegeMainFragment.CITY), data.getString(CollegeMainFragment.STATE)));
                 mOwnershipTV.setText(data.getInt(CollegeMainFragment.OWNERSHIP) == 1 ? "Public" : "Private");
