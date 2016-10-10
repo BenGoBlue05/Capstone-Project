@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
  */
 
 public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeAdapterViewHolder> {
-
+    private static final String LOG_TAG = CollegeAdapter.class.getSimpleName();
     final private Context mContext;
     final private CollegeAdapterOnClickHandler mClickHandler;
     private Cursor mCursor;
@@ -52,13 +52,10 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         String city = mCursor.getString(CollegeMainFragment.CITY);
         String state = mCursor.getString(CollegeMainFragment.STATE);
         int ownership = mCursor.getInt(CollegeMainFragment.OWNERSHIP);
-
-        String schoolType;
-        if (ownership == 1){
-            schoolType = mContext.getString(R.string.public_);
-        } else{
-            schoolType = mContext.getString(R.string.private_);
-        }
+        int isFavorite = mCursor.getInt(CollegeMainFragment.FAVORITE);
+        final int oldFavorite = mCursor.getInt(CollegeMainFragment.FAVORITE);
+        String schoolType = ownership == 1 ?
+                mContext.getString(R.string.public_) : mContext.getString(R.string.private_);
 
         int tuitionIs = mCursor.getInt(CollegeMainFragment.TUITION_IN_STATE);
         int tuitionOs = mCursor.getInt(CollegeMainFragment.TUITION_OUT_STATE);
@@ -72,9 +69,7 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         holder.mTuitionOsTV.setText(mContext.getString(R.string.tuition_cardview, tuitionOs));
         holder.mEarningsTV.setText(mContext.getString(R.string.earnings_cardview, earnings));
         holder.mGradRateTV.setText(mContext.getString(R.string.graduation_rate_cardview, gradRate));
-
-        Glide.with(mContext).load(logoUrl).into(holder.mLogoIV);
-
+        Picasso.with(mContext).load(logoUrl).placeholder(R.drawable.ic_school_black_24dp).into(holder.mLogoIV);
 
     }
 

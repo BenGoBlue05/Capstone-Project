@@ -16,7 +16,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     public static final String INT_NN = " INTEGER NOT NULL";
     public static final String REAL_NN = " REAL NOT NULL";
     static final String DATABASE = "college.db";
-    private static final int VERSION = 11;
+    private static final int VERSION = 15;
 
     public CollegeDbHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -37,6 +37,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                         CollegeContract.CollegeMainEntry.TUITION_IN_STATE + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.TUITION_OUT_STATE + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.CollegeMainEntry.IS_FAVORITE + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR + REAL_NN + " );";
 
         final String CREATE_TABLE_COLLEGE_DETAIL =

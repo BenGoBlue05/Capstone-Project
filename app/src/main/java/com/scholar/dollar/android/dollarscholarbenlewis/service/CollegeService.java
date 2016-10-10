@@ -163,6 +163,7 @@ public final class CollegeService extends IntentService {
                 values.put(CollegeContract.CollegeMainEntry.TUITION_OUT_STATE, college.getTuitionOutState());
                 values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getEarnings());
                 values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR, college.getGraduationRate());
+                values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, 0);
 
                 cvVector.add(values);
             }

@@ -12,7 +12,7 @@
     <string name="private_">Private</string>
     <string name="graduation_rate_cardview">Graduation Rate: <xliff:g id="gradRate">%f</xliff:g></string>
     <string name="college_id_key" translatable="false">collegeId</string>
-    <string name="undergrads">Undergraduates: <xliff:g id="undergrads">$1s</xliff:g></string>
+    <string name="undergrads">Undergraduates: <xliff:g id="students">%d</xliff:g></string>
     <string name = "favorites">Favorites</string>
 
     <string name="finance">Finance</string>

@@ -31,7 +31,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragment.JobsFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
@@ -51,10 +50,8 @@ public class MainActivity extends AppCompatActivity implements
     private String mUsername;
     private String mPhotoUrl;
     private GoogleApiClient mGoogleApiClient;
-    public static final String PUBLIC_COLLEGES_SELECTION_KEY = "publicSelection";
-    public static final String PUBLIC_COLLEGES_ARGS_KEY = "publicSelectionArgs";
     public static final String FAVORITE_COLLEGES_KEY = "favorites";
-    public static final String[] PUBLIC_SELECTION_ARGS = {"1"};
+    public static final String PUBLIC_COLLEGES_KEY = "public";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,13 +124,20 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
+
         Bundle publicBundle = new Bundle();
-        publicBundle.putStringArray(PUBLIC_COLLEGES_SELECTION_KEY, PUBLIC_SELECTION_ARGS);
+        publicBundle.putBoolean(PUBLIC_COLLEGES_KEY, true);
         CollegeMainFragment publicCollegeFragment = new CollegeMainFragment();
         publicCollegeFragment.setArguments(publicBundle);
+
+        Bundle favoriteBundle = new Bundle();
+        favoriteBundle.putBoolean(FAVORITE_COLLEGES_KEY, true);
+        CollegeMainFragment favoritesFragment = new CollegeMainFragment();
+        favoritesFragment.setArguments(favoriteBundle);
+
         adapter.addFragment(new CollegeMainFragment(), getString(R.string.colleges));
         adapter.addFragment(publicCollegeFragment, getString(R.string.public_));
-        adapter.addFragment(new JobsFragment(), getString(R.string.favorites));
+        adapter.addFragment(favoritesFragment, getString(R.string.favorites));
         viewPager.setAdapter(adapter);
     }
 

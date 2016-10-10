@@ -27,7 +27,7 @@ public class CollegeContract {
         public static final String COLLEGE_MAIN_CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COLLEGE_MAIN;
 
-        public static final String COLLEGE_MAIN_TABLE = "college_main_tab";
+        public static final String COLLEGE_MAIN_TABLE = "college_main";
 
         public static final String COLLEGE_ID = "college_id";
         public static final String NAME = "name";
@@ -39,6 +39,7 @@ public class CollegeContract {
         public static final String TUITION_OUT_STATE = "tuition_out_state";
         public static final String MED_EARNINGS_2012 = "earnings_med_2012_coh";
         public static final String GRADUATION_RATE_6_YEAR = "graduation_rate_6_years";
+        public static final String IS_FAVORITE = "is_favorite";
 
         public static Uri buildCollegeMainUri(long id){
             return ContentUris.withAppendedId(COLLEGE_MAIN_CONTENT_URI, id);

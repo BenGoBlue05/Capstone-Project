@@ -41,7 +41,17 @@
             android:name=".service.CollegeDetailService"
             android:exported="false" />
 
-        <activity android:name=".activity.DetailActivity" />
+        <activity
+            android:name=".activity.DetailActivity"
+            android:parentActivityName=".activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
+        </activity>
+
+        <service
+            android:name=".service.CollegeFavoriteService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

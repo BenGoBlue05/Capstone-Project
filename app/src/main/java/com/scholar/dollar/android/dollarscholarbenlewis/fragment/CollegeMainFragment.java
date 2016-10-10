@@ -35,22 +35,25 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     private String[] mSelectionArgs;
     public static final String OWNERSHIP_SELECTION =
             CollegeContract.CollegeMainEntry.OWNERSHIP + " = ?";
+    public static final String FAVORITES_SELECTION =
+            CollegeContract.CollegeMainEntry.IS_FAVORITE + " = ?";
 
     private Uri mUri;
     private static final int COLLEGE_LOADER = 1000;
     public static final String PUBLIC_COLLEGES_BOOLEAN_KEY = "publicBoolean";
     private CollegeAdapter mCollegeAdapter;
     public static final String[] COLLEGE_COLUMNS = {
-        CollegeContract.CollegeMainEntry.COLLEGE_ID,
-                CollegeContract.CollegeMainEntry.NAME,
-                CollegeContract.CollegeMainEntry.LOGO_URL,
-                CollegeContract.CollegeMainEntry.CITY,
-                CollegeContract.CollegeMainEntry.STATE,
-                CollegeContract.CollegeMainEntry.OWNERSHIP,
-                CollegeContract.CollegeMainEntry.TUITION_IN_STATE,
-                CollegeContract.CollegeMainEntry.TUITION_OUT_STATE,
-                CollegeContract.CollegeMainEntry.MED_EARNINGS_2012,
-                CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR,
+            CollegeContract.CollegeMainEntry.COLLEGE_ID,
+            CollegeContract.CollegeMainEntry.NAME,
+            CollegeContract.CollegeMainEntry.LOGO_URL,
+            CollegeContract.CollegeMainEntry.CITY,
+            CollegeContract.CollegeMainEntry.STATE,
+            CollegeContract.CollegeMainEntry.OWNERSHIP,
+            CollegeContract.CollegeMainEntry.TUITION_IN_STATE,
+            CollegeContract.CollegeMainEntry.TUITION_OUT_STATE,
+            CollegeContract.CollegeMainEntry.MED_EARNINGS_2012,
+            CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR,
+            CollegeContract.CollegeMainEntry.IS_FAVORITE
     };
 
     public static final int COLLEGE_ID = 0;
@@ -63,6 +66,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public static final int TUITION_OUT_STATE = 7;
     public static final int EARNINGS = 8;
     public static final int GRAD_RATE_6_YEARS = 9;
+    public static final int FAVORITE = 10;
 
 
     public CollegeMainFragment() {
@@ -91,9 +95,18 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSelectionArgs = getArguments() != null ?
-                getArguments().getStringArray(MainActivity.PUBLIC_COLLEGES_SELECTION_KEY) : null;
-        mSelection = mSelectionArgs != null ? OWNERSHIP_SELECTION : null;
+        Bundle args = getArguments();
+        if (args != null){
+            mSelectionArgs = new String[] {"1"};
+            if (args.getBoolean(MainActivity.PUBLIC_COLLEGES_KEY, false)){
+                mSelection = OWNERSHIP_SELECTION;
+            } else{
+                mSelection = FAVORITES_SELECTION;
+            }
+        } else{
+            mSelection = null;
+            mSelectionArgs = null;
+        }
     }
 
     @Override

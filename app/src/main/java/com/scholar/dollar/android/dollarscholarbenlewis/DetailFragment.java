@@ -12,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +21,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeFavoriteService;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +41,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private final static int DETAIL_CURSOR_ID = 200;
     private int mCollegeId;
     private Context mContext;
+    private int mIsFavorite;
 
     @BindView(R.id.detail_college_name_tv) TextView mNameTV;
     @BindView(R.id.detail_city_state_tv) TextView mCityStateTV;
@@ -53,8 +57,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @BindView(R.id.sat_tv) TextView mSatTV;
     @BindView(R.id.detail_logo_iv) ImageView mLogoIV;
     @BindView(R.id.detail_collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.detail_star_iv) ImageView mStarIV;
+
     public DetailFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -89,9 +95,19 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, view);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mStarIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mContext.startService(new Intent(getContext(), CollegeFavoriteService.class)
+                .putExtra("collegeId", mCollegeId)
+                .putExtra("isFavorite", mIsFavorite));
+            }
+        });
+
         mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
         return view;
     }
@@ -120,6 +136,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         switch (loader.getId()){
             case MAIN_INFO_CURSOR_ID:
                 String name = data.getString(CollegeMainFragment.NAME);
+                mIsFavorite = data.getInt(CollegeMainFragment.FAVORITE);
                 mCollapsingToolbar.setTitle(name);
                 mNameTV.setText(name);
                 mCityStateTV.setText(mContext.getString(R.string.city_state,
@@ -131,10 +148,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                         data.getInt(CollegeMainFragment.TUITION_OUT_STATE)));
                 m6yearTV.setText(mContext.getString(R.string.six_year_grad_rate,
                         data.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS)));
-                Glide.with(mContext).load(data.getString(CollegeMainFragment.LOGO)).into(mLogoIV);
+                Picasso.with(mContext).load(data.getString(CollegeMainFragment.LOGO))
+                        .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
+                int star = mIsFavorite == 0 ? R.drawable.ic_star_unfilled_24dp : R.drawable.ic_star_filled_24dp;
+                Picasso.with(mContext).load(star).placeholder(star).into(mStarIV);
                 break;
             case DETAIL_CURSOR_ID:
-                mSizeTV.setText(data.getString(SIZE));
+                mSizeTV.setText(mContext.getString(R.string.undergrads, data.getInt(SIZE)));
                 mDebtTV.setText(mContext.getString(R.string.debt, data.getInt(DEBT)));
                 mMonthlyTV.setText(mContext.getString(R.string.mp, data.getInt(MONTHLY_PAYMENT)));
                 m4yearTV.setText(mContext.getString(R.string.four_year_grad_rate, data.getDouble(GRAD_RATE_4_YEAR)));
