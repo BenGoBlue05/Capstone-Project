@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.scholar.dollar.android.dollarscholarbenlewis.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.activity.DetailActivity;
@@ -33,6 +34,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
     private String mSelection;
     private String[] mSelectionArgs;
+    private FirebaseAnalytics mFirebaseAnalytics;
     public static final String OWNERSHIP_SELECTION =
             CollegeContract.CollegeMainEntry.OWNERSHIP + " = ?";
     public static final String FAVORITES_SELECTION =
@@ -75,6 +77,8 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public interface Callback{
         public void onCollegeSelected(int collegeId);
     }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,6 +87,9 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
             @Override
             public void onClick(int collegeId, CollegeAdapter.CollegeAdapterViewHolder vh) {
                 Log.i(LOG_TAG, "COLLEGE ID: " + collegeId);
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(collegeId));
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 startActivity(new Intent(getContext(), DetailActivity.class).putExtra("collegeIdKey", collegeId));
             }
         });
@@ -96,6 +103,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         if (args != null){
             mSelectionArgs = new String[] {"1"};
             if (args.getBoolean(MainActivity.PUBLIC_COLLEGES_KEY, false)){
