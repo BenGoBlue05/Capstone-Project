@@ -67,6 +67,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mCollegeId = getActivity().getIntent().getIntExtra("collegeIdKey", -1);
+        Log.i(LOG_TAG, "COLLEGE ID: " + mCollegeId);
         mContext = getContext();
         if (mCollegeId != -1){
             mContext.startService(new Intent(getContext(), CollegeDetailService.class)

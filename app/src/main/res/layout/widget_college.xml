@@ -1,0 +1,26 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget"
+    android:background="@color/colorPrimary"
+    android:padding="@dimen/widget_margin">
+
+    <ListView
+        android:id="@+id/widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/widget_list_item"
+        android:divider="@null"
+        android:dividerHeight="0dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:id="@+id/widget_empty_textview"
+        android:text="@string/no_favorites"
+        android:textColor="@android:color/holo_red_dark"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textStyle="bold"/>
+
+</FrameLayout>

@@ -13,7 +13,7 @@
     <string name="graduation_rate_cardview">Graduation Rate: <xliff:g id="gradRate">%f</xliff:g></string>
     <string name="college_id_key" translatable="false">collegeId</string>
     <string name="undergrads">Undergraduates: <xliff:g id="students">%d</xliff:g></string>
-    <string name = "favorites">Favorites</string>
+    <string name="favorites">Favorites</string>
 
     <string name="finance">Finance</string>
     <string name="admissions">Admissions</string>
@@ -41,4 +41,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="no_favorites">No Favorites Added</string>
 </resources>

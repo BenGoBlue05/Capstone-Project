@@ -39,6 +39,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
             CollegeContract.CollegeMainEntry.OWNERSHIP + " = ?";
     public static final String FAVORITES_SELECTION =
             CollegeContract.CollegeMainEntry.IS_FAVORITE + " = ?";
+    public static final String SORT_HIGHEST_EARNINGS = CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + " DESC";
 
     private Uri mUri;
     private static final int COLLEGE_LOADER = 1000;
@@ -135,9 +136,8 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + " DESC";
-        Uri uri = CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI;
-        return new CursorLoader(getContext(), uri, COLLEGE_COLUMNS, mSelection, mSelectionArgs, sortOrder);
+        return new CursorLoader(getContext(), CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI,
+                COLLEGE_COLUMNS, mSelection, mSelectionArgs, SORT_HIGHEST_EARNINGS);
     }
 
     @Override

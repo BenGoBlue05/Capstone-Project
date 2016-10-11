@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -55,7 +54,23 @@
 
         <service
             android:name=".service.CollegeFavoriteService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <receiver android:name=".widget.CollegeWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/college_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.CollegeRemoteViewService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
