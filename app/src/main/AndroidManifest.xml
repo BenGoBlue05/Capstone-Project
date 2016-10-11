@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.SignInActivity"
+            android:name=".ui.SignInActivity"
             android:label="@string/sign_in" />
 
         <service
@@ -45,11 +45,11 @@
             android:exported="false" />
 
         <activity
-            android:name=".activity.DetailActivity"
-            android:parentActivityName=".activity.MainActivity">
+            android:name=".ui.DetailActivity"
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value=".ui.MainActivity" />
         </activity>
 
         <service

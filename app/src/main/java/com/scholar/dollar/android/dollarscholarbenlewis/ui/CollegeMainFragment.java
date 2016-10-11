@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis.fragment;
+package com.scholar.dollar.android.dollarscholarbenlewis.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,10 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.scholar.dollar.android.dollarscholarbenlewis.CollegeAdapter;
+import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
-import com.scholar.dollar.android.dollarscholarbenlewis.activity.DetailActivity;
-import com.scholar.dollar.android.dollarscholarbenlewis.activity.MainActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
@@ -71,14 +69,12 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public static final int GRAD_RATE_6_YEARS = 9;
     public static final int FAVORITE = 10;
 
-
     public CollegeMainFragment() {
     }
 
     public interface Callback{
         public void onCollegeSelected(int collegeId);
     }
-
 
     @Nullable
     @Override

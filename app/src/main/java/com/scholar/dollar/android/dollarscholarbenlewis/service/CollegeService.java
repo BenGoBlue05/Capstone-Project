@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
 
 import org.json.JSONArray;

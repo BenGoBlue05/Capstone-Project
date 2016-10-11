@@ -26,6 +26,7 @@
     <string name="mp">Median loan debt of completers in monthly payments (10-year amortization plan): $<xliff:g id="payment">%d</xliff:g></string>
     <string name="logo">School logo</string>
     <string name="favorites_button">Add to favorites button</string>
+    <string name="no_info">No college info available</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

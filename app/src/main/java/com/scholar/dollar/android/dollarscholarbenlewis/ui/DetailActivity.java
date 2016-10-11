@@ -1,10 +1,9 @@
-package com.scholar.dollar.android.dollarscholarbenlewis.activity;
+package com.scholar.dollar.android.dollarscholarbenlewis.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.scholar.dollar.android.dollarscholarbenlewis.DetailFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 
 public class DetailActivity extends AppCompatActivity {

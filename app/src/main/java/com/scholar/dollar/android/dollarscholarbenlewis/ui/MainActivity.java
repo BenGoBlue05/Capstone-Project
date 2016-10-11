@@ -1,27 +1,20 @@
-package com.scholar.dollar.android.dollarscholarbenlewis.activity;
+package com.scholar.dollar.android.dollarscholarbenlewis.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.auth.api.Auth;
@@ -30,9 +23,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
-import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
-import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,18 +30,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
-    public static String LOG_TAG = MainActivity.class.getSimpleName();
-
     public static final String ANONYMOUS = "anonymous";
-    private DrawerLayout mDrawerLayout;
-
+    public static final String FAVORITE_COLLEGES_KEY = "favorites";
+    public static final String PUBLIC_COLLEGES_KEY = "public";
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private String mUsername;
     private String mPhotoUrl;
     private GoogleApiClient mGoogleApiClient;
-    public static final String FAVORITE_COLLEGES_KEY = "favorites";
-    public static final String PUBLIC_COLLEGES_KEY = "public";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,43 +69,15 @@ public class MainActivity extends AppCompatActivity implements
         setupViewPager(viewPager);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
                     = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
             indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setDisplayHomeAsUpEnabled(false);
         }
-
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
-
-                        // TODO: handle navigation
-
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "Hello Snackbar!",
-                        Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
     }
 
 
@@ -154,32 +113,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.sign_out:
-                mFirebaseAuth.signOut();
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-                mFirebaseUser = null;
-                mUsername = ANONYMOUS;
-                mPhotoUrl = null;
-                startActivity(new Intent(this, SignInActivity.class));
-                return true;
-            case R.id.college_service:
-                startService(new Intent(getApplicationContext(), CollegeService.class));
-                return true;
-            case R.id.college_details:
-                Log.i(LOG_TAG, "COLLEGE DETAILS CLICKED");
-                Intent intent = new Intent(getApplicationContext(), CollegeDetailService.class)
-                        .putExtra("collegeIdKey", 166027);
-                startService(intent);
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.sign_out) {
+            mFirebaseAuth.signOut();
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+            mFirebaseUser = null;
+            mUsername = ANONYMOUS;
+            mPhotoUrl = null;
+            startActivity(new Intent(this, SignInActivity.class));
+            return true;
         }
-
+        return false;
     }
 
     static class Adapter extends FragmentPagerAdapter {

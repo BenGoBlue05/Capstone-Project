@@ -10,7 +10,7 @@ import android.widget.RemoteViewsService;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment;
 
 public class CollegeRemoteViewService extends RemoteViewsService {
 

@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis;
+package com.scholar.dollar.android.dollarscholarbenlewis.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;

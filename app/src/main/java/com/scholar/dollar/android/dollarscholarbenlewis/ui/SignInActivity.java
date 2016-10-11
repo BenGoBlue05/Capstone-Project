@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis.activity;
+package com.scholar.dollar.android.dollarscholarbenlewis.ui;
 
 import android.content.Intent;
 import android.os.Bundle;

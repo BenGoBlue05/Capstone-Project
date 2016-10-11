@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis;
+package com.scholar.dollar.android.dollarscholarbenlewis.ui;
 
 
 import android.content.Context;
@@ -21,8 +21,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragment.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeFavoriteService;
 import com.squareup.picasso.Picasso;
