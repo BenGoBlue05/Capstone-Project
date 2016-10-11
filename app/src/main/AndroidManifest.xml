@@ -59,6 +59,7 @@
         <receiver android:name=".widget.CollegeWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.scholar.dollar.android.dollarscholarbenlewis.ACTION_DATA_UPDATED"/>
             </intent-filter>
 
             <meta-data
