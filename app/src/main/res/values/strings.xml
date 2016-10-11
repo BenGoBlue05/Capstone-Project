@@ -24,7 +24,8 @@
     <string name="sat">SAT: <xliff:g id="score">%d</xliff:g></string>
     <string name="debt">Loan principal upon entering repayment: $<xliff:g id="debt">%d</xliff:g></string>
     <string name="mp">Median loan debt of completers in monthly payments (10-year amortization plan): $<xliff:g id="payment">%d</xliff:g></string>
-
+    <string name="logo">School logo</string>
+    <string name="favorites_button">Add to favorites button</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -39,9 +40,9 @@
     <string name="sign_in">Sign in</string>
     <string name="sign_out">Sign out</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="no_favorites">No Favorites Added</string>
+
 </resources>

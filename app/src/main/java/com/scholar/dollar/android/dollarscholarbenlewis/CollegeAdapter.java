@@ -40,7 +40,6 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         } else {
             throw new RuntimeException("NOT BOUND TO RECYCLER_VIEW");
         }
-
     }
 
     @Override
@@ -48,28 +47,44 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         mCursor.moveToPosition(position);
 
         String name = mCursor.getString(CollegeMainFragment.NAME);
-        String logoUrl = mCursor.getString(CollegeMainFragment.LOGO);
+        holder.mNameTV.setText(name);
+        holder.mNameTV.setContentDescription(name);
+
         String city = mCursor.getString(CollegeMainFragment.CITY);
         String state = mCursor.getString(CollegeMainFragment.STATE);
+        String cityState = mContext.getString(R.string.city_state, city, state);
+        holder.mCityStateTV.setText(cityState);
+        holder.mCityStateTV.setContentDescription(cityState);
+
         int ownership = mCursor.getInt(CollegeMainFragment.OWNERSHIP);
-        int isFavorite = mCursor.getInt(CollegeMainFragment.FAVORITE);
-        final int oldFavorite = mCursor.getInt(CollegeMainFragment.FAVORITE);
         String schoolType = ownership == 1 ?
                 mContext.getString(R.string.public_) : mContext.getString(R.string.private_);
+        holder.mOwnershipTV.setText(schoolType);
+        holder.mOwnershipTV.setContentDescription(schoolType);
 
         int tuitionIs = mCursor.getInt(CollegeMainFragment.TUITION_IN_STATE);
-        int tuitionOs = mCursor.getInt(CollegeMainFragment.TUITION_OUT_STATE);
-        int earnings = mCursor.getInt(CollegeMainFragment.EARNINGS);
-        double gradRate = mCursor.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS);
+        String tuitionInState =  mContext.getString(R.string.tuition_cardview, tuitionIs);
+        holder.mTuitionIsTV.setText(tuitionInState);
+        holder.mTuitionIsTV.setContentDescription(tuitionInState);
 
-        holder.mNameTV.setText(name);
-        holder.mCityStateTV.setText(mContext.getString(R.string.city_state, city, state));
-        holder.mOwnershipTV.setText(schoolType);
-        holder.mTuitionIsTV.setText(mContext.getString(R.string.tuition_cardview, tuitionIs));
-        holder.mTuitionOsTV.setText(mContext.getString(R.string.tuition_cardview, tuitionOs));
-        holder.mEarningsTV.setText(mContext.getString(R.string.earnings_cardview, earnings));
-        holder.mGradRateTV.setText(mContext.getString(R.string.graduation_rate_cardview, gradRate));
+        int tuitionOs = mCursor.getInt(CollegeMainFragment.TUITION_OUT_STATE);
+        String tuitionOutState = mContext.getString(R.string.tuition_cardview, tuitionOs);
+        holder.mTuitionOsTV.setText(tuitionOutState);
+        holder.mTuitionOsTV.setContentDescription(tuitionOutState);
+
+        int earnings = mCursor.getInt(CollegeMainFragment.EARNINGS);
+        String income = mContext.getString(R.string.earnings_cardview, earnings);
+        holder.mEarningsTV.setText(income);
+        holder.mEarningsTV.setContentDescription(income);
+
+        double gradRate = mCursor.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS);
+        String sixYearGradRate = mContext.getString(R.string.graduation_rate_cardview, gradRate);
+        holder.mGradRateTV.setText(sixYearGradRate);
+        holder.mGradRateTV.setContentDescription(sixYearGradRate);
+
+        String logoUrl = mCursor.getString(CollegeMainFragment.LOGO);
         Picasso.with(mContext).load(logoUrl).placeholder(R.drawable.ic_school_black_24dp).into(holder.mLogoIV);
+        holder.mLogoIV.setContentDescription(mContext.getString(R.string.logo));
 
     }
 
@@ -84,9 +99,7 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         notifyDataSetChanged();
     }
 
-    public Cursor getCursor(){return mCursor;}
-
-    public static interface CollegeAdapterOnClickHandler {
+    public interface CollegeAdapterOnClickHandler {
         void onClick(int collegeId, CollegeAdapterViewHolder vh);
     }
 

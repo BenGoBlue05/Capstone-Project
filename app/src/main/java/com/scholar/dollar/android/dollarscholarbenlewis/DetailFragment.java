@@ -136,23 +136,46 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
         switch (loader.getId()){
             case MAIN_INFO_CURSOR_ID:
+
+
                 String name = data.getString(CollegeMainFragment.NAME);
-                mIsFavorite = data.getInt(CollegeMainFragment.FAVORITE);
                 mCollapsingToolbar.setTitle(name);
                 mNameTV.setText(name);
-                mCityStateTV.setText(mContext.getString(R.string.city_state,
+                mNameTV.setContentDescription(name);
+
+                String cityState = (mContext.getString(R.string.city_state,
                         data.getString(CollegeMainFragment.CITY), data.getString(CollegeMainFragment.STATE)));
-                mOwnershipTV.setText(data.getInt(CollegeMainFragment.OWNERSHIP) == 1 ? "Public" : "Private");
-                mEarningsTV.setText(mContext.getString(R.string.earnings_cardview,
-                        data.getInt(CollegeMainFragment.EARNINGS)));
-                mTuitionTV.setText(mContext.getString(R.string.tuition_cardview,
-                        data.getInt(CollegeMainFragment.TUITION_OUT_STATE)));
-                m6yearTV.setText(mContext.getString(R.string.six_year_grad_rate,
+                mCityStateTV.setText(cityState);
+                mCityStateTV.setContentDescription(cityState);
+
+                String ownership = data.getInt(CollegeMainFragment.OWNERSHIP) == 1 ? "Public" : "Private";
+                mOwnershipTV.setText(ownership);
+                mOwnershipTV.setContentDescription(ownership);
+
+                String earnings = mContext.getString(R.string.earnings_cardview,
+                        data.getInt(CollegeMainFragment.EARNINGS));
+                mEarningsTV.setText(earnings);
+                mEarningsTV.setContentDescription(earnings);
+
+                String tuitionOutState =  mContext.getString(R.string.tuition_cardview,
+                        data.getInt(CollegeMainFragment.TUITION_OUT_STATE));
+                mTuitionTV.setText(tuitionOutState);
+                mTuitionTV.setContentDescription(tuitionOutState);
+
+                String sixYearGradRate = (mContext.getString(R.string.six_year_grad_rate,
                         data.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS)));
+                m6yearTV.setText(sixYearGradRate);
+                m6yearTV.setContentDescription(sixYearGradRate);
+
                 Picasso.with(mContext).load(data.getString(CollegeMainFragment.LOGO))
                         .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
+                mLogoIV.setContentDescription(mContext.getString(R.string.logo));
+
+                mIsFavorite = data.getInt(CollegeMainFragment.FAVORITE);
                 int star = mIsFavorite == 0 ? R.drawable.ic_star_unfilled_24dp : R.drawable.ic_star_filled_24dp;
                 Picasso.with(mContext).load(star).placeholder(star).into(mStarIV);
+                mStarIV.setContentDescription(mContext.getString(R.string.favorites_button));
+
                 break;
             case DETAIL_CURSOR_ID:
                 mSizeTV.setText(mContext.getString(R.string.undergrads, data.getInt(SIZE)));
