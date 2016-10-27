@@ -3,18 +3,23 @@ package com.scholar.dollar.android.dollarscholarbenlewis.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.auth.api.Auth;
@@ -30,6 +35,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
+//    @BindView(R.id.spinner) Spinner mSpinner;
+
+    private DrawerLayout mDrawerLayout;
     public static final String ANONYMOUS = "anonymous";
     public static final String FAVORITE_COLLEGES_KEY = "favorites";
     public static final String PUBLIC_COLLEGES_KEY = "public";
@@ -45,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
+
+//        ButterKnife.bind(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -62,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,8 +88,27 @@ public class MainActivity extends AppCompatActivity implements
                     = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
             indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
-            supportActionBar.setDisplayHomeAsUpEnabled(false);
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
+                this, R.array.states_array, android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    // This method will trigger on item Click of navigation menu
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // Set item in checked state
+                        menuItem.setChecked(true);
+                        // TODO: handle navigation
+                        // Closing drawer on item click
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
     }
 
@@ -113,7 +145,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.sign_out) {
+        int id = item.getItemId();
+        if (id == R.id.sign_out) {
             mFirebaseAuth.signOut();
             Auth.GoogleSignInApi.signOut(mGoogleApiClient);
             mFirebaseUser = null;
@@ -122,7 +155,10 @@ public class MainActivity extends AppCompatActivity implements
             startActivity(new Intent(this, SignInActivity.class));
             return true;
         }
-        return false;
+        else if (id == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     static class Adapter extends FragmentPagerAdapter {
@@ -153,5 +189,8 @@ public class MainActivity extends AppCompatActivity implements
             return mFragmentTitleList.get(position);
         }
     }
+
+
+
 
 }

@@ -29,7 +29,7 @@ android {
         }
     }
     buildTypes.each {
-        it.buildConfigField 'String', 'COLLEGE_SCORECARD_API_KEY', '"6zqyzq1ioiUDY8CIuMpQdHLBNhPnKGcDGl32BMTj"'
+        it.buildConfigField 'String', 'COLLEGE_SCORECARD_API_KEY', MY_API_KEY
     }
 }
 
