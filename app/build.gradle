@@ -7,7 +7,7 @@ android {
         config {
             keyAlias 'dollarscholar'
             keyPassword 'Fernando05'
-            storeFile file('$rootdir/keystore.jks')
+            storeFile file('/Users/bplewis5/Desktop/GitHub/Dollar-Scholar/keystore.jks')
             storePassword 'Fernando05'
         }
     }
@@ -29,7 +29,7 @@ android {
         }
     }
     buildTypes.each {
-        it.buildConfigField 'String', 'COLLEGE_SCORECARD_API_KEY', MY_API_KEY
+        it.buildConfigField 'String', 'COLLEGE_SCORECARD_API_KEY', '"6zqyzq1ioiUDY8CIuMpQdHLBNhPnKGcDGl32BMTj"'
     }
 }
 
