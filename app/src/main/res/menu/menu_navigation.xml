@@ -4,7 +4,6 @@
     xmlns:src="http://schemas.android.com/tools">
     <item
         android:id="@+id/navigation_drawer_item3"
-        android:icon="@android:drawable/ic_menu_share"
         android:title="@string/state"
         app:actionLayout="@layout/spinner"/>
 </menu>

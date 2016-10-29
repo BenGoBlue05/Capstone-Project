@@ -14,10 +14,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -28,25 +32,48 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment.PUBLIC_COLLEGES_BOOLEAN_KEY;
+
 public class MainActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener
+//        CollegeMainFragment.OnStateSelectedListener
+{
 
-//    @BindView(R.id.spinner) Spinner mSpinner;
-
-    private DrawerLayout mDrawerLayout;
+//    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
     public static final String ANONYMOUS = "anonymous";
     public static final String FAVORITE_COLLEGES_KEY = "favorites";
     public static final String PUBLIC_COLLEGES_KEY = "public";
+    public static final String STATE_KEY = "state";
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private String mUsername;
     private String mPhotoUrl;
+    private String mStateSelected;
     private GoogleApiClient mGoogleApiClient;
+
+    private Adapter mAdapter;
+
+    @BindView(R.id.nav_view) NavigationView mNavView;
+    @BindView(R.id.drawer) DrawerLayout mDrawerLayout;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.viewpager) ViewPager mViewPager;
+    @BindView(R.id.tabs) TabLayout mTabs;
+
+    public final String getState() {
+        return mStateSelected;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +81,16 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
 
-//        ButterKnife.bind(this);
+        ButterKnife.bind(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         if (mFirebaseUser == null) {
+            Intent publicCollegesIntent = new Intent(this, CollegeService.class)
+                    .putExtra(PUBLIC_COLLEGES_BOOLEAN_KEY, true);
+            startService(new Intent(this, CollegeService.class));
+            startService(publicCollegesIntent);
             startActivity(new Intent(this, SignInActivity.class));
             finish();
             return;
@@ -72,16 +103,10 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        setSupportActionBar(mToolbar);
+//        setupViewPager(viewPager, createCollegeFragment(false, false), createCollegeFragment(true, false));
+        setupViewPager(mViewPager);
+        mTabs.setupWithViewPager(mViewPager);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
@@ -90,31 +115,62 @@ public class MainActivity extends AppCompatActivity implements
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        mTitle = mDrawerTitle = getTitle();
+        Log.i(LOG_TAG, "M_TITLE: " + mTitle);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
-        Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (!mStateSelected.equals("All")) {
+                    mTitle = mStateSelected;
+                } else {
+                    mTitle = getString(R.string.app_name);
+                }
+                getSupportActionBar().setTitle(mTitle);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+
+        Spinner spinner = (Spinner) mNavView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
                 this, R.array.states_array, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
-                        // TODO: handle navigation
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mStateSelected = parent.getSelectedItem().toString();
+                Log.i(LOG_TAG, "STATE SELECTED: " + mStateSelected);
+                if (mStateSelected.equals("All")){
+                    startService(new Intent(getApplicationContext(), CollegeService.class));
+                    Intent publicCollegesIntent = new Intent(getApplicationContext(), CollegeService.class)
+                            .putExtra(PUBLIC_COLLEGES_BOOLEAN_KEY, true);
+                    startService(publicCollegesIntent);
+                } else{
+                    startService(new Intent(getApplicationContext(), CollegeService.class)
+                            .putExtra(STATE_KEY, mStateSelected));
+                }
+                updatePages();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
     }
 
-
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
+        mAdapter = new Adapter(getSupportFragmentManager());
 
         Bundle publicBundle = new Bundle();
         publicBundle.putBoolean(PUBLIC_COLLEGES_KEY, true);
@@ -126,10 +182,19 @@ public class MainActivity extends AppCompatActivity implements
         CollegeMainFragment favoritesFragment = new CollegeMainFragment();
         favoritesFragment.setArguments(favoriteBundle);
 
-        adapter.addFragment(new CollegeMainFragment(), getString(R.string.colleges));
-        adapter.addFragment(publicCollegeFragment, getString(R.string.public_));
-        adapter.addFragment(favoritesFragment, getString(R.string.favorites));
-        viewPager.setAdapter(adapter);
+        mAdapter.addFragment(new CollegeMainFragment(), getString(R.string.colleges));
+        mAdapter.addFragment(publicCollegeFragment, getString(R.string.public_));
+        mAdapter.addFragment(favoritesFragment, getString(R.string.favorites));
+        viewPager.setAdapter(mAdapter);
+    }
+
+    private void updatePages(){
+        Log.i(LOG_TAG, "UPDATE_PAGES STATE SELECTED: " + mStateSelected);
+        CollegeMainFragment collegeFragment = (CollegeMainFragment) mAdapter.getItem(0);
+        CollegeMainFragment publicFragment = (CollegeMainFragment) mAdapter.getItem(1);
+        collegeFragment.updateStateSelection(mStateSelected);
+        publicFragment.updateStateSelection(mStateSelected);
+
     }
 
     @Override
@@ -154,16 +219,15 @@ public class MainActivity extends AppCompatActivity implements
             mPhotoUrl = null;
             startActivity(new Intent(this, SignInActivity.class));
             return true;
-        }
-        else if (id == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
     }
 
     static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+        private List<Fragment> mFragmentList = new ArrayList<>();
+        private List<String> mFragmentTitleList = new ArrayList<>();
 
         public Adapter(FragmentManager manager) {
             super(manager);
@@ -184,13 +248,14 @@ public class MainActivity extends AppCompatActivity implements
             mFragmentTitleList.add(title);
         }
 
+        public void clearFragments(){
+            mFragmentList.clear();
+        }
+
+
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
     }
-
-
-
-
 }

@@ -9,8 +9,9 @@ import android.util.Log;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
+import com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.ui.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 
 import okhttp3.OkHttpClient;
@@ -57,10 +59,7 @@ public final class CollegeService extends IntentService {
     public static final String OWNERSHIP_FILTER = OWNERSHIP + "=1";
     public static final String API_KEY = "api_key=" + BuildConfig.COLLEGE_SCORECARD_API_KEY;
     public static final String[] FILTERS = {API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER, ACT_FILTER};
-    public static final String[] FILTERS_WITH_OWNERSHIP =
-            {API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER, ACT_FILTER, OWNERSHIP_FILTER};
     private static final String LOG_TAG = CollegeService.class.getSimpleName();
-    public static final String FILTER_PARAMS = joinFilters(FILTERS);
     public static final String SORT_BY = "sort=2012.earnings.10_yrs_after_entry.median:desc";
     public static final String PER_PAGE = "per_page=50";
 //    public String REQUEST_URL = createFinalUrl(BASE_URL, FILTER_PARAMS, FIELDS_PARAMS, SORT_BY, PER_PAGE);
@@ -85,7 +84,7 @@ public final class CollegeService extends IntentService {
         return baseUrl;
     }
 
-    public static String joinFilters(String[] filters) {
+    public static String joinFilters(ArrayList<String> filters) {
         String url = "";
         for (String filter : filters) {
             url += filter + "&";
@@ -200,9 +199,14 @@ public final class CollegeService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        String[] filter = intent.getBooleanExtra(CollegeMainFragment.PUBLIC_COLLEGES_BOOLEAN_KEY, false)
-                ? FILTERS_WITH_OWNERSHIP : FILTERS;
+        ArrayList<String> filter = new ArrayList<>(Arrays.asList(FILTERS));
+        if (intent.getBooleanExtra(CollegeMainFragment.PUBLIC_COLLEGES_BOOLEAN_KEY, false))
+            filter.add(OWNERSHIP_FILTER);
+        String state = intent.getStringExtra(MainActivity.STATE_KEY);
+        if (state != null)
+            filter.add(STATE + "=" + state);
         String filterParams = joinFilters(filter);
+        Log.i(LOG_TAG, joinFilters(filter));
         String requestUrl = createFinalUrl(BASE_URL, filterParams, FIELDS_PARAMS, SORT_BY, PER_PAGE);
         Log.i(LOG_TAG, requestUrl);
         try{
