@@ -14,10 +14,13 @@ public class CollegeMain {
     private int tuitionInState;
     private int tuitionOutState;
     private int earnings;
-    private double graduationRate;
+    private double graduationRate4yr;
+    private double graduationRate6yr;
+    private int undergrads;
 
     public CollegeMain(int id, String name, String logoUrl, String city, String state,
-                       int ownership, int tuitionInState, int tuitionOutState, int earnings, double graduationRate) {
+                       int ownership, int tuitionInState, int tuitionOutState, int earnings,
+                       double graduationRate4yr, double graduationRate6yr, int undergrads) {
         this.id = id;
         this.name = name;
         this.logoUrl = logoUrl;
@@ -27,7 +30,10 @@ public class CollegeMain {
         this.tuitionInState = tuitionInState;
         this.tuitionOutState = tuitionOutState;
         this.earnings = earnings;
-        this.graduationRate = graduationRate;
+        this.graduationRate4yr = graduationRate4yr;
+        this.graduationRate6yr = graduationRate6yr;
+        this.undergrads = undergrads;
+
     }
 
     public int getId() {
@@ -66,7 +72,15 @@ public class CollegeMain {
         return earnings;
     }
 
-    public double getGraduationRate() {
-        return graduationRate;
+    public double getGraduationRate6yr() {
+        return graduationRate6yr;
+    }
+
+    public double getGraduationRate4yr() {
+        return graduationRate4yr;
+    }
+
+    public int getUndergradSize() {
+        return undergrads;
     }
 }

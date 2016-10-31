@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;

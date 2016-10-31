@@ -38,8 +38,11 @@ public class CollegeContract {
         public static final String TUITION_IN_STATE = "tuition_in_state";
         public static final String TUITION_OUT_STATE = "tuition_out_state";
         public static final String MED_EARNINGS_2012 = "earnings_med_2012_coh";
+        public static final String GRADUATION_RATE_4_YEARS = "grad_rate_4_yrs"; // New addition
         public static final String GRADUATION_RATE_6_YEAR = "graduation_rate_6_years";
+        public static final String UNDERGRAD_SIZE = "undergrads"; //New addition
         public static final String IS_FAVORITE = "is_favorite";
+
 
         public static Uri buildCollegeMainUri(long id){
             return ContentUris.withAppendedId(COLLEGE_MAIN_CONTENT_URI, id);

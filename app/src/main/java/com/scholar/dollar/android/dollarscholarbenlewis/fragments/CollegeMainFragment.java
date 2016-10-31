@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis.ui;
+package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,6 +20,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +63,9 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
             CollegeContract.CollegeMainEntry.TUITION_IN_STATE,
             CollegeContract.CollegeMainEntry.TUITION_OUT_STATE,
             CollegeContract.CollegeMainEntry.MED_EARNINGS_2012,
+            CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS,
             CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR,
+            CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE,
             CollegeContract.CollegeMainEntry.IS_FAVORITE
     };
 
@@ -75,8 +79,10 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public static final int TUITION_IN_STATE = 6;
     public static final int TUITION_OUT_STATE = 7;
     public static final int EARNINGS = 8;
-    public static final int GRAD_RATE_6_YEARS = 9;
-    public static final int FAVORITE = 10;
+    public static final int GRAD_RATE_4_YEARS = 9;
+    public static final int GRAD_RATE_6_YEARS = 10;
+    public static final int UG_SIZE = 11;
+    public static final int FAVORITE = 12;
 
     private LoaderManager mLoaderManager;
 
@@ -84,18 +90,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void updateStateSelection(String state) {
-//        if (mSelectionList == null){
-//            mSelectionList = new ArrayList<>();
-//        }
-//        if (mSelectionArgList == null){
-//            mSelectionArgList = new ArrayList<>();
-//        }
-//        mSelectionList.add(STATES_SELECTION);
-//        mSelection = createSelection(mSelectionList);
-//        Log.i(LOG_TAG, "SELECTION UPDATE SELECTION: " + mSelection);
-//        mSelectionArgList.add(state);
-//        mSelectionArgs = new String[mSelectionArgList.size()];
-//        mSelectionArgs = mSelectionArgList.toArray(mSelectionArgs);
         Log.i(LOG_TAG, "STATE INPUT UPDATE_STATE_SELECTION: " + state);
         getStateSelection(state);
         mLoaderManager.restartLoader(COLLEGE_LOADER, null, this);

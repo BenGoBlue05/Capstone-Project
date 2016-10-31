@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis.ui;
+package com.scholar.dollar.android.dollarscholarbenlewis.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +32,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment.PUBLIC_COLLEGES_BOOLEAN_KEY;
+import static com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment.PUBLIC_COLLEGES_BOOLEAN_KEY;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
-                    = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
+                    = VectorDrawableCompat.create(getResources(), R.drawable.ic_filter, getTheme());
             indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);

@@ -10,8 +10,8 @@ import android.util.Log;
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
-import com.scholar.dollar.android.dollarscholarbenlewis.ui.CollegeMainFragment;
-import com.scholar.dollar.android.dollarscholarbenlewis.ui.MainActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,9 +46,12 @@ public final class CollegeService extends IntentService {
     public static final String IN_STATE_TUITION_AND_FEES = "2014.cost.tuition.in_state";
     public static final String OUT_STATE_TUITION_AND_FEES = "2014.cost.tuition.out_of_state";
     public static final String OWNERSHIP = "school.ownership";
+    public static final String GRADUATION_RATE_4_YEARS = "2014.completion.completion_rate_4yr_100nt";
     public static final String GRADUATION_RATE_6_YEARS = "2014.completion.completion_rate_4yr_150nt";
+    public static final String UNDERGRAD_SIZE = "2014.student.size";
     public static final String[] MAIN_FIELDS = {ID, NAME, SCHOOL_URL, CITY, STATE, MED_EARNINGS_10_YEARS,
-            IN_STATE_TUITION_AND_FEES, OUT_STATE_TUITION_AND_FEES, OWNERSHIP, GRADUATION_RATE_6_YEARS};
+            IN_STATE_TUITION_AND_FEES, OUT_STATE_TUITION_AND_FEES, OWNERSHIP, GRADUATION_RATE_4_YEARS,
+            GRADUATION_RATE_6_YEARS, UNDERGRAD_SIZE};
     public String FIELDS_PARAMS = buildFieldsUrl(MAIN_FIELDS);
 
     //filters
@@ -130,9 +133,11 @@ public final class CollegeService extends IntentService {
                 int tuitionInState = college.getInt(IN_STATE_TUITION_AND_FEES);
                 int tuitionOutState = college.getInt(IN_STATE_TUITION_AND_FEES);
                 int ownership = college.getInt(OWNERSHIP);
-                double graduationRate = college.getDouble(GRADUATION_RATE_6_YEARS);
+                double graduationRate4yr = college.getDouble(GRADUATION_RATE_4_YEARS);
+                double graduationRate6yr = college.getDouble(GRADUATION_RATE_6_YEARS);
+                int undergradSize = college.getInt(UNDERGRAD_SIZE);
                 CollegeMain collegeMain = new CollegeMain(id, name, logoUrl, city, state, ownership,
-                        tuitionInState, tuitionOutState, earnings, graduationRate);
+                        tuitionInState, tuitionOutState, earnings, graduationRate4yr, graduationRate6yr, undergradSize);
                 collegesInfo.add(collegeMain);
             }
             return collegesInfo;
@@ -160,7 +165,10 @@ public final class CollegeService extends IntentService {
                 values.put(CollegeContract.CollegeMainEntry.TUITION_IN_STATE, college.getTuitionInState());
                 values.put(CollegeContract.CollegeMainEntry.TUITION_OUT_STATE, college.getTuitionOutState());
                 values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getEarnings());
-                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR, college.getGraduationRate());
+                values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getEarnings());
+                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS, college.getGraduationRate4yr());
+                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR, college.getGraduationRate6yr());
+                values.put(CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE, college.getUndergradSize());
                 values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, 0);
 
                 cvVector.add(values);

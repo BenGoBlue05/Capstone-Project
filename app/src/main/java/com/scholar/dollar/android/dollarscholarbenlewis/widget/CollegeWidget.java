@@ -10,8 +10,8 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
-import com.scholar.dollar.android.dollarscholarbenlewis.ui.DetailActivity;
-import com.scholar.dollar.android.dollarscholarbenlewis.ui.MainActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeFavoriteService;
 
 /**

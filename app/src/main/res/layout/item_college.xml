@@ -19,8 +19,8 @@
 
             <ImageView
                 android:id="@+id/logo_iv"
-                android:layout_width="120dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/logo_width"
+                android:layout_height="@dimen/logo_height"
                 android:scaleType="fitCenter"
                 tools:src="@drawable/ic_school_black_24dp" />
 

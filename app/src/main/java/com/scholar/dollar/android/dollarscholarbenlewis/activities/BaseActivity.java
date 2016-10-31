@@ -1,4 +1,4 @@
-package com.scholar.dollar.android.dollarscholarbenlewis.ui;
+package com.scholar.dollar.android.dollarscholarbenlewis.activities;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
