@@ -72,7 +72,9 @@
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
+        <service
+            android:name=".service.CollegeBasicService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

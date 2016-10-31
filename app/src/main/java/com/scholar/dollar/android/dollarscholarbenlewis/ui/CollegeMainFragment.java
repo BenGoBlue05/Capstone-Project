@@ -97,9 +97,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 //        mSelectionArgs = new String[mSelectionArgList.size()];
 //        mSelectionArgs = mSelectionArgList.toArray(mSelectionArgs);
         Log.i(LOG_TAG, "STATE INPUT UPDATE_STATE_SELECTION: " + state);
-        if (state.equals("All")){
-
-        }
         getStateSelection(state);
         mLoaderManager.restartLoader(COLLEGE_LOADER, null, this);
     }

@@ -120,7 +120,6 @@ public final class CollegeService extends IntentService {
                 JSONObject college = colleges.getJSONObject(i);
                 int id = college.getInt(ID);
                 String name = college.getString(NAME);
-
                 String domainUrl = college.getString(SCHOOL_URL);
                 String logoUrl = getLogo(domainUrl);
 //                Log.i(LOG_TAG, logoUrl);
@@ -177,7 +176,6 @@ public final class CollegeService extends IntentService {
                 Log.e(LOG_TAG, "CONTENT URI NOT RECOGNIZED");
             }
         }
-
         if (cursor != null){
             cursor.close();
         }

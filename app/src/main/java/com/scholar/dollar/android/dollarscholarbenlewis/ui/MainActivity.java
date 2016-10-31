@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     mTitle = getString(R.string.app_name);
                 }
+                updatePages();
                 getSupportActionBar().setTitle(mTitle);
             }
 
@@ -158,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements
                     startService(new Intent(getApplicationContext(), CollegeService.class)
                             .putExtra(STATE_KEY, mStateSelected));
                 }
-                updatePages();
             }
 
             @Override
@@ -211,16 +211,20 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.sign_out) {
-            mFirebaseAuth.signOut();
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-            mFirebaseUser = null;
-            mUsername = ANONYMOUS;
-            mPhotoUrl = null;
-            startActivity(new Intent(this, SignInActivity.class));
-            return true;
-        } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
+        switch (id){
+            case R.id.sign_out:
+                mFirebaseAuth.signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                mFirebaseUser = null;
+                mUsername = ANONYMOUS;
+                mPhotoUrl = null;
+                startActivity(new Intent(this, SignInActivity.class));
+                break;
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+//            case R.id.fb:
+//                startService(new Intent(this, CollegeBasicService.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -247,11 +251,6 @@ public class MainActivity extends AppCompatActivity implements
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
-
-        public void clearFragments(){
-            mFragmentList.clear();
-        }
-
 
         @Override
         public CharSequence getPageTitle(int position) {
