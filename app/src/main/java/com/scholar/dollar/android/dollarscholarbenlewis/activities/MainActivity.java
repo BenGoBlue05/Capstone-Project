@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements
     private String mUsername;
     private String mPhotoUrl;
     private String mStateSelected;
-    private GoogleApiClient mGoogleApiClient;
+    public GoogleApiClient mGoogleApiClient;
 
     private Adapter mAdapter;
 

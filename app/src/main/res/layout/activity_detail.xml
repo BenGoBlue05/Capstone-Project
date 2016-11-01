@@ -30,7 +30,7 @@
                 app:layout_collapseMode="parallax" />
 
             <ImageView
-                android:id="@+id/detail_ab_background"
+                android:id="@+id/detail_ab_background_photo"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/app_bar_image_height"
                 android:fitsSystemWindows="true"
