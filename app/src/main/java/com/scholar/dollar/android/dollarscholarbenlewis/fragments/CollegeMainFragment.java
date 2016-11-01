@@ -168,20 +168,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         mCollegeAdapter.swapCursor(data);
     }
 
-    private String createSelection(ArrayList<String> selectionList) {
-        int selectionSize = selectionList.size();
-        if (selectionSize < 1)
-            return null;
-        String selection = "";
-        for (int i = 0; i < selectionSize; i++) {
-            selection += selectionList.get(i);
-            if (i < selectionSize - 1)
-                selection += " AND ";
-        }
-
-        return selection;
-    }
-
     private void getStateSelection(String state){
         if (state.equals("All")){
             if (mOnlyPublic){

@@ -8,10 +8,10 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
-import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,9 +49,12 @@ public final class CollegeService extends IntentService {
     public static final String GRADUATION_RATE_4_YEARS = "2014.completion.completion_rate_4yr_100nt";
     public static final String GRADUATION_RATE_6_YEARS = "2014.completion.completion_rate_4yr_150nt";
     public static final String UNDERGRAD_SIZE = "2014.student.size";
+    public static final String LATITUDE = "location.lat";
+    public static final String LONGITUDE = "location.lon";
+    public static final String LOCALE = "school.locale";
     public static final String[] MAIN_FIELDS = {ID, NAME, SCHOOL_URL, CITY, STATE, MED_EARNINGS_10_YEARS,
             IN_STATE_TUITION_AND_FEES, OUT_STATE_TUITION_AND_FEES, OWNERSHIP, GRADUATION_RATE_4_YEARS,
-            GRADUATION_RATE_6_YEARS, UNDERGRAD_SIZE};
+            GRADUATION_RATE_6_YEARS, UNDERGRAD_SIZE, LATITUDE, LONGITUDE, LOCALE};
     public String FIELDS_PARAMS = buildFieldsUrl(MAIN_FIELDS);
 
     //filters
@@ -95,7 +98,7 @@ public final class CollegeService extends IntentService {
         return url;
     }
 
-    public static String fetchColleges(String url) throws IOException {
+    public static String fetch(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -108,7 +111,7 @@ public final class CollegeService extends IntentService {
 
     public ArrayList<CollegeMain> getCollegeInfo(String url) {
         try {
-            String jsonStr = fetchColleges(url);
+            String jsonStr = fetch(url);
             JSONObject results = new JSONObject(jsonStr);
             JSONArray colleges = results.getJSONArray("results");
             int collegesLength;
@@ -136,8 +139,12 @@ public final class CollegeService extends IntentService {
                 double graduationRate4yr = college.getDouble(GRADUATION_RATE_4_YEARS);
                 double graduationRate6yr = college.getDouble(GRADUATION_RATE_6_YEARS);
                 int undergradSize = college.getInt(UNDERGRAD_SIZE);
+                double lat = college.getDouble(LATITUDE);
+                double lon = college.getDouble(LONGITUDE);
+                int locale = college.getInt(LOCALE);
                 CollegeMain collegeMain = new CollegeMain(id, name, logoUrl, city, state, ownership,
-                        tuitionInState, tuitionOutState, earnings, graduationRate4yr, graduationRate6yr, undergradSize);
+                        tuitionInState, tuitionOutState, earnings, graduationRate4yr, graduationRate6yr,
+                        undergradSize, lat, lon, locale);
                 collegesInfo.add(collegeMain);
             }
             return collegesInfo;
@@ -150,14 +157,19 @@ public final class CollegeService extends IntentService {
 
     public void addColleges(ArrayList<CollegeMain> colleges){
         Vector<ContentValues> cvVector = new Vector<>();
+        Vector<ContentValues> placeVector = new Vector<>();
         Cursor cursor = null;
         for (CollegeMain college : colleges){
             Uri uri = CollegeContract.CollegeMainEntry.buildMainWithCollegeId(college.getId());
             cursor = getContentResolver().query(uri, null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()){
                 ContentValues values = new ContentValues();
-                values.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, college.getId());
-                values.put(CollegeContract.CollegeMainEntry.NAME, college.getName());
+                ContentValues placeValues = new ContentValues();
+
+                int collegeId = college.getId();
+                String name = college.getName();
+                values.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, collegeId);
+                values.put(CollegeContract.CollegeMainEntry.NAME, name);
                 values.put(CollegeContract.CollegeMainEntry.LOGO_URL, college.getLogoUrl());
                 values.put(CollegeContract.CollegeMainEntry.CITY, college.getCity());
                 values.put(CollegeContract.CollegeMainEntry.STATE, college.getState());
@@ -171,7 +183,14 @@ public final class CollegeService extends IntentService {
                 values.put(CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE, college.getUndergradSize());
                 values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, 0);
 
+                placeValues.put(CollegeContract.PlaceEntry.COLLEGE_ID, college.getId());
+                placeValues.put(CollegeContract.PlaceEntry.NAME, name);
+                placeValues.put(CollegeContract.PlaceEntry.LATITUDE, college.getLatitude());
+                placeValues.put(CollegeContract.PlaceEntry.LONGITUDE, college.getLongitude());
+                placeValues.put(CollegeContract.PlaceEntry.LOCALE_CODE, college.getLocaleCode());
+
                 cvVector.add(values);
+                placeVector.add(placeValues);
             }
         }
         Log.i(LOG_TAG, "NUMBER OF COLLEGES: " + cvVector.size());
@@ -180,6 +199,15 @@ public final class CollegeService extends IntentService {
             cvVector.toArray(cvArray);
             try{
                 getContentResolver().bulkInsert(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI, cvArray);
+            } catch (IllegalArgumentException e){
+                Log.e(LOG_TAG, "CONTENT URI NOT RECOGNIZED");
+            }
+        }
+        if (placeVector.size() > 0){
+            ContentValues[] placeArray = new ContentValues[placeVector.size()];
+            placeVector.toArray(placeArray);
+            try{
+                getContentResolver().bulkInsert(CollegeContract.PlaceEntry.PLACE_CONTENT_URI, placeArray);
             } catch (IllegalArgumentException e){
                 Log.e(LOG_TAG, "CONTENT URI NOT RECOGNIZED");
             }

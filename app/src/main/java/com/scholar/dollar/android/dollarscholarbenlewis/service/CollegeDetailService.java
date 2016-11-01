@@ -111,9 +111,10 @@ public final class CollegeDetailService extends IntentService {
         String finalUrl = CollegeService.createFinalUrl(CollegeService.BASE_URL,
                 createFilter(collegeId), FIELDS_URL, CollegeService.SORT_BY, PER_PAGE);
         Log.i(LOG_TAG, finalUrl);
+
         try {
             Log.i(LOG_TAG, "FETCHING COLLEGES STARTED");
-            addCollege(CollegeService.fetchColleges(finalUrl), collegeId);
+            addCollege(CollegeService.fetch(finalUrl), collegeId);
         } catch (IOException e) {
             e.printStackTrace();
         }

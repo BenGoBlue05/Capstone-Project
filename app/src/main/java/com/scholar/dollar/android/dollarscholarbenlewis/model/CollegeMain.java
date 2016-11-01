@@ -17,10 +17,14 @@ public class CollegeMain {
     private double graduationRate4yr;
     private double graduationRate6yr;
     private int undergrads;
+    private double latitude;
+    private double longitude;
+    private int localeCode;
 
     public CollegeMain(int id, String name, String logoUrl, String city, String state,
                        int ownership, int tuitionInState, int tuitionOutState, int earnings,
-                       double graduationRate4yr, double graduationRate6yr, int undergrads) {
+                       double graduationRate4yr, double graduationRate6yr, int undergrads,
+                       double latitude, double longitude, int localeCode) {
         this.id = id;
         this.name = name;
         this.logoUrl = logoUrl;
@@ -33,6 +37,9 @@ public class CollegeMain {
         this.graduationRate4yr = graduationRate4yr;
         this.graduationRate6yr = graduationRate6yr;
         this.undergrads = undergrads;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.localeCode = localeCode;
 
     }
 
@@ -82,5 +89,17 @@ public class CollegeMain {
 
     public int getUndergradSize() {
         return undergrads;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public int getLocaleCode() {
+        return localeCode;
     }
 }

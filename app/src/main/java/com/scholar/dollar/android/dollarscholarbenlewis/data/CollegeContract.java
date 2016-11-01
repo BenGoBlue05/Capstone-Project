@@ -17,6 +17,7 @@ public class CollegeContract {
 
     public static final String PATH_COLLEGE_MAIN = "college_main";
     public static final String PATH_COLLEGE_DETAIL = "college_detail";
+    public static final String PATH_PLACE = "place";
 
 
     public static final class CollegeMainEntry implements BaseColumns{
@@ -88,6 +89,32 @@ public class CollegeContract {
 
         public static Uri buildDetailWithCollegeId(int collegeId){
             return COLLEGE_DETAIL_CONTENT_URI.buildUpon().appendPath(Integer.toString(collegeId)).build();
+        }
+    }
+
+    public static final class PlaceEntry implements BaseColumns{
+
+        public static final Uri PLACE_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PLACE);
+
+        public static final String PLACE_CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLACE;
+        public static final String PLACE_CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLACE;
+        public static final String PLACE_TABLE = "place";
+
+        public static final String COLLEGE_ID = "college_id";
+        public static final String NAME = "name";
+        public static final String LATITUDE = "latitude";
+        public static final String LONGITUDE = "longitude";
+        public static final String LOCALE_CODE = "locale";
+        public static final String PLACE_ID = "place_id";
+
+        public static Uri buildPlaceUri(long id){
+            return ContentUris.withAppendedId(PLACE_CONTENT_URI, id);
+        }
+
+        public static Uri buildPlaceWithCollegeId(int collegeId){
+            return PLACE_CONTENT_URI.buildUpon().appendPath(Integer.toString(collegeId)).build();
         }
     }
 }

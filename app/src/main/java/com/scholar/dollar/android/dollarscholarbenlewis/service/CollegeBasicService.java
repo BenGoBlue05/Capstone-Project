@@ -55,7 +55,7 @@ public class CollegeBasicService extends IntentService {
 
     private void addCollegesToFb(String url) {
         try {
-            String jsonStr = CollegeService.fetchColleges(url);
+            String jsonStr = CollegeService.fetch(url);
             JSONObject results = new JSONObject(jsonStr);
             JSONArray colleges = results.getJSONArray("results");
             int collegesLength;

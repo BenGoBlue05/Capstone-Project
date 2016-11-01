@@ -12,11 +12,13 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
 
 
     public static final String COMMA_SEPERATOR = ", ";
+    public static final String TEXT = " TEXT";
     public static final String TEXT_NN = " TEXT NOT NULL";
     public static final String INT_NN = " INTEGER NOT NULL";
+    public static final String INT = " INTEGER";
     public static final String REAL_NN = " REAL NOT NULL";
     static final String DATABASE = "college.db";
-    private static final int VERSION = 17;
+    private static final int VERSION = 21;
 
     public CollegeDbHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -40,7 +42,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                         CollegeContract.CollegeMainEntry.IS_FAVORITE + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.CollegeDetailEntry.UNDERGRAD_SIZE + INT_NN +
+                        CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE + INT_NN +
                         " );";
 
         final String CREATE_TABLE_COLLEGE_DETAIL =
@@ -64,8 +66,20 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                         CollegeContract.CollegeDetailEntry.SCHOOL_URL + TEXT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeDetailEntry.PRICE_CALCULATOR + TEXT_NN + " );";
 
+        final String CREATE_TABLE_PLACE =
+                "CREATE TABLE " + CollegeContract.PlaceEntry.PLACE_TABLE + " (" +
+                        CollegeContract.PlaceEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEPERATOR +
+                        CollegeContract.PlaceEntry.NAME + TEXT_NN + COMMA_SEPERATOR +
+                        CollegeContract.PlaceEntry.COLLEGE_ID + TEXT_NN + COMMA_SEPERATOR +
+                        CollegeContract.PlaceEntry.LATITUDE + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.PlaceEntry.LONGITUDE + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.PlaceEntry.LOCALE_CODE + INT + COMMA_SEPERATOR +
+                        CollegeContract.PlaceEntry.PLACE_ID + TEXT +
+                        " );";
+
         db.execSQL(CREATE_TABLE_COLLEGE_MAIN);
         db.execSQL(CREATE_TABLE_COLLEGE_DETAIL);
+        db.execSQL(CREATE_TABLE_PLACE);
 
     }
 
@@ -73,6 +87,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.PlaceEntry.PLACE_TABLE);
         onCreate(db);
     }
 }
