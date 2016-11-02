@@ -18,10 +18,10 @@ import android.view.ViewGroup;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
-import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
     private Uri mUri;
     private static final int COLLEGE_LOADER = 1000;
-    public static final String PUBLIC_COLLEGES_BOOLEAN_KEY = "publicBoolean";
     private CollegeAdapter mCollegeAdapter;
     public static final String[] COLLEGE_COLUMNS = {
             CollegeContract.CollegeMainEntry.COLLEGE_ID,
@@ -125,7 +124,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         if (args != null) {
             mSelectionArgs = new String[]{"1"};
             mSelectionArgList.add("1");
-            if (args.getBoolean(MainActivity.PUBLIC_COLLEGES_KEY, false)) {
+            if (args.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false)) {
                 mOnlyPublic = true;
                 mSelectionList.add(OWNERSHIP_SELECTION);
                 mSelection = OWNERSHIP_SELECTION;

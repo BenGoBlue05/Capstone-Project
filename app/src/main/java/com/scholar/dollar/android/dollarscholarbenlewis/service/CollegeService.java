@@ -8,10 +8,9 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
-import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeMain;
+import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -234,9 +233,9 @@ public final class CollegeService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         ArrayList<String> filter = new ArrayList<>(Arrays.asList(FILTERS));
-        if (intent.getBooleanExtra(CollegeMainFragment.PUBLIC_COLLEGES_BOOLEAN_KEY, false))
+        if (intent.getBooleanExtra(Utility.PUBLIC_COLLEGE_KEY, false))
             filter.add(OWNERSHIP_FILTER);
-        String state = intent.getStringExtra(MainActivity.STATE_KEY);
+        String state = intent.getStringExtra(Utility.STATE_KEY);
         if (state != null)
             filter.add(STATE + "=" + state);
         String filterParams = joinFilters(filter);

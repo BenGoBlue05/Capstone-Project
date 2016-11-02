@@ -2,45 +2,37 @@ package com.scholar.dollar.android.dollarscholarbenlewis.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
+import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.DetailFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +54,7 @@ public class DetailActivity extends AppCompatActivity
     public static final String LON_KEY = "lon";
     private String mPhotoId;
     private int mIsFavorite;
-    private Adapter mAdapter;
+    private PageAdapter mAdapter;
     @BindView(R.id.detail_ab_background_photo)
     ImageView mBackgroundPhotoIV;
     @BindView(R.id.detail_ab_name)
@@ -112,17 +104,13 @@ public class DetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         mCollegeId = getIntent().getIntExtra("collegeIdKey", -1);
-        if (mCollegeId != -1) {
-            startService(new Intent(this, CollegeDetailService.class)
-                    .putExtra("collegeIdKey", mCollegeId));
-        }
-        mDetailTabs.setupWithViewPager(mViewPager);
-        setupDetailViewPager(mViewPager);
-        mDetailTabs.setupWithViewPager(mViewPager);
         ActionBar supportActionBar = getSupportActionBar();
+        mDetailTabs.setupWithViewPager(mViewPager);
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        setupDetailViewPager(mViewPager);
+        mDetailTabs.setupWithViewPager(mViewPager);
         mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
         mCollapsingToolbar.setExpandedTitleGravity(Gravity.TOP);
         mCollapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
@@ -138,7 +126,7 @@ public class DetailActivity extends AppCompatActivity
     }
 
     private void setupDetailViewPager(ViewPager viewPager) {
-        mAdapter = new Adapter(getSupportFragmentManager());
+        mAdapter = new PageAdapter(getSupportFragmentManager());
         mAdapter.addFragment(new DetailFragment(), getString(R.string.colleges));
         mAdapter.addFragment(new DetailFragment(), getString(R.string.public_));
         mAdapter.addFragment(new DetailFragment(), getString(R.string.favorites));
@@ -167,7 +155,13 @@ public class DetailActivity extends AppCompatActivity
 
         switch (loader.getId()) {
             case MAIN_INFO_LOADER:
-                if (data != null && data.moveToFirst()) {
+                if (data == null || !data.moveToFirst()) {
+                    if (mCollegeId != -1) {
+                        startService(new Intent(this, CollegeDetailService.class)
+                                .putExtra("collegeIdKey", mCollegeId));
+                    }
+
+                } else {
                     String name = data.getString(CollegeMainFragment.NAME);
                     mCollapsingToolbar.setTitle(name);
                     mNameTV.setText(name);
@@ -207,9 +201,8 @@ public class DetailActivity extends AppCompatActivity
                                 .putExtra(NAME_KEY, data.getString(COL_NAME))
                                 .putExtra(LAT_KEY, data.getDouble(COL_LAT))
                                 .putExtra(LON_KEY, data.getDouble(COL_LON)));
-                    }
-                    else{
-                        placePhotosAsyc(placeId);
+                    } else {
+                        placePhotosAsync(placeId);
                     }
                 }
         }
@@ -224,121 +217,43 @@ public class DetailActivity extends AppCompatActivity
         Log.e(LOG_TAG, "GOOGLE_API CONNECTION FAILED");
     }
 
-    static class Adapter extends FragmentPagerAdapter {
-        private List<Fragment> mFragmentList = new ArrayList<>();
-        private List<String> mFragmentTitleList = new ArrayList<>();
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
+    private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
+            = new ResultCallback<PlacePhotoResult>() {
         @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
-
-    abstract class PhotoTask extends AsyncTask<String, Void, PhotoTask.AttributedPhoto> {
-
-        private int mHeight;
-        private int mWidth;
-
-        public PhotoTask(int width, int height) {
-            mHeight = height;
-            mWidth = width;
-        }
-
-        /**
-         * Loads the first photo for a place id from the Geo Data API.
-         * The place id must be the first (and only) parameter.
-         */
-        @Override
-        protected AttributedPhoto doInBackground(String... params) {
-            if (params.length != 1) {
-                return null;
+        public void onResult(PlacePhotoResult placePhotoResult) {
+            if (!placePhotoResult.getStatus().isSuccess()) {
+                return;
             }
-            final String placeId = params[0];
-            AttributedPhoto attributedPhoto = null;
-
-            PlacePhotoMetadataResult result = Places.GeoDataApi
-                    .getPlacePhotos(mGoogleApiClient, placeId).await();
-
-            if (result.getStatus().isSuccess()) {
-                PlacePhotoMetadataBuffer photoMetadataBuffer = result.getPhotoMetadata();
-                if (photoMetadataBuffer.getCount() > 0 && !isCancelled()) {
-                    // Get the first bitmap and its attributions.
-                    PlacePhotoMetadata photo = photoMetadataBuffer.get(0);
-                    CharSequence attribution = photo.getAttributions();
-                    // Load a scaled bitmap for this photo.
-                    Bitmap image = photo.getScaledPhoto(mGoogleApiClient, mWidth, mHeight).await()
-                            .getBitmap();
-
-                    attributedPhoto = new AttributedPhoto(attribution, image);
-                }
-                // Release the PlacePhotoMetadataBuffer.
-                photoMetadataBuffer.release();
-            }
-            return attributedPhoto;
+            mBackgroundPhotoIV.setImageBitmap(placePhotoResult.getBitmap());
         }
+    };
 
-        /**
-         * Holder for an image and its attribution.
-         */
-        class AttributedPhoto {
+    /**
+     * Load a bitmap from the photos API asynchronously
+     * by using buffers and result callbacks.
+     */
+    private void placePhotosAsync(String placeId) {
+        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
+                .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
 
-            public final CharSequence attribution;
 
-            public final Bitmap bitmap;
+                    @Override
+                    public void onResult(PlacePhotoMetadataResult photos) {
+                        if (!photos.getStatus().isSuccess()) {
+                            return;
+                        }
 
-            public AttributedPhoto(CharSequence attribution, Bitmap bitmap) {
-                this.attribution = attribution;
-                this.bitmap = bitmap;
-            }
-        }
-    }
-
-    private void placePhotosAsyc(String placeId) {
-
-        // Create a new AsyncTask that displays the bitmap and attribution once loaded.
-        new PhotoTask(mBackgroundPhotoIV.getWidth(), mBackgroundPhotoIV.getHeight()) {
-            @Override
-            protected void onPreExecute() {
-                // Display a temporary image to show while bitmap is loading.
-                mBackgroundPhotoIV.setImageResource(R.drawable.ic_school_black_24dp);
-            }
-
-            @Override
-            protected void onPostExecute(AttributedPhoto attributedPhoto) {
-                Log.i(LOG_TAG, "ON_POST_EXECUTE CALLED");
-                if (attributedPhoto != null) {
-                    // Photo has been loaded, display it.
-                    mBackgroundPhotoIV.setImageBitmap(attributedPhoto.bitmap);
-
-//                     Display the attribution as HTML content if set.
-                    if (attributedPhoto.attribution == null) {
-                        mAttrTV.setVisibility(View.GONE);
-                    } else {
-                        mAttrTV.setVisibility(View.VISIBLE);
-                        mAttrTV.setText(Html.fromHtml(attributedPhoto.attribution.toString()));
+                        PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                        if (photoMetadataBuffer.getCount() > 0) {
+                            // Display the first bitmap in an ImageView in the size of the view
+                            photoMetadataBuffer.get(0)
+                                    .getScaledPhoto(mGoogleApiClient, mBackgroundPhotoIV.getWidth(),
+                                            mBackgroundPhotoIV.getHeight())
+                                    .setResultCallback(mDisplayPhotoResultCallback);
+                        }
+                        photoMetadataBuffer.release();
                     }
-
-                }
-            }
-        }.execute(placeId);
+                });
     }
+
 }
