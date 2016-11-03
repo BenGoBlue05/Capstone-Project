@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="top">
         <ImageView
             android:id="@+id/detail_ab_logo"
             android:layout_width="@dimen/logo_width"
@@ -25,54 +25,35 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:gravity="top">
         <TextView
             android:id="@+id/detail_ab_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            tools:text="University of Michigan"/>
+            tools:text="University of Michigan" />
         <TextView
             android:id="@+id/detail_ab_city_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            tools:text="Ann Arbor, MI"/>
+            tools:text="Ann Arbor, MI" />
         <TextView
             android:id="@+id/detail_ab_ownership"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            tools:text="Public"/>
+            tools:text="Public" />
         <TextView
             android:id="@+id/detail_ab_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            tools:text="Undergraduates: 20,000"/>
+            tools:text="Undergraduates: 20,000" />
 
-        <TextView
-            android:id="@+id/detail_ab_grad_4yr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            tools:text="32%"/>
-
-        <TextView
-            android:id="@+id/detail_ab_grad_6yr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            tools:text="87%"/>
-        <TextView
-            android:id="@+id/detail_attribution"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            tools:text="87%"/>
-
+        <include layout="@layout/include_pie_chart_grad"/>
     </LinearLayout>
 
 </LinearLayout>

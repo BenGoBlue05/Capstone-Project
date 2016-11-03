@@ -15,6 +15,9 @@
     <string name="undergrads">Undergraduates: <xliff:g id="students">%d</xliff:g></string>
     <string name="state">State</string>
     <string name="favorites">Favorites</string>
+    <string name="fourYears">4 years</string>
+    <string name="fourToSixYears">4–6 years</string>
+    <string name="didNotGraduate">Did not Graduate</string>
 
     <string name="finance">Finance</string>
     <string name="admissions">Admissions</string>

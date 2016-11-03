@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
@@ -18,6 +19,11 @@ import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -33,6 +39,9 @@ import com.scholar.dollar.android.dollarscholarbenlewis.fragments.DetailFragment
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +64,13 @@ public class DetailActivity extends AppCompatActivity
     private String mPhotoId;
     private int mIsFavorite;
     private PageAdapter mAdapter;
+    private List<PieEntry> mGrPieEntries;
+    String mFourYears;
+    String mFourToSix;
+    String mNoGraduate;
+    String mGradRateTitle;
+    @BindView(R.id.chart_pie_gradrate)
+    PieChart mGradRatePC;
     @BindView(R.id.detail_ab_background_photo)
     ImageView mBackgroundPhotoIV;
     @BindView(R.id.detail_ab_name)
@@ -65,11 +81,11 @@ public class DetailActivity extends AppCompatActivity
     TextView mOwnershipTV;
     @BindView(R.id.detail_ab_size)
     TextView mSizeTV;
-    @BindView(R.id.detail_ab_grad_4yr)
-    TextView m4yearTV;
-    @BindView(R.id.detail_ab_grad_6yr)
-    TextView m6yearTV;
-    @BindView(R.id.detail_attribution)
+//    @BindView(R.id.detail_ab_grad_4yr)
+//    TextView m4yearTV;
+//    @BindView(R.id.detail_ab_grad_6yr)
+//    TextView m6yearTV;
+//    @BindView(R.id.detail_attribution)
     TextView mAttrTV;
     @BindView(R.id.detail_ab_logo)
     ImageView mLogoIV;
@@ -111,9 +127,10 @@ public class DetailActivity extends AppCompatActivity
         }
         setupDetailViewPager(mViewPager);
         mDetailTabs.setupWithViewPager(mViewPager);
-        mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
-        mCollapsingToolbar.setExpandedTitleGravity(Gravity.TOP);
-        mCollapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
+
+        setUpStrings();
+        setUpCollapsingToolbar();
+        mGrPieEntries = new ArrayList<>();
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -176,10 +193,12 @@ public class DetailActivity extends AppCompatActivity
                     mOwnershipTV.setText(ownership);
                     mOwnershipTV.setContentDescription(ownership);
 
-                    String sixYearGradRate = (getString(R.string.six_year_grad_rate,
-                            data.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS)));
-                    m6yearTV.setText(sixYearGradRate);
-                    m6yearTV.setContentDescription(sixYearGradRate);
+//                    String sixYearGradRate = (getString(R.string.six_year_grad_rate,
+//                            data.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS)));
+//                    m6yearTV.setText(sixYearGradRate);
+//                    m6yearTV.setContentDescription(sixYearGradRate);
+                    setPieChartData((float) data.getDouble(CollegeMainFragment.GRAD_RATE_4_YEARS),
+                            (float) data.getDouble(CollegeMainFragment.GRAD_RATE_6_YEARS));
 
                     Picasso.with(this).load(data.getString(CollegeMainFragment.LOGO))
                             .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
@@ -255,5 +274,46 @@ public class DetailActivity extends AppCompatActivity
                     }
                 });
     }
+
+    public void setPieChartData(float fourYears, float sixYears){
+        float didntGrad = 1f - sixYears;
+        float fourToSix = sixYears - fourYears;
+        mGrPieEntries.add(new PieEntry(fourYears * 100f, mFourYears));
+        mGrPieEntries.add(new PieEntry(fourToSix * 100f, mFourToSix));
+        mGrPieEntries.add(new PieEntry(didntGrad * 100f, mNoGraduate));
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        colors.add(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        colors.add(ContextCompat.getColor(this, R.color.colorPrimary));
+        colors.add(Color.GRAY);
+
+        PieDataSet dataSet = new PieDataSet(mGrPieEntries, mGradRateTitle);
+        dataSet.setColors(colors);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.WHITE);
+
+        mGradRatePC.setData(data);
+        mGradRatePC.invalidate();
+
+    }
+
+
+    public void setUpCollapsingToolbar(){
+        mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
+        mCollapsingToolbar.setExpandedTitleGravity(Gravity.TOP);
+        mCollapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
+    }
+
+    public void setUpStrings(){
+        mFourYears = getString(R.string.fourYears);
+        mFourToSix = getString(R.string.fourToSixYears);
+        mNoGraduate = getString(R.string.didNotGraduate);
+        mGradRateTitle = getString(R.string.graduation_rates);
+    }
+
+
 
 }
