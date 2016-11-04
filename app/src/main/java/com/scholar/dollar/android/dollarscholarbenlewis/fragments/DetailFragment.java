@@ -68,12 +68,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     public static final String[] COLLEGE_DETAIL_COLUMNS = {
-            CollegeContract.CollegeDetailEntry.UNDERGRAD_SIZE,
-            CollegeContract.CollegeDetailEntry.MED_DEBT_COMPLETERS,
-            CollegeContract.CollegeDetailEntry.MED_MONTH_PAYMENT,
-            CollegeContract.CollegeDetailEntry.GRAD_RATE_4_YEARS,
-            CollegeContract.CollegeDetailEntry.ACT_MED,
-            CollegeContract.CollegeDetailEntry.SAT_MED
+            CollegeContract.EarningsEntry.UNDERGRAD_SIZE,
+            CollegeContract.EarningsEntry.MED_DEBT_COMPLETERS,
+            CollegeContract.EarningsEntry.MED_MONTH_PAYMENT,
+            CollegeContract.EarningsEntry.GRAD_RATE_4_YEARS,
+            CollegeContract.EarningsEntry.ACT_MED,
+            CollegeContract.EarningsEntry.SAT_MED
     };
 
     public static final int SIZE = 0;
@@ -107,7 +107,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 return new CursorLoader(getContext(), CollegeContract.CollegeMainEntry.buildMainWithCollegeId(mCollegeId),
                         CollegeMainFragment.COLLEGE_COLUMNS, null, null, null);
             case DETAIL_CURSOR_ID:
-                return new CursorLoader(getContext(), CollegeContract.CollegeDetailEntry.buildDetailWithCollegeId(mCollegeId),
+                return new CursorLoader(getContext(), CollegeContract.EarningsEntry.buildEarningsWithCollegeId(mCollegeId),
                         COLLEGE_DETAIL_COLUMNS, null, null, null);
             default:
                 Log.i(LOG_TAG, "CURSOR LOADER ID NOT FOUND");

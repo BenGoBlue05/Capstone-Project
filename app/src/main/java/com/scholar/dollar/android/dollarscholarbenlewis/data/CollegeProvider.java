@@ -9,25 +9,45 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_TABLE;
+import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.AdmissionEntry.ADMISSION_TABLE;
+import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.CompletionEntry.COMPLETION_TABLE;
+import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.CostEntry.COST_TABLE;
+import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.DebtEntry.DEBT_TABLE;
+import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.EarningsEntry.EARNINGS_TABLE;
 import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.PlaceEntry.PLACE_TABLE;
 
 public class CollegeProvider extends ContentProvider {
 
     static final int COLLEGE_MAIN = 100;
     static final int COLLEGE_MAIN_WITH_ID = 101;
-    static final int COLLEGE_DETAIL = 200;
-    static final int COLLEGE_DETAIL_WITH_ID = 201;
-    static final int PLACE = 300;
-    static final int PLACE_WITH_ID = 301;
+    static final int EARNINGS = 200;
+    static final int EARNINGS_WITH_ID = 201;
+    static final int COST = 300;
+    static final int COST_WITH_ID = 301;
+    static final int DEBT = 400;
+    static final int DEBT_WITH_ID = 401;
+    static final int COMPLETION = 500;
+    static final int COMPLETION_WITH_ID = 501;
+    static final int ADMISSION  = 600;
+    static final int ADMISSION_WITH_ID = 601;
+    static final int PLACE = 700;
+    static final int PLACE_WITH_ID = 701;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private static final String SELECTION_COLLEGE_MAIN_ID = CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE
             + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
-    private static final String SELECTION_COLLEGE_DETAIL_ID = COLLEGE_DETAIL_TABLE
-            + "." + CollegeContract.CollegeDetailEntry.COLLEGE_ID + " = ? ";
+    private static final String SELECTION_EARNINGS_COLLEGE_ID = EARNINGS_TABLE
+            + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
+    private static final String SELECTION_COST_COLLEGE_ID = COST_TABLE
+            + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
+    private static final String SELECTION_DEBT_COLLEGE_ID = DEBT_TABLE
+            + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
+    private static final String SELECTION_COMPLETION_COLLEGE_ID = COMPLETION_TABLE
+            + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
+    private static final String SELECTION_ADMISSION_COLLEGE_ID = ADMISSION_TABLE
+            + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
     private static final String SELECTION_PLACE_COLLEGE_ID = PLACE_TABLE
-            + "." + CollegeContract.PlaceEntry.COLLEGE_ID + " = ? ";
+            + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
     private CollegeDbHelper mHelper;
 
     public CollegeProvider() {
@@ -38,10 +58,19 @@ public class CollegeProvider extends ContentProvider {
         final String authority = CollegeContract.CONTENT_AUTHORITY;
         matcher.addURI(authority, CollegeContract.PATH_COLLEGE_MAIN, COLLEGE_MAIN);
         matcher.addURI(authority, CollegeContract.PATH_COLLEGE_MAIN + "/#", COLLEGE_MAIN_WITH_ID);
-        matcher.addURI(authority, CollegeContract.PATH_COLLEGE_DETAIL, COLLEGE_DETAIL);
-        matcher.addURI(authority, CollegeContract.PATH_COLLEGE_DETAIL + "/#", COLLEGE_DETAIL_WITH_ID);
+        matcher.addURI(authority, CollegeContract.PATH_EARNINGS, EARNINGS);
+        matcher.addURI(authority, CollegeContract.PATH_EARNINGS + "/#", EARNINGS_WITH_ID);
+        matcher.addURI(authority, CollegeContract.PATH_COST, COST);
+        matcher.addURI(authority, CollegeContract.PATH_COST + "/#", COST_WITH_ID);
+        matcher.addURI(authority, CollegeContract.PATH_DEBT, DEBT);
+        matcher.addURI(authority, CollegeContract.PATH_DEBT + "/#", DEBT_WITH_ID);
+        matcher.addURI(authority, CollegeContract.PATH_COMPLETION, COMPLETION);
+        matcher.addURI(authority, CollegeContract.PATH_COMPLETION + "/#", COMPLETION_WITH_ID);
+        matcher.addURI(authority, CollegeContract.PATH_ADMISSION, ADMISSION);
+        matcher.addURI(authority, CollegeContract.PATH_ADMISSION + "/#", ADMISSION_WITH_ID);
         matcher.addURI(authority, CollegeContract.PATH_PLACE, PLACE);
         matcher.addURI(authority, CollegeContract.PATH_PLACE + "/#", PLACE_WITH_ID);
+
         return matcher;
     }
 
@@ -59,11 +88,39 @@ public class CollegeProvider extends ContentProvider {
                 rowsDeleted = db.delete(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE, SELECTION_COLLEGE_MAIN_ID,
                         new String[]{uri.getLastPathSegment()});
                 break;
-            case COLLEGE_DETAIL:
-                rowsDeleted = db.delete(COLLEGE_DETAIL_TABLE, selection, selectionArgs);
+            case EARNINGS:
+                rowsDeleted = db.delete(EARNINGS_TABLE, selection, selectionArgs);
                 break;
-            case COLLEGE_DETAIL_WITH_ID:
-                rowsDeleted = db.delete(COLLEGE_DETAIL_TABLE, SELECTION_COLLEGE_DETAIL_ID,
+            case EARNINGS_WITH_ID:
+                rowsDeleted = db.delete(EARNINGS_TABLE, SELECTION_EARNINGS_COLLEGE_ID,
+                        new String[]{uri.getLastPathSegment()});
+                break;
+            case COST:
+                rowsDeleted = db.delete(COST_TABLE, selection, selectionArgs);
+                break;
+            case COST_WITH_ID:
+                rowsDeleted = db.delete(COST_TABLE, SELECTION_COST_COLLEGE_ID,
+                        new String[]{uri.getLastPathSegment()});
+                break;
+            case DEBT:
+                rowsDeleted = db.delete(DEBT_TABLE, selection, selectionArgs);
+                break;
+            case DEBT_WITH_ID:
+                rowsDeleted = db.delete(DEBT_TABLE, SELECTION_DEBT_COLLEGE_ID,
+                        new String[]{uri.getLastPathSegment()});
+                break;
+            case COMPLETION:
+                rowsDeleted = db.delete(COMPLETION_TABLE, selection, selectionArgs);
+                break;
+            case COMPLETION_WITH_ID:
+                rowsDeleted = db.delete(COMPLETION_TABLE, SELECTION_COMPLETION_COLLEGE_ID,
+                        new String[]{uri.getLastPathSegment()});
+                break;
+            case ADMISSION:
+                rowsDeleted = db.delete(ADMISSION_TABLE, selection, selectionArgs);
+                break;
+            case ADMISSION_WITH_ID:
+                rowsDeleted = db.delete(ADMISSION_TABLE, SELECTION_ADMISSION_COLLEGE_ID,
                         new String[]{uri.getLastPathSegment()});
                 break;
             case PLACE:
@@ -89,10 +146,26 @@ public class CollegeProvider extends ContentProvider {
                 return CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_TYPE;
             case COLLEGE_MAIN_WITH_ID:
                 return CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_ITEM_TYPE;
-            case COLLEGE_DETAIL:
-                return CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_CONTENT_TYPE;
-            case COLLEGE_DETAIL_WITH_ID:
-                return CollegeContract.CollegeDetailEntry.COLLEGE_DETAIL_CONTENT_ITEM_TYPE;
+            case EARNINGS:
+                return CollegeContract.EarningsEntry.EARNINGS_CONTENT_TYPE;
+            case EARNINGS_WITH_ID:
+                return CollegeContract.EarningsEntry.EARNINGS_CONTENT_ITEM_TYPE;
+            case COST:
+                return CollegeContract.CostEntry.COST_CONTENT_TYPE;
+            case COST_WITH_ID:
+                return CollegeContract.CostEntry.COST_CONTENT_ITEM_TYPE;
+            case DEBT:
+                return CollegeContract.DebtEntry.DEBT_CONTENT_TYPE;
+            case DEBT_WITH_ID:
+                return CollegeContract.DebtEntry.DEBT_CONTENT_ITEM_TYPE;
+            case COMPLETION:
+                return CollegeContract.CompletionEntry.COMPLETION_CONTENT_TYPE;
+            case COMPLETION_WITH_ID:
+                return CollegeContract.CompletionEntry.COMPLETION_CONTENT_ITEM_TYPE;
+            case ADMISSION:
+                return CollegeContract.AdmissionEntry.ADMISSION_CONTENT_TYPE;
+            case ADMISSION_WITH_ID:
+                return CollegeContract.AdmissionEntry.ADMISSION_CONTENT_ITEM_TYPE;
             case PLACE:
                 return CollegeContract.PlaceEntry.PLACE_CONTENT_TYPE;
             case PLACE_WITH_ID:
@@ -116,10 +189,42 @@ public class CollegeProvider extends ContentProvider {
                     throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
                 }
                 break;
-            case COLLEGE_DETAIL:
-                _id = db.insert(COLLEGE_DETAIL_TABLE, null, values);
+            case EARNINGS:
+                _id = db.insert(EARNINGS_TABLE, null, values);
                 if (_id > 0) {
-                    returnUri = CollegeContract.CollegeDetailEntry.buildCollegeDetailUri(_id);
+                    returnUri = CollegeContract.EarningsEntry.buildEarningsUri(_id);
+                } else {
+                    throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
+                }
+                break;
+            case COST:
+                _id = db.insert(COST_TABLE, null, values);
+                if (_id > 0) {
+                    returnUri = CollegeContract.CostEntry.buildCostUri(_id);
+                } else {
+                    throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
+                }
+                break;
+            case DEBT:
+                _id = db.insert(DEBT_TABLE, null, values);
+                if (_id > 0) {
+                    returnUri = CollegeContract.DebtEntry.buildDebtUri(_id);
+                } else {
+                    throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
+                }
+                break;
+            case COMPLETION:
+                _id = db.insert(COMPLETION_TABLE, null, values);
+                if (_id > 0) {
+                    returnUri = CollegeContract.CompletionEntry.buildCompletionUri(_id);
+                } else {
+                    throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
+                }
+                break;
+            case ADMISSION:
+                _id = db.insert(ADMISSION_TABLE, null, values);
+                if (_id > 0) {
+                    returnUri = CollegeContract.AdmissionEntry.buildAdmissionUri(_id);
                 } else {
                     throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
                 }
@@ -164,22 +269,59 @@ public class CollegeProvider extends ContentProvider {
                         new String[]{collegeId},
                         null, null, sortOrder);
                 break;
-            case COLLEGE_DETAIL:
-                returnCursor = db.query(COLLEGE_DETAIL_TABLE,
+            case EARNINGS:
+                returnCursor = db.query(EARNINGS_TABLE,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
-            case COLLEGE_DETAIL_WITH_ID:
+            case EARNINGS_WITH_ID:
                 collegeId = uri.getLastPathSegment();
-                returnCursor = db.query(COLLEGE_DETAIL_TABLE,
+                returnCursor = db.query(EARNINGS_TABLE,
                         projection,
-                        SELECTION_COLLEGE_DETAIL_ID,
+                        SELECTION_EARNINGS_COLLEGE_ID,
                         new String[]{collegeId},
                         null, null, sortOrder);
                 break;
-            case PLACE:
-                returnCursor = db.query(PLACE_TABLE,
+            case COST:
+                returnCursor = db.query(COST_TABLE,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
+            case COST_WITH_ID:
+                collegeId = uri.getLastPathSegment();
+                returnCursor = db.query(COST_TABLE,
+                        projection,
+                        SELECTION_COST_COLLEGE_ID,
+                        new String[]{collegeId},
+                        null, null, sortOrder);
+                break;
+            case DEBT:
+                returnCursor = db.query(DEBT_TABLE,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case DEBT_WITH_ID:
+                collegeId = uri.getLastPathSegment();
+                returnCursor = db.query(DEBT_TABLE,
+                        projection,
+                        SELECTION_DEBT_COLLEGE_ID,
+                        new String[]{collegeId},
+                        null, null, sortOrder);
+                break;
+            case COMPLETION:
+                returnCursor = db.query(COMPLETION_TABLE,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case COMPLETION_WITH_ID:
+                collegeId = uri.getLastPathSegment();
+                returnCursor = db.query(COMPLETION_TABLE,
+                        projection,
+                        SELECTION_COMPLETION_COLLEGE_ID,
+                        new String[]{collegeId},
+                        null, null, sortOrder);
+                break;
+            case ADMISSION:
+                returnCursor = db.query(ADMISSION_TABLE,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
             case PLACE_WITH_ID:
                 collegeId = uri.getLastPathSegment();
                 returnCursor = db.query(PLACE_TABLE,
@@ -210,13 +352,45 @@ public class CollegeProvider extends ContentProvider {
                 rowsUpdated = db.update(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE,
                         values, SELECTION_COLLEGE_MAIN_ID, new String[]{uri.getLastPathSegment()});
                 break;
-            case COLLEGE_DETAIL:
-                rowsUpdated = db.update(COLLEGE_DETAIL_TABLE,
+            case EARNINGS:
+                rowsUpdated = db.update(EARNINGS_TABLE,
                         values, selection, selectionArgs);
                 break;
-            case COLLEGE_DETAIL_WITH_ID:
-                rowsUpdated = db.update(COLLEGE_DETAIL_TABLE,
-                        values, SELECTION_COLLEGE_DETAIL_ID, new String[]{uri.getLastPathSegment()});
+            case EARNINGS_WITH_ID:
+                rowsUpdated = db.update(EARNINGS_TABLE,
+                        values, SELECTION_EARNINGS_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
+                break;
+            case COST:
+                rowsUpdated = db.update(COST_TABLE,
+                        values, selection, selectionArgs);
+                break;
+            case COST_WITH_ID:
+                rowsUpdated = db.update(COST_TABLE,
+                        values, SELECTION_COST_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
+                break;
+            case DEBT:
+                rowsUpdated = db.update(DEBT_TABLE,
+                        values, selection, selectionArgs);
+                break;
+            case DEBT_WITH_ID:
+                rowsUpdated = db.update(DEBT_TABLE,
+                        values, SELECTION_DEBT_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
+                break;
+            case COMPLETION:
+                rowsUpdated = db.update(COMPLETION_TABLE,
+                        values, selection, selectionArgs);
+                break;
+            case COMPLETION_WITH_ID:
+                rowsUpdated = db.update(COMPLETION_TABLE,
+                        values, SELECTION_COMPLETION_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
+                break;
+            case ADMISSION:
+                rowsUpdated = db.update(ADMISSION_TABLE,
+                        values, selection, selectionArgs);
+                break;
+            case ADMISSION_WITH_ID:
+                rowsUpdated = db.update(ADMISSION_TABLE,
+                        values, SELECTION_ADMISSION_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
                 break;
             case PLACE:
                 rowsUpdated = db.update(PLACE_TABLE,
