@@ -19,7 +19,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     public static final String REAL_NN = " REAL NOT NULL";
     public static final String REAL = " REAL";
     static final String DATABASE = "college.db";
-    private static final int VERSION = 22 ;
+    private static final int VERSION = 26;
 
     public CollegeDbHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -48,15 +48,15 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + CollegeContract.EarningsEntry.EARNINGS_TABLE + " (" +
                         CollegeContract.EarningsEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.COLLEGE_ID + INT_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_6YRS_25PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_6YRS_50PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_6YRS_75PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_8YRS_25PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_8YRS_50PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_8YRS_75PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_10YRS_25PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_10YRS_50PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.EarningsEntry.EARNINGS_10YRS_75PCT + REAL_NN + " );";
+                        CollegeContract.EarningsEntry.EARNINGS_6YRS_25PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_6YRS_50PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_6YRS_75PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_8YRS_25PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_8YRS_50PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_8YRS_75PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_10YRS_25PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_10YRS_50PCT + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.EarningsEntry.EARNINGS_10YRS_75PCT + INT_NN + " );";
 
         final String CREATE_TABLE_COST =
                 "CREATE TABLE " + CollegeContract.CostEntry.COST_TABLE + " (" +
@@ -80,28 +80,28 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                         CollegeContract.DebtEntry.DEBT_NONCOMPLETERS_MED + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.DebtEntry.DEBT_FAM_0to30_MED + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.DebtEntry.DEBT_FAM_30to75_MED + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.DebtEntry.DEBT_FAM_75up_MED + REAL_NN + COMMA_SEPERATOR + " );";
+                        CollegeContract.DebtEntry.DEBT_FAM_75up_MED + REAL_NN + " );";
 
         final String CREATE_TABLE_ADMISSION =
                 "CREATE TABLE " + CollegeContract.AdmissionEntry.ADMISSION_TABLE + " (" +
                         CollegeContract.AdmissionEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.COLLEGE_ID + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.ACT_CUM_25_PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.AdmissionEntry.ACT_CUM_MED + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.AdmissionEntry.ACT_CUM_50_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.ACT_CUM_75_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.ACT_MATH_25_PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.AdmissionEntry.ACT_MATH_MED + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.AdmissionEntry.ACT_MATH_50_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.ACT_MATH_75_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.ACT_ENG_25_PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.AdmissionEntry.ACT_ENG_MED + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.AdmissionEntry.ACT_ENG_50_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.ACT_ENG_75_PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.AdmissionEntry.SAT_CUM_MED + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.AdmissionEntry.SAT_CUM_50_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.SAT_MATH_25_PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.AdmissionEntry.SAT_MATH_MED + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.AdmissionEntry.SAT_MATH_50_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.SAT_MATH_75_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.SAT_READ_25_PCT + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.AdmissionEntry.SAT_READ_MED + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.AdmissionEntry.SAT_READ_75_PCT + REAL_NN + COMMA_SEPERATOR + " );";
+                        CollegeContract.AdmissionEntry.SAT_READ_50_PCT + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.AdmissionEntry.SAT_READ_75_PCT + REAL_NN + " );";
 
         final String CREATE_TABLE_COMPLETION =
                 "CREATE TABLE " + CollegeContract.CompletionEntry.COMPLETION_TABLE + " (" +
@@ -116,6 +116,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + CollegeContract.PlaceEntry.PLACE_TABLE + " (" +
                         CollegeContract.PlaceEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.COLLEGE_ID + INT_NN + COMMA_SEPERATOR +
+                        CollegeContract.CollegeMainEntry.NAME + TEXT_NN + COMMA_SEPERATOR +
                         CollegeContract.PlaceEntry.PLACE_NAME + TEXT + COMMA_SEPERATOR +
                         CollegeContract.PlaceEntry.LATITUDE + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.PlaceEntry.LONGITUDE + REAL_NN + COMMA_SEPERATOR +

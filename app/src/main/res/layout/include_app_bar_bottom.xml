@@ -53,7 +53,6 @@
             android:textColor="@android:color/black"
             tools:text="Undergraduates: 20,000" />
 
-        <include layout="@layout/include_pie_chart_grad"/>
     </LinearLayout>
 
 </LinearLayout>

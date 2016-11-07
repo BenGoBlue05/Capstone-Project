@@ -62,8 +62,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
             CollegeContract.CollegeMainEntry.TUITION_IN_STATE,
             CollegeContract.CollegeMainEntry.TUITION_OUT_STATE,
             CollegeContract.CollegeMainEntry.MED_EARNINGS_2012,
-            CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS,
-            CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR,
             CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE,
             CollegeContract.CollegeMainEntry.IS_FAVORITE
     };
@@ -105,7 +103,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(collegeId));
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-                startActivity(new Intent(getContext(), DetailActivity.class).putExtra("collegeIdKey", collegeId));
+                startActivity(new Intent(getContext(), DetailActivity.class).putExtra(Utility.COLLEGE_ID_KEY, collegeId));
             }
         });
         recyclerView.setAdapter(mCollegeAdapter);

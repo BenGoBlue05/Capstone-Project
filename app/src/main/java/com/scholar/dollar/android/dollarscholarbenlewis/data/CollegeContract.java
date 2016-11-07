@@ -191,25 +191,25 @@ public class CollegeContract {
 
         public static final String ADMISSION_RATE = "admission_rate";
 
-        public static final String ACT_CUM_MED = "act_med";
+        public static final String ACT_CUM_50_PCT = "act_med";
         public static final String ACT_CUM_25_PCT = "act_25_pct";
         public static final String ACT_CUM_75_PCT = "act_75_pct";
 
-        public static final String ACT_MATH_MED = "act_math_med";
+        public static final String ACT_MATH_50_PCT = "act_math_med";
         public static final String ACT_MATH_25_PCT = "act_math_25_pct";
         public static final String ACT_MATH_75_PCT = "act_math_75_pct";
 
-        public static final String ACT_ENG_MED = "act_eng_med";
+        public static final String ACT_ENG_50_PCT = "act_eng_med";
         public static final String ACT_ENG_25_PCT = "act_eng_25_pct";
         public static final String ACT_ENG_75_PCT = "act_eng_75_pct";
 
-        public static final String SAT_CUM_MED = "sat_med";
+        public static final String SAT_CUM_50_PCT = "sat_med";
 
-        public static final String SAT_MATH_MED = "sat_math_med";
+        public static final String SAT_MATH_50_PCT = "sat_math_med";
         public static final String SAT_MATH_25_PCT = "sat_math_25_pct";
-        public static final String SAT_MATH_75_PCT = "act_math_75_pct";
+        public static final String SAT_MATH_75_PCT = "sat_math_75_pct";
 
-        public static final String SAT_READ_MED = "sat_read_med";
+        public static final String SAT_READ_50_PCT = "sat_read_med";
         public static final String SAT_READ_25_PCT = "sat_read_25_pct";
         public static final String SAT_READ_75_PCT = "sat_read_75_pct";
 

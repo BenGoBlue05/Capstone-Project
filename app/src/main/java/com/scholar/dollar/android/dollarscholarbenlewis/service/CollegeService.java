@@ -21,10 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -32,8 +28,6 @@ import okhttp3.Response;
  * helper methods.
  */
 public final class CollegeService extends IntentService {
-
-    public static final String BASE_URL = "https://api.data.gov/ed/collegescorecard/v1/schools.json?";
 
     //fields
     public static final String ID = "id";
@@ -54,7 +48,7 @@ public final class CollegeService extends IntentService {
     public static final String[] MAIN_FIELDS = {ID, NAME, SCHOOL_URL, CITY, STATE, MED_EARNINGS_10_YEARS,
             IN_STATE_TUITION_AND_FEES, OUT_STATE_TUITION_AND_FEES, OWNERSHIP, GRADUATION_RATE_4_YEARS,
             GRADUATION_RATE_6_YEARS, UNDERGRAD_SIZE, LATITUDE, LONGITUDE, LOCALE};
-    public String FIELDS_PARAMS = buildFieldsUrl(MAIN_FIELDS);
+    public String FIELDS_PARAMS = Utility.buildFieldsUrl(MAIN_FIELDS);
 
     //filters
     public static final String PREDOMINANT_DEGREE = "school.degrees_awarded.predominant=3"; // 3: bachelors
@@ -81,36 +75,11 @@ public final class CollegeService extends IntentService {
         return baseUrl + filterUrl + fieldsUrl + "&" + sortBy + "&" + perPage;
     }
 
-    public static String buildFieldsUrl(String[] fields) {
-        String baseUrl = "fields=";
-        for (int i = 0; i < fields.length; i++) {
-            baseUrl += i == 0 ? fields[i] : "," + fields[i];
-        }
-        return baseUrl;
-    }
-
-    public static String joinFilters(ArrayList<String> filters) {
-        String url = "";
-        for (String filter : filters) {
-            url += filter + "&";
-        }
-        return url;
-    }
-
-    public static String fetch(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        try (Response response = new OkHttpClient().newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
-
 
 
     public ArrayList<CollegeMain> getCollegeInfo(String url) {
         try {
-            String jsonStr = fetch(url);
+            String jsonStr = Utility.fetch(url);
             JSONObject results = new JSONObject(jsonStr);
             JSONArray colleges = results.getJSONArray("results");
             int collegesLength;
@@ -177,13 +146,11 @@ public final class CollegeService extends IntentService {
                 values.put(CollegeContract.CollegeMainEntry.TUITION_OUT_STATE, college.getTuitionOutState());
                 values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getEarnings());
                 values.put(CollegeContract.CollegeMainEntry.MED_EARNINGS_2012, college.getEarnings());
-                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS, college.getGraduationRate4yr());
-                values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEAR, college.getGraduationRate6yr());
                 values.put(CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE, college.getUndergradSize());
                 values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, 0);
 
-                placeValues.put(CollegeContract.PlaceEntry.COLLEGE_ID, college.getId());
-                placeValues.put(CollegeContract.PlaceEntry.NAME, name);
+                placeValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, collegeId);
+                placeValues.put(CollegeContract.CollegeMainEntry.NAME, name);
                 placeValues.put(CollegeContract.PlaceEntry.LATITUDE, college.getLatitude());
                 placeValues.put(CollegeContract.PlaceEntry.LONGITUDE, college.getLongitude());
                 placeValues.put(CollegeContract.PlaceEntry.LOCALE_CODE, college.getLocaleCode());
@@ -238,9 +205,9 @@ public final class CollegeService extends IntentService {
         String state = intent.getStringExtra(Utility.STATE_KEY);
         if (state != null)
             filter.add(STATE + "=" + state);
-        String filterParams = joinFilters(filter);
-        Log.i(LOG_TAG, joinFilters(filter));
-        String requestUrl = createFinalUrl(BASE_URL, filterParams, FIELDS_PARAMS, SORT_BY, PER_PAGE);
+        String filterParams = Utility.joinFilters(filter);
+        Log.i(LOG_TAG, filterParams);
+        String requestUrl = createFinalUrl(Utility.BASE_URL, filterParams, FIELDS_PARAMS, SORT_BY, PER_PAGE);
         Log.i(LOG_TAG, requestUrl);
         try{
             ArrayList<CollegeMain> colleges = getCollegeInfo(requestUrl);
