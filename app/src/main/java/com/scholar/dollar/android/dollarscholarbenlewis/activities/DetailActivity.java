@@ -29,6 +29,7 @@ import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CostFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.DebtFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.EarningsFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService;
@@ -113,7 +114,7 @@ public class DetailActivity extends AppCompatActivity
         mAdapter = new PageAdapter(getSupportFragmentManager());
         mAdapter.addFragment(new EarningsFragment(), getString(R.string.earnings));
         mAdapter.addFragment(new CostFragment(), getString(R.string.cost));
-        mAdapter.addFragment(new EarningsFragment(), getString(R.string.debt));
+        mAdapter.addFragment(new DebtFragment(), getString(R.string.debt));
         viewPager.setAdapter(mAdapter);
     }
 

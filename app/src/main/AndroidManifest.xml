@@ -82,7 +82,7 @@
             android:name=".service.PlacesService"
             android:exported="false" />
         <service
-            android:name=".service.EarningsService"
+            android:name=".service.DetailService"
             android:exported="false"></service>
     </application>
 

@@ -77,6 +77,27 @@ public final class Utility {
             CollegeContract.CollegeMainEntry.IS_FAVORITE
     };
 
+    public static String[] DEBT_COLUMNS = {
+            CollegeContract.CollegeMainEntry.COLLEGE_ID,
+            CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED,
+            CollegeContract.DebtEntry.DEBT_COMPLETERS_MED,
+            CollegeContract.DebtEntry.DEBT_NONCOMPLETERS_MED,
+            CollegeContract.DebtEntry.MONTH_PAYMENT_10YR_MED,
+            CollegeContract.DebtEntry.DEBT_FAM_0to30_MED,
+            CollegeContract.DebtEntry.DEBT_FAM_30to75_MED,
+            CollegeContract.DebtEntry.DEBT_FAM_75up_MED
+    };
+
+    public static int COL_DEBT_COLLEGE_ID = 0;
+    public static int  COL_DEBT_LOAN_PPL= 1;
+    public static int  COL_DEBT_COMPLETERS= 2;
+    public static int  COL_DEBT_NONCOMPLETERS= 3;
+    public static int  COL_DEBT_MONTHLY= 4;
+    public static int  COL_DEBT_0to30= 5;
+    public static int  COL_DEBT_30to75= 6;
+    public static int  COL_DEBT_75plus= 7;
+
+
     public static final int COLLEGE_ID = 0;
     public static final int NAME = 1;
     public static final int LOGO = 2;

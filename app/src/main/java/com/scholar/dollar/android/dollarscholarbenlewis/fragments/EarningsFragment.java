@@ -23,7 +23,7 @@ import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.service.EarningsService;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.DetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public class EarningsFragment extends Fragment implements LoaderManager.LoaderCa
         Log.i(LOG_TAG, "ON LOAD FINISHED STARTED");
         if (data == null || !data.moveToFirst()) {
             Log.i(LOG_TAG, "CURSOR IS NULL");
-            getContext().startService(new Intent(getContext(), EarningsService.class)
+            getContext().startService(new Intent(getContext(), DetailService.class)
                     .putExtra(Utility.COLLEGE_ID_KEY, mCollegeId)
                     .putExtra(Utility.PUBLIC_COLLEGE_KEY, mIsPublic));
             return;
