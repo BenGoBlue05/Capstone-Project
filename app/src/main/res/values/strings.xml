@@ -43,6 +43,9 @@
     <string name="favorites_button">Add to favorites button</string>
     <string name="no_info">No college info available</string>
 
+    <string name="four_years">4 years</string>
+    <string name="six_years">6 years</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

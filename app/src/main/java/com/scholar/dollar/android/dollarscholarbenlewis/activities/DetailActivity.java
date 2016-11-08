@@ -28,10 +28,11 @@ import com.google.android.gms.location.places.Places;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CompletionFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CostFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.DebtFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.EarningsFragment;
-import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.DetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 import com.squareup.picasso.Picasso;
@@ -115,6 +116,7 @@ public class DetailActivity extends AppCompatActivity
         mAdapter.addFragment(new EarningsFragment(), getString(R.string.earnings));
         mAdapter.addFragment(new CostFragment(), getString(R.string.cost));
         mAdapter.addFragment(new DebtFragment(), getString(R.string.debt));
+        mAdapter.addFragment(new CompletionFragment(), getResources().getString(R.string.graduation_rates));
         viewPager.setAdapter(mAdapter);
     }
 
@@ -142,7 +144,7 @@ public class DetailActivity extends AppCompatActivity
             case Utility.COLLEGE_MAIN_LOADER:
                 if (data == null || !data.moveToFirst()) {
                     if (mCollegeId != -1) {
-                        startService(new Intent(this, CollegeDetailService.class)
+                        startService(new Intent(this, DetailService.class)
                                 .putExtra(Utility.COLLEGE_ID_KEY, mCollegeId));
                     }
 

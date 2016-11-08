@@ -73,6 +73,8 @@ public final class Utility {
             CollegeContract.CollegeMainEntry.TUITION_IN_STATE,
             CollegeContract.CollegeMainEntry.TUITION_OUT_STATE,
             CollegeContract.CollegeMainEntry.MED_EARNINGS_2012,
+            CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS,
+            CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEARS,
             CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE,
             CollegeContract.CollegeMainEntry.IS_FAVORITE
     };

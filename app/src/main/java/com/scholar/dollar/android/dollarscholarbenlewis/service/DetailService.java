@@ -58,7 +58,7 @@ public class DetailService extends IntentService {
     public static final String DEBT_75plus = "2014.aid.median_debt.income.greater_than_75000";
     public static final String[] DEBT_FIELDS = {DEBT_LOAN_PRINCIPAL, DEBT_COMPLETERS, DEBT_NONCOMPLETERS,
     DEBT_MONTHLY_PAYMENT, DEBT_0to30, DEBT_30to75, DEBT_75plus};
-
+    
     public DetailService(String name) {
         super(name);
     }
