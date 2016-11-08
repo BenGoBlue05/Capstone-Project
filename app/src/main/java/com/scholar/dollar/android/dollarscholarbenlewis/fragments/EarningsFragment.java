@@ -37,6 +37,7 @@ public class EarningsFragment extends Fragment implements LoaderManager.LoaderCa
     private CandleStickChart mEarningsCandleChart;
     private ArrayList<CandleEntry> mEntries;
     private int mCollegeId;
+    private boolean mIsPublic;
 
     private int m6yrs25pct;
     private int m6yrs50pct;
@@ -75,6 +76,7 @@ public class EarningsFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mCollegeId = getActivity().getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
+        mIsPublic = getActivity().getIntent().getBooleanExtra(Utility.PUBLIC_COLLEGE_KEY, false);
         getLoaderManager().initLoader(Utility.EARNINGS_LOADER, null, this);
         Log.i(LOG_TAG, "COLLEGE ID: " + mCollegeId);
     }
@@ -97,7 +99,8 @@ public class EarningsFragment extends Fragment implements LoaderManager.LoaderCa
         if (data == null || !data.moveToFirst()) {
             Log.i(LOG_TAG, "CURSOR IS NULL");
             getContext().startService(new Intent(getContext(), EarningsService.class)
-                    .putExtra(Utility.COLLEGE_ID_KEY, mCollegeId));
+                    .putExtra(Utility.COLLEGE_ID_KEY, mCollegeId)
+                    .putExtra(Utility.PUBLIC_COLLEGE_KEY, mIsPublic));
             return;
         }
         Log.i(LOG_TAG, "BEFORE ID CHECKED");

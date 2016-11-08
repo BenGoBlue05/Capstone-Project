@@ -58,7 +58,7 @@ public class CollegeContract {
 
     public static final class EarningsEntry implements BaseColumns{
 
-        public static final Uri COLLEGE_EARNINGS_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_EARNINGS);
+        public static final Uri EARNINGS_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_EARNINGS);
 
         public static final String EARNINGS_CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EARNINGS;
@@ -83,11 +83,11 @@ public class CollegeContract {
         public static final String EARNINGS_10YRS_75PCT = "earnings_10yrs_75pct";
 
         public static Uri buildEarningsUri(long id){
-            return ContentUris.withAppendedId(COLLEGE_EARNINGS_CONTENT_URI, id);
+            return ContentUris.withAppendedId(EARNINGS_CONTENT_URI, id);
         }
 
         public static Uri buildEarningsWithCollegeId(int collegeId){
-            return COLLEGE_EARNINGS_CONTENT_URI.buildUpon().appendPath(Integer.toString(collegeId)).build();
+            return EARNINGS_CONTENT_URI.buildUpon().appendPath(Integer.toString(collegeId)).build();
         }
     }
 

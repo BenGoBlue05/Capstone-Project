@@ -5,6 +5,7 @@ import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -46,6 +47,14 @@ public final class Utility {
             CollegeContract.EarningsEntry.EARNINGS_10YRS_75PCT
     };
 
+    public static String[] COST_COLUMNS = {
+            CollegeContract.CostEntry.COST_FAM_0to30,
+            CollegeContract.CostEntry.COST_FAM_30to48,
+            CollegeContract.CostEntry.COST_FAM_48to75,
+            CollegeContract.CostEntry.COST_FAM_75to110,
+            CollegeContract.CostEntry.COST_FAM_OVER_110
+    };
+
     public final static String[] PLACE_COLUMNS = {
             CollegeContract.CollegeMainEntry.COLLEGE_ID,
             CollegeContract.CollegeMainEntry.NAME,
@@ -53,6 +62,35 @@ public final class Utility {
             CollegeContract.PlaceEntry.LONGITUDE,
             CollegeContract.PlaceEntry.PLACE_ID
     };
+
+    public static final String[] COLLEGE_COLUMNS = {
+            CollegeContract.CollegeMainEntry.COLLEGE_ID,
+            CollegeContract.CollegeMainEntry.NAME,
+            CollegeContract.CollegeMainEntry.LOGO_URL,
+            CollegeContract.CollegeMainEntry.CITY,
+            CollegeContract.CollegeMainEntry.STATE,
+            CollegeContract.CollegeMainEntry.OWNERSHIP,
+            CollegeContract.CollegeMainEntry.TUITION_IN_STATE,
+            CollegeContract.CollegeMainEntry.TUITION_OUT_STATE,
+            CollegeContract.CollegeMainEntry.MED_EARNINGS_2012,
+            CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE,
+            CollegeContract.CollegeMainEntry.IS_FAVORITE
+    };
+
+    public static final int COLLEGE_ID = 0;
+    public static final int NAME = 1;
+    public static final int LOGO = 2;
+    public static final int CITY = 3;
+    public static final int STATE = 4;
+    public static final int OWNERSHIP = 5;
+    public static final int TUITION_IN_STATE = 6;
+    public static final int TUITION_OUT_STATE = 7;
+    public static final int EARNINGS = 8;
+    public static final int GRAD_RATE_4_YEARS = 9;
+    public static final int GRAD_RATE_6_YEARS = 10;
+    public static final int UG_SIZE = 11;
+    public static final int FAVORITE = 12;
+
     public static final int COL_COLLEGE_ID = 0;
     public static final int COL_CSC_NAME = 1;
     public static final int COL_LAT = 2;
@@ -69,6 +107,12 @@ public final class Utility {
     public static int COL_EARN_10YRS_50PCT = 7;
     public static int COL_EARN_10YRS_75PCT = 8;
 
+    public static int COL_COST_0to30 = 0;
+    public static int COL_COST_30to48 = 1;
+    public static int COL_COST_48to75 = 2;
+    public static int COL_COST_75to110 = 3;
+    public static int COL_COST_110plus = 4;
+
     //filters
     public static final String PREDOMINANT_DEGREE = "school.degrees_awarded.predominant=3"; // 3: bachelors
     public static final String LEVEL = "school.institutional_characteristics.level=1"; // 1: 4 year school
@@ -78,12 +122,20 @@ public final class Utility {
     public static final String[] BASE_FILTERS = {CSC_API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER, ACT_FILTER};
 
 
-    public static String buildFieldsUrl(String[] fields) {
+    public static String buildFieldsUrl(ArrayList<String> fields) {
         String baseUrl = "fields=";
-        for (int i = 0; i < fields.length; i++) {
-            baseUrl += i == 0 ? fields[i] : "," + fields[i];
+        for (int i = 0; i < fields.size(); i++) {
+            baseUrl += i == 0 ? fields.get(i) : "," + fields.get(i);
         }
         return baseUrl;
+    }
+
+    public static String buildFields(ArrayList<String[]> fieldArrays){
+        ArrayList<String> fieldList = new ArrayList<>();
+        for (String[] fieldArray: fieldArrays){
+            fieldList.addAll(new ArrayList<String>(Arrays.asList(fieldArray)));
+        }
+        return buildFieldsUrl(fieldList);
     }
 
     public static String joinFilters(ArrayList<String> filters) {

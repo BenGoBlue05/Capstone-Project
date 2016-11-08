@@ -28,10 +28,10 @@ public final class CollegeDetailService
 //    public static final String SCHOOL_URL = "school.school_url";
 //    public static final String NET_PRICE_CALCULATOR_URL = "school.price_calculator_url";
 //    public static final String PER_PAGE = "per_page=100";
-//    public static final String[] FIELDS = {MED_EARNINGS_10_YEARS_25_PCT, MED_EARNINGS_10_YEARS_75_PCT, UNDERGRAD_SIZE,
+//    public static final String[] EARNINGS_FIELDS = {MED_EARNINGS_10_YEARS_25_PCT, MED_EARNINGS_10_YEARS_75_PCT, UNDERGRAD_SIZE,
 //            MED_FAMILY_INCOME, ACT_MED, ACT_25_PERCENTILE, ACT_75_PERCENTILE, SAT_EQUIV_AVG, GRADUATION_RATE_4_YEARS,
 //            LOAN_PRINCIPAL, MED_DEBT_COMPLETERS, MED_MONTH_PAYMENT, PCT_LOAN_STUDENTS, PCT_PELL_GRANT, SCHOOL_URL, NET_PRICE_CALCULATOR_URL};
-//    public static final String FIELDS_URL = Utility.buildFieldsUrl(FIELDS);
+//    public static final String FIELDS_URL = Utility.buildFieldsUrl(EARNINGS_FIELDS);
 ////    public static final String FINAL_URL = CollegeService.createFinalUrl(CollegeService.BASE_URL,
 ////            CollegeService.FILTER_PARAMS, FIELDS_URL, CollegeService.SORT_BY, PER_PAGE);
 //    /**
@@ -77,7 +77,7 @@ public final class CollegeDetailService
 //                values.put(CollegeContract.EarningsEntry.PELL_STUDENTS_PCT, college.getDouble(PCT_PELL_GRANT));
 //                values.put(CollegeContract.EarningsEntry.PRICE_CALCULATOR, college.getString(NET_PRICE_CALCULATOR_URL));
 //                values.put(CollegeContract.EarningsEntry.SCHOOL_URL, college.getString(SCHOOL_URL));
-//                getContentResolver().insert(CollegeContract.EarningsEntry.COLLEGE_EARNINGS_CONTENT_URI, values);
+//                getContentResolver().insert(CollegeContract.EarningsEntry.EARNINGS_CONTENT_URI, values);
 //            } catch (JSONException e) {
 //                Log.e(LOG_TAG, "JSON EXCEPTION: " + e);
 //            }

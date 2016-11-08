@@ -52,34 +52,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     private Uri mUri;
     private static final int COLLEGE_LOADER = 1000;
     private CollegeAdapter mCollegeAdapter;
-    public static final String[] COLLEGE_COLUMNS = {
-            CollegeContract.CollegeMainEntry.COLLEGE_ID,
-            CollegeContract.CollegeMainEntry.NAME,
-            CollegeContract.CollegeMainEntry.LOGO_URL,
-            CollegeContract.CollegeMainEntry.CITY,
-            CollegeContract.CollegeMainEntry.STATE,
-            CollegeContract.CollegeMainEntry.OWNERSHIP,
-            CollegeContract.CollegeMainEntry.TUITION_IN_STATE,
-            CollegeContract.CollegeMainEntry.TUITION_OUT_STATE,
-            CollegeContract.CollegeMainEntry.MED_EARNINGS_2012,
-            CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE,
-            CollegeContract.CollegeMainEntry.IS_FAVORITE
-    };
 
-
-    public static final int COLLEGE_ID = 0;
-    public static final int NAME = 1;
-    public static final int LOGO = 2;
-    public static final int CITY = 3;
-    public static final int STATE = 4;
-    public static final int OWNERSHIP = 5;
-    public static final int TUITION_IN_STATE = 6;
-    public static final int TUITION_OUT_STATE = 7;
-    public static final int EARNINGS = 8;
-    public static final int GRAD_RATE_4_YEARS = 9;
-    public static final int GRAD_RATE_6_YEARS = 10;
-    public static final int UG_SIZE = 11;
-    public static final int FAVORITE = 12;
 
     private LoaderManager mLoaderManager;
 
@@ -98,12 +71,14 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
         mCollegeAdapter = new CollegeAdapter(getContext(), new CollegeAdapter.CollegeAdapterOnClickHandler() {
             @Override
-            public void onClick(int collegeId, CollegeAdapter.CollegeAdapterViewHolder vh) {
+            public void onClick(int collegeId, boolean isPublic, CollegeAdapter.CollegeAdapterViewHolder vh) {
                 Log.i(LOG_TAG, "COLLEGE ID: " + collegeId);
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(collegeId));
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-                startActivity(new Intent(getContext(), DetailActivity.class).putExtra(Utility.COLLEGE_ID_KEY, collegeId));
+                startActivity(new Intent(getContext(), DetailActivity.class)
+                        .putExtra(Utility.COLLEGE_ID_KEY, collegeId)
+                        .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic));
             }
         });
         recyclerView.setAdapter(mCollegeAdapter);
@@ -157,7 +132,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         Log.i(LOG_TAG, "SELECTION FROM ON_CREATE_LOADER: " + mSelection);
         Log.i(LOG_TAG, "SELECTION ARGS FROM ON_CREATE_LOADER: " + Arrays.toString(mSelectionArgs));
         return new CursorLoader(getContext(), CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI,
-                COLLEGE_COLUMNS, mSelection, mSelectionArgs, SORT_HIGHEST_EARNINGS);
+                Utility.COLLEGE_COLUMNS, mSelection, mSelectionArgs, SORT_HIGHEST_EARNINGS);
     }
 
     @Override
@@ -165,25 +140,24 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         mCollegeAdapter.swapCursor(data);
     }
 
-    private void getStateSelection(String state){
-        if (state.equals("All")){
-            if (mOnlyPublic){
+    private void getStateSelection(String state) {
+        if (state.equals("All")) {
+            if (mOnlyPublic) {
                 mSelection = OWNERSHIP_SELECTION;
                 mSelectionArgs = new String[]{"1"};
-            } else{
+            } else {
                 mSelection = null;
                 mSelectionArgs = null;
             }
             return;
         }
-        if (!mOnlyPublic){
+        if (!mOnlyPublic) {
             mSelection = STATES_SELECTION;
             mSelectionArgs = new String[]{state};
             Log.i(LOG_TAG, "GET_STATE_SELECTION: " + mSelection);
-        }
-        else{
+        } else {
             mSelection = OWNERSHIP_SELECTION + " AND " + STATES_SELECTION;
-            mSelectionArgs = new String[] {"1", state};
+            mSelectionArgs = new String[]{"1", state};
             Log.i(LOG_TAG, "GET_STATE_SELECTION: " + mSelection);
         }
     }

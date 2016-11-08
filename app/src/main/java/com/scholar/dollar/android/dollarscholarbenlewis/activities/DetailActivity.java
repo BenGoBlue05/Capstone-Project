@@ -28,7 +28,7 @@ import com.google.android.gms.location.places.Places;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CostFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.EarningsFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeDetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService;
@@ -38,16 +38,16 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility.PLACE_LOADER;
+
 public class DetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
-    private final static int MAIN_INFO_LOADER = 100;
-    private final static int DETAIL_CURSOR_ID = 200;
-    public static final int PLACE_LOADER = 300;
     private int mCollegeId;
+    private boolean mIsPublic;
 
     public static final String COLLEGE_ID_KEY = "collegeId";
     public static final String NAME_KEY = "name";
@@ -88,7 +88,7 @@ public class DetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-        mCollegeId = getIntent().getIntExtra("collegeIdKey", -1);
+        mCollegeId = getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
         ActionBar supportActionBar = getSupportActionBar();
         mDetailTabs.setupWithViewPager(mViewPager);
         if (supportActionBar != null) {
@@ -105,14 +105,14 @@ public class DetailActivity extends AppCompatActivity
                 .enableAutoManage(this, this)
                 .build();
 
-        getSupportLoaderManager().initLoader(MAIN_INFO_LOADER, null, this);
+        getSupportLoaderManager().initLoader(Utility.COLLEGE_MAIN_LOADER, null, this);
         getSupportLoaderManager().initLoader(PLACE_LOADER, null, this);
     }
 
     private void setupDetailViewPager(ViewPager viewPager) {
         mAdapter = new PageAdapter(getSupportFragmentManager());
         mAdapter.addFragment(new EarningsFragment(), getString(R.string.earnings));
-        mAdapter.addFragment(new EarningsFragment(), getString(R.string.cost));
+        mAdapter.addFragment(new CostFragment(), getString(R.string.cost));
         mAdapter.addFragment(new EarningsFragment(), getString(R.string.debt));
         viewPager.setAdapter(mAdapter);
     }
@@ -121,9 +121,9 @@ public class DetailActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (mCollegeId != -1) {
             switch (id) {
-                case MAIN_INFO_LOADER:
+                case Utility.COLLEGE_MAIN_LOADER:
                     return new CursorLoader(this, CollegeContract.CollegeMainEntry.buildMainWithCollegeId(mCollegeId),
-                            CollegeMainFragment.COLLEGE_COLUMNS, null, null, null);
+                            Utility.COLLEGE_COLUMNS, null, null, null);
                 case PLACE_LOADER:
                     return new CursorLoader(this, CollegeContract.PlaceEntry.buildPlaceWithCollegeId(mCollegeId),
                             Utility.PLACE_COLUMNS, null, null, null);
@@ -138,7 +138,7 @@ public class DetailActivity extends AppCompatActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         switch (loader.getId()) {
-            case MAIN_INFO_LOADER:
+            case Utility.COLLEGE_MAIN_LOADER:
                 if (data == null || !data.moveToFirst()) {
                     if (mCollegeId != -1) {
                         startService(new Intent(this, CollegeDetailService.class)
@@ -146,23 +146,23 @@ public class DetailActivity extends AppCompatActivity
                     }
 
                 } else {
-                    String name = data.getString(CollegeMainFragment.NAME);
+                    String name = data.getString(Utility.NAME);
                     mCollapsingToolbar.setTitle(name);
                     mNameTV.setText(name);
                     mNameTV.setContentDescription(name);
 
                     String cityState = (getString(R.string.city_state,
-                            data.getString(CollegeMainFragment.CITY), data.getString(CollegeMainFragment.STATE)));
+                            data.getString(Utility.CITY), data.getString(Utility.STATE)));
                     mCityStateTV.setText(cityState);
                     mCityStateTV.setContentDescription(cityState);
 
-                    String ownership = data.getInt(CollegeMainFragment.OWNERSHIP) == 1 ? "Public" : "Private";
+                    String ownership = data.getInt(Utility.OWNERSHIP) == 1 ? "Public" : "Private";
                     mOwnershipTV.setText(ownership);
                     mOwnershipTV.setContentDescription(ownership);
 
 //
 
-                    Picasso.with(this).load(data.getString(CollegeMainFragment.LOGO))
+                    Picasso.with(this).load(data.getString(Utility.LOGO))
                             .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
                     mLogoIV.setContentDescription(getString(R.string.logo));
 
@@ -173,7 +173,7 @@ public class DetailActivity extends AppCompatActivity
 //        break;
                 }
                 break;
-            case PLACE_LOADER:
+            case Utility.PLACE_LOADER:
                 if (data != null && data.moveToFirst()) {
                     String placeId = data.getString(Utility.COL_PLACE_ID);
                     if (placeId == null) {
@@ -211,6 +211,7 @@ public class DetailActivity extends AppCompatActivity
 
 
     private void placePhotosAsync(String placeId) {
+        Log.i(LOG_TAG, "PLACE PHOTOS ASYNC CALLED");
         Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
                 .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
 
