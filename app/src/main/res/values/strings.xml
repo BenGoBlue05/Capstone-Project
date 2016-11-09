@@ -46,6 +46,9 @@
     <string name="four_years">4 years</string>
     <string name="six_years">6 years</string>
 
+    <string name="act_middle_50">ACT Middle 50 Percentile</string>
+
+    <string name="max_score">Max score</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -67,6 +70,4 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-
 </resources>

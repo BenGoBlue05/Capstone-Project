@@ -47,7 +47,7 @@ public class CompletionFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.include_comp_piechart, container, false);
+        View rootView = inflater.inflate(R.layout.piechart_completion, container, false);
         ButterKnife.bind(this, rootView);
 
         mChart.setUsePercentValues(true);

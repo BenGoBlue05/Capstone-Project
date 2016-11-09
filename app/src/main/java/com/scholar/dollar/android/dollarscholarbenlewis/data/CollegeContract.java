@@ -20,7 +20,6 @@ public class CollegeContract {
     public static final String PATH_COST = "cost";
     public static final String PATH_DEBT = "debt";
     public static final String PATH_ADMISSION = "admission";
-    public static final String PATH_COMPLETION = "completion";
     public static final String PATH_PLACE = "place";
 
     public static final class CollegeMainEntry implements BaseColumns{
@@ -152,29 +151,6 @@ public class CollegeContract {
 
         public static Uri buildDebtWithCollegeId(int collegeId){
             return DEBT_CONTENT_URI.buildUpon().appendPath(Integer.toString(collegeId)).build();
-        }
-    }
-
-
-    public static final class CompletionEntry implements BaseColumns{
-
-        public static final Uri COMPLETION_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_COMPLETION);
-
-        public static final String COMPLETION_CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMPLETION;
-        public static final String COMPLETION_CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMPLETION;
-        public static final String COMPLETION_TABLE = "completion";
-
-        public static final String GRADUATION_RATE_4_YEARS = "grad_rate_4_yrs";
-        public static final String GRADUATION_RATE_6_YEARS = "grad_rate_6_years";
-
-        public static Uri buildCompletionUri(long id){
-            return ContentUris.withAppendedId(COMPLETION_CONTENT_URI, id);
-        }
-
-        public static Uri buildCompletionWithCollegeId(int collegeId){
-            return COMPLETION_CONTENT_URI.buildUpon().appendPath(Integer.toString(collegeId)).build();
         }
     }
 

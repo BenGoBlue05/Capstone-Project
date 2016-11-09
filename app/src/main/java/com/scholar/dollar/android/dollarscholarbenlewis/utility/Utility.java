@@ -90,14 +90,52 @@ public final class Utility {
             CollegeContract.DebtEntry.DEBT_FAM_75up_MED
     };
 
+    public static String[] ADMISSION_COLUMNS = {
+            CollegeContract.CollegeMainEntry.COLLEGE_ID,
+            CollegeContract.AdmissionEntry.ACT_CUM_25_PCT,
+            CollegeContract.AdmissionEntry.ACT_CUM_50_PCT,
+            CollegeContract.AdmissionEntry.ACT_CUM_75_PCT,
+            CollegeContract.AdmissionEntry.ACT_MATH_25_PCT,
+            CollegeContract.AdmissionEntry.ACT_MATH_50_PCT,
+            CollegeContract.AdmissionEntry.ACT_MATH_75_PCT,
+            CollegeContract.AdmissionEntry.ACT_ENG_25_PCT,
+            CollegeContract.AdmissionEntry.ACT_ENG_50_PCT,
+            CollegeContract.AdmissionEntry.ACT_ENG_75_PCT,
+            CollegeContract.AdmissionEntry.SAT_CUM_50_PCT,
+            CollegeContract.AdmissionEntry.SAT_MATH_25_PCT,
+            CollegeContract.AdmissionEntry.SAT_MATH_50_PCT,
+            CollegeContract.AdmissionEntry.SAT_MATH_75_PCT,
+            CollegeContract.AdmissionEntry.SAT_READ_25_PCT,
+            CollegeContract.AdmissionEntry.SAT_READ_50_PCT,
+            CollegeContract.AdmissionEntry.SAT_READ_75_PCT,
+    };
+
+    public static int COL_ADMSN_CSC_ID = 0;
+    public static int COL_ADMSN_ACT25 = 1;
+    public static int COL_ADMSN_ACT50 = 2;
+    public static int COL_ADMSN_ACT75 = 3;
+    public static int COL_ADMSN_ACT_MATH25 = 4;
+    public static int COL_ADMSN_ACT_MATH50 = 5;
+    public static int COL_ADMSN_ACT_MATH75 = 6;
+    public static int COL_ADMSN_ACT_ENG25 = 7;
+    public static int COL_ADMSN_ACT_ENG50 = 8;
+    public static int COL_ADMSN_ACT_ENG75 = 9;
+    public static int COL_ADMSN_SAT50 = 10;
+    public static int COL_ADMSN_SAT_MATH25 = 11;
+    public static int COL_ADMSN_SAT_MATH50 = 12;
+    public static int COL_ADMSN_SAT_MATH75 = 13;
+    public static int COL_ADMSN_SAT_READ25 = 14;
+    public static int COL_ADMSN_SAT_READ50 = 15;
+    public static int COL_ADMSN_SAT_READ75 = 16;
+
     public static int COL_DEBT_COLLEGE_ID = 0;
-    public static int  COL_DEBT_LOAN_PPL= 1;
-    public static int  COL_DEBT_COMPLETERS= 2;
-    public static int  COL_DEBT_NONCOMPLETERS= 3;
-    public static int  COL_DEBT_MONTHLY= 4;
-    public static int  COL_DEBT_0to30= 5;
-    public static int  COL_DEBT_30to75= 6;
-    public static int  COL_DEBT_75plus= 7;
+    public static int COL_DEBT_LOAN_PPL = 1;
+    public static int COL_DEBT_COMPLETERS = 2;
+    public static int COL_DEBT_NONCOMPLETERS = 3;
+    public static int COL_DEBT_MONTHLY = 4;
+    public static int COL_DEBT_0to30 = 5;
+    public static int COL_DEBT_30to75 = 6;
+    public static int COL_DEBT_75plus = 7;
 
 
     public static final int COLLEGE_ID = 0;
@@ -153,9 +191,9 @@ public final class Utility {
         return baseUrl;
     }
 
-    public static String buildFields(ArrayList<String[]> fieldArrays){
+    public static String buildFields(ArrayList<String[]> fieldArrays) {
         ArrayList<String> fieldList = new ArrayList<>();
-        for (String[] fieldArray: fieldArrays){
+        for (String[] fieldArray : fieldArrays) {
             fieldList.addAll(new ArrayList<String>(Arrays.asList(fieldArray)));
         }
         return buildFieldsUrl(fieldList);
@@ -178,7 +216,7 @@ public final class Utility {
         }
     }
 
-    public static String createCollegeFilter(int collegeId){
+    public static String createCollegeFilter(int collegeId) {
         return "id=" + collegeId + "&" + CSC_API_KEY + "&";
     }
 }

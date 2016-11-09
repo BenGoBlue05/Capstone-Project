@@ -6,6 +6,6 @@
     android:orientation="vertical">
 
     <include layout="@layout/include_cost_text"/>
-    <include layout="@layout/include_cost_barchart"/>
+    <include layout="@layout/barchart_cost"/>
 
 </LinearLayout>

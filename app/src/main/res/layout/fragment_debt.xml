@@ -4,6 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.scholar.dollar.android.dollarscholarbenlewis.fragments.DebtFragment">
 
-    <include layout="@layout/include_debt_barchart"/>
+    <include layout="@layout/barchart_debt"/>
 
 </RelativeLayout>

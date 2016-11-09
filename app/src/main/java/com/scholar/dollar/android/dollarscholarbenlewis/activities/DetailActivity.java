@@ -28,6 +28,7 @@ import com.google.android.gms.location.places.Places;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
+import com.scholar.dollar.android.dollarscholarbenlewis.fragments.AdmissionFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CompletionFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CostFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.DebtFragment;
@@ -117,6 +118,7 @@ public class DetailActivity extends AppCompatActivity
         mAdapter.addFragment(new CostFragment(), getString(R.string.cost));
         mAdapter.addFragment(new DebtFragment(), getString(R.string.debt));
         mAdapter.addFragment(new CompletionFragment(), getResources().getString(R.string.graduation_rates));
+        mAdapter.addFragment(new AdmissionFragment(), getResources().getString(R.string.admission));
         viewPager.setAdapter(mAdapter);
     }
 

@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.AdmissionEntry.ADMISSION_TABLE;
-import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.CompletionEntry.COMPLETION_TABLE;
 import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.CostEntry.COST_TABLE;
 import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.DebtEntry.DEBT_TABLE;
 import static com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract.EarningsEntry.EARNINGS_TABLE;
@@ -26,8 +25,6 @@ public class CollegeProvider extends ContentProvider {
     static final int COST_WITH_ID = 301;
     static final int DEBT = 400;
     static final int DEBT_WITH_ID = 401;
-    static final int COMPLETION = 500;
-    static final int COMPLETION_WITH_ID = 501;
     static final int ADMISSION  = 600;
     static final int ADMISSION_WITH_ID = 601;
     static final int PLACE = 700;
@@ -41,8 +38,6 @@ public class CollegeProvider extends ContentProvider {
     private static final String SELECTION_COST_COLLEGE_ID = COST_TABLE
             + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
     private static final String SELECTION_DEBT_COLLEGE_ID = DEBT_TABLE
-            + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
-    private static final String SELECTION_COMPLETION_COLLEGE_ID = COMPLETION_TABLE
             + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
     private static final String SELECTION_ADMISSION_COLLEGE_ID = ADMISSION_TABLE
             + "." + CollegeContract.CollegeMainEntry.COLLEGE_ID + " = ? ";
@@ -64,8 +59,6 @@ public class CollegeProvider extends ContentProvider {
         matcher.addURI(authority, CollegeContract.PATH_COST + "/#", COST_WITH_ID);
         matcher.addURI(authority, CollegeContract.PATH_DEBT, DEBT);
         matcher.addURI(authority, CollegeContract.PATH_DEBT + "/#", DEBT_WITH_ID);
-        matcher.addURI(authority, CollegeContract.PATH_COMPLETION, COMPLETION);
-        matcher.addURI(authority, CollegeContract.PATH_COMPLETION + "/#", COMPLETION_WITH_ID);
         matcher.addURI(authority, CollegeContract.PATH_ADMISSION, ADMISSION);
         matcher.addURI(authority, CollegeContract.PATH_ADMISSION + "/#", ADMISSION_WITH_ID);
         matcher.addURI(authority, CollegeContract.PATH_PLACE, PLACE);
@@ -107,13 +100,6 @@ public class CollegeProvider extends ContentProvider {
                 break;
             case DEBT_WITH_ID:
                 rowsDeleted = db.delete(DEBT_TABLE, SELECTION_DEBT_COLLEGE_ID,
-                        new String[]{uri.getLastPathSegment()});
-                break;
-            case COMPLETION:
-                rowsDeleted = db.delete(COMPLETION_TABLE, selection, selectionArgs);
-                break;
-            case COMPLETION_WITH_ID:
-                rowsDeleted = db.delete(COMPLETION_TABLE, SELECTION_COMPLETION_COLLEGE_ID,
                         new String[]{uri.getLastPathSegment()});
                 break;
             case ADMISSION:
@@ -158,10 +144,6 @@ public class CollegeProvider extends ContentProvider {
                 return CollegeContract.DebtEntry.DEBT_CONTENT_TYPE;
             case DEBT_WITH_ID:
                 return CollegeContract.DebtEntry.DEBT_CONTENT_ITEM_TYPE;
-            case COMPLETION:
-                return CollegeContract.CompletionEntry.COMPLETION_CONTENT_TYPE;
-            case COMPLETION_WITH_ID:
-                return CollegeContract.CompletionEntry.COMPLETION_CONTENT_ITEM_TYPE;
             case ADMISSION:
                 return CollegeContract.AdmissionEntry.ADMISSION_CONTENT_TYPE;
             case ADMISSION_WITH_ID:
@@ -209,14 +191,6 @@ public class CollegeProvider extends ContentProvider {
                 _id = db.insert(DEBT_TABLE, null, values);
                 if (_id > 0) {
                     returnUri = CollegeContract.DebtEntry.buildDebtUri(_id);
-                } else {
-                    throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
-                }
-                break;
-            case COMPLETION:
-                _id = db.insert(COMPLETION_TABLE, null, values);
-                if (_id > 0) {
-                    returnUri = CollegeContract.CompletionEntry.buildCompletionUri(_id);
                 } else {
                     throw new SQLException("FAILED TO INSERT ROW INTO " + uri);
                 }
@@ -305,23 +279,23 @@ public class CollegeProvider extends ContentProvider {
                         new String[]{collegeId},
                         null, null, sortOrder);
                 break;
-            case COMPLETION:
-                returnCursor = db.query(COMPLETION_TABLE,
-                        projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-            case COMPLETION_WITH_ID:
-                collegeId = uri.getLastPathSegment();
-                returnCursor = db.query(COMPLETION_TABLE,
-                        projection,
-                        SELECTION_COMPLETION_COLLEGE_ID,
-                        new String[]{collegeId},
-                        null, null, sortOrder);
-                break;
             case ADMISSION:
                 returnCursor = db.query(ADMISSION_TABLE,
                         projection, selection, selectionArgs, null, null, sortOrder);
                 break;
+            case ADMISSION_WITH_ID:
+                collegeId = uri.getLastPathSegment();
+                returnCursor = db.query(ADMISSION_TABLE,
+                        projection,
+                        SELECTION_ADMISSION_COLLEGE_ID,
+                        new String[]{collegeId},
+                        null, null, sortOrder);
+                break;
 
+            case PLACE:
+                returnCursor = db.query(PLACE_TABLE,
+                        projection, selection, selectionArgs, null, null, sortOrder);
+                break;
             case PLACE_WITH_ID:
                 collegeId = uri.getLastPathSegment();
                 returnCursor = db.query(PLACE_TABLE,
@@ -375,14 +349,6 @@ public class CollegeProvider extends ContentProvider {
             case DEBT_WITH_ID:
                 rowsUpdated = db.update(DEBT_TABLE,
                         values, SELECTION_DEBT_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
-                break;
-            case COMPLETION:
-                rowsUpdated = db.update(COMPLETION_TABLE,
-                        values, selection, selectionArgs);
-                break;
-            case COMPLETION_WITH_ID:
-                rowsUpdated = db.update(COMPLETION_TABLE,
-                        values, SELECTION_COMPLETION_COLLEGE_ID, new String[]{uri.getLastPathSegment()});
                 break;
             case ADMISSION:
                 rowsUpdated = db.update(ADMISSION_TABLE,

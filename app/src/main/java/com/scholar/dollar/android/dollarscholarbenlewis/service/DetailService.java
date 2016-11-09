@@ -58,7 +58,37 @@ public class DetailService extends IntentService {
     public static final String DEBT_75plus = "2014.aid.median_debt.income.greater_than_75000";
     public static final String[] DEBT_FIELDS = {DEBT_LOAN_PRINCIPAL, DEBT_COMPLETERS, DEBT_NONCOMPLETERS,
     DEBT_MONTHLY_PAYMENT, DEBT_0to30, DEBT_30to75, DEBT_75plus};
-    
+
+    public static final String ADMISSION_RATE = "2014.admissions.admission_rate.overall";
+
+    public static final String ADMISSION_ACT_25PCT = "2014.admissions.act_scores.25th_percentile.cumulative";
+    public static final String ADMISSION_ACT_50PCT = "2014.admissions.act_scores.midpoint.cumulative";
+    public static final String ADMISSION_ACT_75PCT = "2014.admissions.act_scores.75th_percentile.cumulative";
+
+    public static final String ADMISSION_ACT_ENG_25PCT = "2014.admissions.act_scores.25th_percentile.english";
+    public static final String ADMISSION_ACT_ENG_50PCT = "2014.admissions.act_scores.midpoint.english";
+    public static final String ADMISSION_ACT_ENG_75PCT = "2014.admissions.act_scores.75th_percentile.english";
+
+    public static final String ADMISSION_ACT_MATH_25PCT = "2014.admissions.act_scores.25th_percentile.math";
+    public static final String ADMISSION_ACT_MATH_50PCT = "2014.admissions.act_scores.midpoint.math";
+    public static final String ADMISSION_ACT_MATH_75PCT = "2014.admissions.act_scores.75th_percentile.math";
+
+    public static final String ADMISSION_SAT_50PCT = "2014.admissions.sat_scores.average.overall";
+
+    public static final String ADMISSION_SAT_READ_25PCT = "2014.admissions.sat_scores.25th_percentile.critical_reading";
+    public static final String ADMISSION_SAT_READ_50PCT = "2014.admissions.sat_scores.midpoint.critical_reading";
+    public static final String ADMISSION_SAT_READ_75PCT = "2014.admissions.sat_scores.75th_percentile.critical_reading";
+
+    public static final String ADMISSION_SAT_MATH_25PCT = "2014.admissions.sat_scores.25th_percentile.math";
+    public static final String ADMISSION_SAT_MATH_50PCT = "2014.admissions.sat_scores.midpoint.math";
+    public static final String ADMISSION_SAT_MATH_75PCT = "2014.admissions.sat_scores.75th_percentile.math";
+
+    public static final String[] ADMISSION_FIELDS = {ADMISSION_RATE, ADMISSION_ACT_25PCT, ADMISSION_ACT_50PCT, ADMISSION_ACT_75PCT,
+    ADMISSION_ACT_ENG_25PCT, ADMISSION_ACT_ENG_50PCT, ADMISSION_ACT_ENG_75PCT, ADMISSION_ACT_MATH_25PCT, ADMISSION_ACT_MATH_50PCT,
+    ADMISSION_ACT_MATH_75PCT, ADMISSION_SAT_50PCT, ADMISSION_SAT_READ_25PCT, ADMISSION_SAT_READ_50PCT, ADMISSION_SAT_READ_75PCT,
+    ADMISSION_SAT_MATH_25PCT, ADMISSION_SAT_MATH_50PCT, ADMISSION_SAT_MATH_75PCT};
+
+
     public DetailService(String name) {
         super(name);
     }
@@ -71,6 +101,7 @@ public class DetailService extends IntentService {
         ContentValues earningsValues = new ContentValues();
         ContentValues costValues = new ContentValues();
         ContentValues debtValues = new ContentValues();
+        ContentValues admissionValues = new ContentValues();
         Cursor cursor = getContentResolver().query(
                 CollegeContract.EarningsEntry.buildEarningsWithCollegeId(mCollegeId),
                 new String[]{CollegeContract.CollegeMainEntry.COLLEGE_ID}, null, null, null, null);
@@ -114,9 +145,29 @@ public class DetailService extends IntentService {
                 debtValues.put(CollegeContract.DebtEntry.DEBT_FAM_30to75_MED, college.getDouble(DEBT_30to75));
                 debtValues.put(CollegeContract.DebtEntry.DEBT_FAM_75up_MED, college.getDouble(DEBT_75plus));
 
+                admissionValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_25_PCT, college.getDouble(ADMISSION_ACT_25PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_50_PCT, college.getDouble(ADMISSION_ACT_50PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_75_PCT, college.getDouble(ADMISSION_ACT_75PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_25_PCT, college.getDouble(ADMISSION_ACT_MATH_25PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_50_PCT, college.getDouble(ADMISSION_ACT_MATH_50PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_75_PCT, college.getDouble(ADMISSION_ACT_MATH_75PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_25_PCT, college.getDouble(ADMISSION_ACT_ENG_25PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_50_PCT, college.getDouble(ADMISSION_ACT_ENG_50PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_75_PCT, college.getDouble(ADMISSION_ACT_ENG_75PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.SAT_CUM_50_PCT, college.getDouble(ADMISSION_SAT_50PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_25_PCT, college.getDouble(ADMISSION_SAT_MATH_25PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_50_PCT, college.getDouble(ADMISSION_SAT_MATH_50PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_75_PCT, college.getDouble(ADMISSION_SAT_MATH_75PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_25_PCT, college.getDouble(ADMISSION_SAT_READ_25PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_50_PCT, college.getDouble(ADMISSION_SAT_READ_50PCT));
+                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_75_PCT, college.getDouble(ADMISSION_SAT_READ_75PCT));
+
+
                 getContentResolver().insert(CollegeContract.EarningsEntry.EARNINGS_CONTENT_URI, earningsValues);
                 getContentResolver().insert(CollegeContract.CostEntry.COST_CONTENT_URI, costValues);
                 getContentResolver().insert(CollegeContract.DebtEntry.DEBT_CONTENT_URI, debtValues);
+                getContentResolver().insert(CollegeContract.AdmissionEntry.ADMISSION_CONTENT_URI, admissionValues);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -143,6 +194,7 @@ public class DetailService extends IntentService {
             fieldArrays.add(EARNINGS_FIELDS);
             fieldArrays.add(costFields);
             fieldArrays.add(DEBT_FIELDS);
+            fieldArrays.add(ADMISSION_FIELDS);
             String url = Utility.BASE_URL + Utility.createCollegeFilter(mCollegeId) + Utility.buildFields(fieldArrays);
             Log.i(LOG_TAG, url);
 

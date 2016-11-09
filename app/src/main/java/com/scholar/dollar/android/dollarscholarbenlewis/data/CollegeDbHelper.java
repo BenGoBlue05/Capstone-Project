@@ -19,7 +19,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     public static final String REAL_NN = " REAL NOT NULL";
     public static final String REAL = " REAL";
     static final String DATABASE = "college.db";
-    private static final int VERSION = 37;
+    private static final int VERSION = 39;
 
     public CollegeDbHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -40,8 +40,8 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                         CollegeContract.CollegeMainEntry.TUITION_IN_STATE + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.TUITION_OUT_STATE + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + INT_NN + COMMA_SEPERATOR +
-                        CollegeContract.CompletionEntry.GRADUATION_RATE_4_YEARS + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.CompletionEntry.GRADUATION_RATE_6_YEARS + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS + REAL_NN + COMMA_SEPERATOR +
+                        CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEARS + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.IS_FAVORITE + INT_NN + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE + INT_NN +
                         " );";
@@ -105,13 +105,6 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                         CollegeContract.AdmissionEntry.SAT_READ_50_PCT + REAL_NN + COMMA_SEPERATOR +
                         CollegeContract.AdmissionEntry.SAT_READ_75_PCT + REAL_NN + " );";
 
-        final String CREATE_TABLE_COMPLETION =
-                "CREATE TABLE " + CollegeContract.CompletionEntry.COMPLETION_TABLE + " (" +
-                        CollegeContract.CompletionEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEPERATOR +
-                        CollegeContract.CollegeMainEntry.COLLEGE_ID + INT_NN + COMMA_SEPERATOR +
-                        CollegeContract.CompletionEntry.GRADUATION_RATE_4_YEARS + REAL_NN + COMMA_SEPERATOR +
-                        CollegeContract.CompletionEntry.GRADUATION_RATE_6_YEARS + REAL_NN + " );";
-
         final String CREATE_TABLE_PLACE =
                 "CREATE TABLE " + CollegeContract.PlaceEntry.PLACE_TABLE + " (" +
                         CollegeContract.PlaceEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEPERATOR +
@@ -127,7 +120,6 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_EARNINGS);
         db.execSQL(CREATE_TABLE_COST);
         db.execSQL(CREATE_TABLE_DEBT);
-        db.execSQL(CREATE_TABLE_COMPLETION);
         db.execSQL(CREATE_TABLE_ADMISSION);
         db.execSQL(CREATE_TABLE_PLACE);
 
@@ -136,11 +128,11 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + "completion");
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.EarningsEntry.EARNINGS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CostEntry.COST_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.DebtEntry.DEBT_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.AdmissionEntry.ADMISSION_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CompletionEntry.COMPLETION_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.PlaceEntry.PLACE_TABLE);
 
         onCreate(db);
