@@ -25,7 +25,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
@@ -79,7 +78,7 @@ public class AdmissionFragment extends Fragment
         mChart.setHighlightFullBarEnabled(false);
 
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis.setAxisMinimum(18f); // this replaces setStartAtZero(true)
         mChart.getAxisRight().setEnabled(false);
 
         XAxis xLabels = mChart.getXAxis();
@@ -166,6 +165,8 @@ public class AdmissionFragment extends Fragment
 
         BarDataSet set1;
 
+        int[] colors = {Color.GRAY, Color.YELLOW, Color.GREEN, Color.GRAY};
+
         if (mChart.getData() != null &&
                 mChart.getData().getDataSetCount() > 0) {
             set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
@@ -174,7 +175,7 @@ public class AdmissionFragment extends Fragment
             mChart.notifyDataSetChanged();
         } else {
             set1 = new BarDataSet(entries, getResources().getString(R.string.act_middle_50));
-            set1.setColors(ColorTemplate.MATERIAL_COLORS);
+            set1.setColors(colors);
             set1.setStackLabels(new String[]{"25", "50", "75", getResources().getString(R.string.max_score)});
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();

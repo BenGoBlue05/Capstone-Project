@@ -219,4 +219,9 @@ public final class Utility {
     public static String createCollegeFilter(int collegeId) {
         return "id=" + collegeId + "&" + CSC_API_KEY + "&";
     }
+
+    public static String formatThousandsCircle(float i){
+        int thousand = Math.round(i / 1000f);
+        return Integer.toString(thousand);
+    }
 }

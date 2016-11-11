@@ -12,7 +12,7 @@
 
         <include layout="@layout/include_gen_info" />
 
-        <include layout="@layout/include_finance" />
+        <include layout="@layout/include_earnings" />
 
         <include layout="@layout/include_admissions" />
 

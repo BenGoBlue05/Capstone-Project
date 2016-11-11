@@ -28,6 +28,9 @@
     <string name="completion">Completion</string>
     <string name="admission">Admission</string>
     <string name="photos">Photos</string>
+    <string name="median_earnings">Median Earnings</string>
+    <string name="years_after_completion">(Years After Completion)</string>
+    <string name="median">Median</string>
 
 
     <string name="finance">Finance</string>
@@ -46,6 +49,12 @@
     <string name="four_years">4 years</string>
     <string name="six_years">6 years</string>
 
+    <string name="ten_yrs">10 yrs</string>
+    <string name="eight_yrs">8 yrs</string>
+    <string name="six_yrs">6 yrs</string>
+
+
+    <string name="thousand">Thousand</string>
     <string name="act_middle_50">ACT Middle 50 Percentile</string>
 
     <string name="max_score">Max score</string>

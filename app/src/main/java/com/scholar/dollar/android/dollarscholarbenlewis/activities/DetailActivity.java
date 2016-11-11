@@ -83,7 +83,7 @@ public class DetailActivity extends AppCompatActivity
     TabLayout mDetailTabs;
 
 
-    private GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient sGoogleApiClient;
 
 
     @Override
@@ -101,7 +101,7 @@ public class DetailActivity extends AppCompatActivity
         mDetailTabs.setupWithViewPager(mViewPager);
 
         setUpCollapsingToolbar();
-        mGoogleApiClient = new GoogleApiClient
+        sGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
@@ -110,6 +110,7 @@ public class DetailActivity extends AppCompatActivity
 
         getSupportLoaderManager().initLoader(Utility.COLLEGE_MAIN_LOADER, null, this);
         getSupportLoaderManager().initLoader(PLACE_LOADER, null, this);
+
     }
 
     private void setupDetailViewPager(ViewPager viewPager) {
@@ -119,7 +120,9 @@ public class DetailActivity extends AppCompatActivity
         mAdapter.addFragment(new DebtFragment(), getString(R.string.debt));
         mAdapter.addFragment(new CompletionFragment(), getResources().getString(R.string.graduation_rates));
         mAdapter.addFragment(new AdmissionFragment(), getResources().getString(R.string.admission));
+//        mAdapter.addFragment(new PhotoFragment(), getString(R.string.photos));
         viewPager.setAdapter(mAdapter);
+
     }
 
     @Override
@@ -189,6 +192,8 @@ public class DetailActivity extends AppCompatActivity
                                 .putExtra(LON_KEY, data.getDouble(Utility.COL_LON)));
                     } else {
                         placePhotosAsync(placeId);
+//                        PhotoFragment photoFragment = (PhotoFragment) mAdapter.getItem(5);
+//                        photoFragment.photosTask(placeId);
                     }
                 }
         }
@@ -211,13 +216,14 @@ public class DetailActivity extends AppCompatActivity
                 return;
             }
             mBackgroundPhotoIV.setImageBitmap(placePhotoResult.getBitmap());
+
         }
     };
 
 
     private void placePhotosAsync(String placeId) {
         Log.i(LOG_TAG, "PLACE PHOTOS ASYNC CALLED");
-        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
+        Places.GeoDataApi.getPlacePhotos(sGoogleApiClient, placeId)
                 .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
 
 
@@ -230,10 +236,10 @@ public class DetailActivity extends AppCompatActivity
                         PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
                         if (photoMetadataBuffer.getCount() > 0) {
                             // Display the first bitmap in an ImageView in the size of the view
-                            photoMetadataBuffer.get(0)
-                                    .getScaledPhoto(mGoogleApiClient, mBackgroundPhotoIV.getWidth(),
-                                            mBackgroundPhotoIV.getHeight())
+                            photoMetadataBuffer.get(0).getScaledPhoto(sGoogleApiClient,
+                                    mBackgroundPhotoIV.getWidth(), mBackgroundPhotoIV.getHeight())
                                     .setResultCallback(mDisplayPhotoResultCallback);
+
                         }
                         photoMetadataBuffer.release();
                     }

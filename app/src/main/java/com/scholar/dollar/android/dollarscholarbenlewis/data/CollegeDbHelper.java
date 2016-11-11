@@ -128,7 +128,6 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CollegeMainEntry.COLLEGE_MAIN_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + "completion");
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.EarningsEntry.EARNINGS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.CostEntry.COST_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CollegeContract.DebtEntry.DEBT_TABLE);

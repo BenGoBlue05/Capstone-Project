@@ -1,12 +1,35 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.scholar.dollar.android.dollarscholarbenlewis.fragments.EarningsFragment">
 
-    <com.github.mikephil.charting.charts.CandleStickChart
-        android:id="@+id/earnings_candlestick"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <include layout="@layout/include_earnings" />
 
-</RelativeLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Middle 50%"
+            android:gravity="center_horizontal"
+            android:padding="16dp"/>
+        <com.github.mikephil.charting.charts.CombinedChart
+            android:id="@+id/earnings_chart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bargraph_earnings_height" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>
