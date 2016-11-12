@@ -69,15 +69,15 @@ public class CompletionFragment extends Fragment
 
         mChart.setRotationAngle(0);
         // enable rotation of the chart by touch
-        mChart.setRotationEnabled(true);
+        mChart.setRotationEnabled(false);
         mChart.setHighlightPerTapEnabled(true);
 
         mChart.setOnChartValueSelectedListener(this);
 
         Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
@@ -140,6 +140,7 @@ public class CompletionFragment extends Fragment
             pieData.setValueTextColor(Color.WHITE);
 
             mChart.setData(pieData);
+            mChart.setCenterText("" + Math.round(comp6yrs) + "%");
 
             mChart.highlightValues(null);
 
@@ -149,16 +150,13 @@ public class CompletionFragment extends Fragment
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-
     }
 
     @Override
     public void onNothingSelected() {
-
     }
 }

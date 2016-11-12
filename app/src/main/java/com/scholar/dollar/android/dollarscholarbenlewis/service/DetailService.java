@@ -39,15 +39,21 @@ public class DetailService extends IntentService {
     public static final String COST_PUBLIC_48to75 = "2014.cost.net_price.public.by_income_level.48001-75000";
     public static final String COST_PUBLIC_75to110 = "2014.cost.net_price.public.by_income_level.75001-110000";
     public static final String COST_PUBLIC_110plus = "2014.cost.net_price.public.by_income_level.110001-plus";
+
+    public static final String COST_LOANS_PCT = "2014.aid.federal_loan_rate";
+    public static final String COST_GRANTS_PCT = "2014.student.students_with_pell_grant";
     public static final String[] COST_PUBLIC_FIELDS =
-            {COST_PUBLIC_0to30, COST_PUBLIC_30to48, COST_PUBLIC_48to75, COST_PUBLIC_75to110, COST_PUBLIC_110plus};
+            {COST_PUBLIC_0to30, COST_PUBLIC_30to48, COST_PUBLIC_48to75, COST_PUBLIC_75to110, COST_PUBLIC_110plus,
+                    COST_LOANS_PCT, COST_GRANTS_PCT};
     public static final String COST_PRIVATE_0to30 = "2014.cost.net_price.private.by_income_level.0-30000";
     public static final String COST_PRIVATE_30to48 = "2014.cost.net_price.private.by_income_level.30001-48000";
     public static final String COST_PRIVATE_48to75 = "2014.cost.net_price.private.by_income_level.48001-75000";
     public static final String COST_PRIVATE_75to110 = "2014.cost.net_price.private.by_income_level.75001-110000";
     public static final String COST_PRIVATE_110plus = "2014.cost.net_price.private.by_income_level.110001-plus";
+
     public static final String[] COST_PRIVATE_FIELDS =
-            {COST_PRIVATE_0to30, COST_PRIVATE_30to48, COST_PRIVATE_48to75, COST_PRIVATE_75to110, COST_PRIVATE_110plus};
+            {COST_PRIVATE_0to30, COST_PRIVATE_30to48, COST_PRIVATE_48to75, COST_PRIVATE_75to110, COST_PRIVATE_110plus,
+            COST_LOANS_PCT, COST_GRANTS_PCT};
 
     public static final String DEBT_LOAN_PRINCIPAL = "2014.aid.loan_principal";
     public static final String DEBT_COMPLETERS = "2014.aid.median_debt.completers.overall"; //students who completed/graduated
@@ -135,6 +141,9 @@ public class DetailService extends IntentService {
                     costValues.put(CollegeContract.CostEntry.COST_FAM_75to110, college.getInt(COST_PRIVATE_75to110));
                     costValues.put(CollegeContract.CostEntry.COST_FAM_OVER_110, college.getInt(COST_PRIVATE_110plus));
                 }
+
+                costValues.put(CollegeContract.CostEntry.LOAN_STUDENTS_PCT, college.getDouble(COST_LOANS_PCT));
+                costValues.put(CollegeContract.CostEntry.PELL_STUDENTS_PCT, college.getDouble(COST_GRANTS_PCT));
 
                 debtValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
                 debtValues.put(CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED, college.getDouble(DEBT_LOAN_PRINCIPAL));

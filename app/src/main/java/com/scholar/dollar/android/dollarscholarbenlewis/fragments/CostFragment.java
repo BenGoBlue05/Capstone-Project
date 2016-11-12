@@ -2,30 +2,40 @@ package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,18 +46,24 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private static final String LOG_TAG = CostFragment.class.getSimpleName();
     private int mCollegeId;
-    private boolean mIsPublic;
 
     private float mCost0to30;
     private float mCost30to48;
     private float mCost48to75;
     private float mCost75to110;
     private float mCost110plus;
+//    private float mGrantPct;
+//    private float mLoanPct;
 
-    @BindView(R.id.cost_med10_tv)
-    TextView mCostTV;
     @BindView(R.id.cost_barchart)
     HorizontalBarChart mChart;
+
+    @BindView(R.id.cost_grant_piechart)
+    PieChart mGrantPiechart;
+    @BindView(R.id.cost_loan_piechart)
+    PieChart mLoanPiechart;
+    @BindView(R.id.cost_aid_button)
+    Button mStudentAidSiteButton;
 
 
     public CostFragment() {
@@ -71,6 +87,13 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         mChart.getDescription().setEnabled(false);
 
         mChart.setDrawGridBackground(false);
+
+        mStudentAidSiteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((StudentAidSiteClickListener) getActivity()).onStudentAidSiteButtonClicked();
+            }
+        });
 
         XAxis xl = mChart.getXAxis();
         xl.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -114,7 +137,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         } else {
             set = new BarDataSet(entries, getResources().getString(R.string.cost));
 
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);
 
             BarData data = new BarData(dataSets);
@@ -148,7 +171,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         Log.i(LOG_TAG, "BEFORE ID CHECKED");
         switch (loader.getId()) {
             case Utility.COLLEGE_MAIN_LOADER:
-                mCostTV.setText(data.getInt(Utility.TUITION_OUT_STATE));
+                break;
             case Utility.COST_LOADER:
                 Log.i(LOG_TAG, "LOADER ID IDENTIFIED");
                 mCost0to30 = (float) data.getInt(Utility.COL_COST_0to30);
@@ -156,6 +179,11 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
                 mCost48to75 = (float) data.getInt(Utility.COL_COST_48to75);
                 mCost75to110 = (float) data.getInt(Utility.COL_COST_75to110);
                 mCost110plus = (float) data.getInt(Utility.COL_COST_110plus);
+                double grantPct = data.getDouble(Utility.COL_COST_GRANT_PCT);
+                double loanPct = data.getDouble(Utility.COL_COST_LOAN_PCT);
+
+                createPieChart(mGrantPiechart, grantPct);
+                createPieChart(mLoanPiechart, loanPct);
 
                 setData();
                 mChart.setFitBars(true);
@@ -169,6 +197,45 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
     }
+
+    private void createPieChart(PieChart pieChart, double pct){
+        pieChart.setHoleColor(Color.WHITE);
+        pieChart.setHoleRadius(75f);
+        pieChart.getLegend().setEnabled(false);
+        pieChart.setCenterText(createCenterText(pct));
+        pieChart.getDescription().setEnabled(false);
+
+        List<PieEntry> entries = new ArrayList<>();
+
+        float grant = 100f * (float) pct;
+        entries.add(new PieEntry(grant, ""));
+        entries.add(new PieEntry(100f - grant, ""));
+
+        int[] colors = {ContextCompat.getColor(getContext(), R.color.colorPrimary), Color.GRAY};
+
+        PieDataSet set = new PieDataSet(entries, "");
+        set.setColors(colors);
+
+        PieData pieData = new PieData(set);
+        pieData.setValueTextColor(Color.TRANSPARENT);
+
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+    }
+
+    private SpannableString createCenterText(double pct){
+        NumberFormat nf = NumberFormat.getPercentInstance();
+        String str = nf.format(pct);
+        SpannableString s = new SpannableString(str);
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorPrimary)), 0, s.length(), 0);
+        return s;
+    }
+
+    public interface StudentAidSiteClickListener{
+        public void onStudentAidSiteButtonClicked();
+    }
+
 
 
 }

@@ -3,6 +3,7 @@ package com.scholar.dollar.android.dollarscholarbenlewis.activities;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -45,7 +46,8 @@ import static com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility.P
 
 public class DetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        CostFragment.StudentAidSiteClickListener{
 
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
@@ -168,8 +170,6 @@ public class DetailActivity extends AppCompatActivity
                     mOwnershipTV.setText(ownership);
                     mOwnershipTV.setContentDescription(ownership);
 
-//
-
                     Picasso.with(this).load(data.getString(Utility.LOGO))
                             .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
                     mLogoIV.setContentDescription(getString(R.string.logo));
@@ -192,8 +192,6 @@ public class DetailActivity extends AppCompatActivity
                                 .putExtra(LON_KEY, data.getDouble(Utility.COL_LON)));
                     } else {
                         placePhotosAsync(placeId);
-//                        PhotoFragment photoFragment = (PhotoFragment) mAdapter.getItem(5);
-//                        photoFragment.photosTask(placeId);
                     }
                 }
         }
@@ -253,5 +251,12 @@ public class DetailActivity extends AppCompatActivity
     }
 
 
-
+    @Override
+    public void onStudentAidSiteButtonClicked() {
+        Uri webpage = Uri.parse("https://studentaid.ed.gov/sa/types");
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
 }

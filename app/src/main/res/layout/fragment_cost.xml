@@ -5,7 +5,7 @@
     tools:context="com.scholar.dollar.android.dollarscholarbenlewis.fragments.CostFragment"
     android:orientation="vertical">
 
-    <include layout="@layout/include_cost_text"/>
+    <include layout="@layout/include_cost_aid"/>
     <include layout="@layout/barchart_cost"/>
 
 </LinearLayout>

@@ -23,4 +23,5 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="circle_radius">36dp</dimen>
     <dimen name="bargraph_earnings_height">240dp</dimen>
     <dimen name="thousand_margin">8dp</dimen>
+    <dimen name="cardview_margin">16dp</dimen>
 </resources>
