@@ -47,12 +47,15 @@ import static com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility.P
 public class DetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
         GoogleApiClient.OnConnectionFailedListener,
-        CostFragment.StudentAidSiteClickListener{
+        CostFragment.StudentAidSiteClickListener,
+        CostFragment.MainInfoCallback{
 
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     private int mCollegeId;
-    private boolean mIsPublic;
+    public boolean mIsPublic;
+    public int mCostInState;
+    public int mCostOutState;
 
     public static final String COLLEGE_ID_KEY = "collegeId";
     public static final String NAME_KEY = "name";
@@ -165,20 +168,16 @@ public class DetailActivity extends AppCompatActivity
                             data.getString(Utility.CITY), data.getString(Utility.STATE)));
                     mCityStateTV.setText(cityState);
                     mCityStateTV.setContentDescription(cityState);
-
-                    String ownership = data.getInt(Utility.OWNERSHIP) == 1 ? "Public" : "Private";
+                    mCostInState = data.getInt(Utility.TUITION_IN_STATE);
+                    mCostOutState = data.getInt(Utility.TUITION_OUT_STATE);
+                    mIsPublic = data.getInt(Utility.OWNERSHIP) == 1;
+                    String ownership = mIsPublic ? "Public" : "Private";
                     mOwnershipTV.setText(ownership);
                     mOwnershipTV.setContentDescription(ownership);
 
                     Picasso.with(this).load(data.getString(Utility.LOGO))
                             .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
                     mLogoIV.setContentDescription(getString(R.string.logo));
-
-//        mIsFavorite = data.getInt(CollegeMainFragment.FAVORITE);
-//        int star = mIsFavorite == 0 ? R.drawable.ic_star_unfilled_24dp : R.drawable.ic_star_filled_24dp;
-//        Picasso.with(mContext).load(star).placeholder(star).into(mStarIV);
-//        mStarIV.setContentDescription(mContext.getString(R.string.favorites_button));
-//        break;
                 }
                 break;
             case Utility.PLACE_LOADER:
@@ -258,5 +257,20 @@ public class DetailActivity extends AppCompatActivity
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    @Override
+    public boolean getIsPublic() {
+        return mIsPublic;
+    }
+
+    @Override
+    public int getInStateTuition() {
+        return mCostInState;
+    }
+
+    @Override
+    public int getOutStateTuition() {
+        return mCostOutState;
     }
 }

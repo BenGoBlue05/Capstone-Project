@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -52,8 +54,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
     private float mCost48to75;
     private float mCost75to110;
     private float mCost110plus;
-//    private float mGrantPct;
-//    private float mLoanPct;
+    private boolean mIsPublic;
 
     @BindView(R.id.cost_barchart)
     HorizontalBarChart mChart;
@@ -64,6 +65,14 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
     PieChart mLoanPiechart;
     @BindView(R.id.cost_aid_button)
     Button mStudentAidSiteButton;
+    @BindView(R.id.cost_in_state)
+    TextView mInStateTV;
+    @BindView(R.id.cost_out_state)
+    TextView mOutStateTV;
+    @BindView(R.id.cost_outstate_label_tv)
+    TextView mOutStateLabelTV;
+    @BindView(R.id.cost_instate_ll)
+    LinearLayout mInStateLL;
 
 
     public CostFragment() {
@@ -170,8 +179,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         }
         Log.i(LOG_TAG, "BEFORE ID CHECKED");
         switch (loader.getId()) {
-            case Utility.COLLEGE_MAIN_LOADER:
-                break;
+
             case Utility.COST_LOADER:
                 Log.i(LOG_TAG, "LOADER ID IDENTIFIED");
                 mCost0to30 = (float) data.getInt(Utility.COL_COST_0to30);
@@ -182,6 +190,18 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
                 double grantPct = data.getDouble(Utility.COL_COST_GRANT_PCT);
                 double loanPct = data.getDouble(Utility.COL_COST_LOAN_PCT);
 
+                boolean isPublic = ((MainInfoCallback) getActivity()).getIsPublic();
+                if (isPublic){
+                    mInStateLL.setVisibility(View.VISIBLE);
+                    mOutStateLabelTV.setVisibility(View.VISIBLE);
+                    mInStateTV.setText(Utility.formatThousandsCircle(
+                            ((MainInfoCallback) getActivity()).getInStateTuition()));
+                } else {
+                    mInStateLL.setVisibility(View.GONE);
+                    mOutStateLabelTV.setVisibility(View.GONE);
+                }
+                mOutStateTV.setText(Utility.formatThousandsCircle(
+                        ((MainInfoCallback) getActivity()).getOutStateTuition()));
                 createPieChart(mGrantPiechart, grantPct);
                 createPieChart(mLoanPiechart, loanPct);
 
@@ -211,7 +231,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         entries.add(new PieEntry(grant, ""));
         entries.add(new PieEntry(100f - grant, ""));
 
-        int[] colors = {ContextCompat.getColor(getContext(), R.color.colorPrimary), Color.GRAY};
+        int[] colors = {ContextCompat.getColor(getContext(), R.color.colorPrimary), Color.LTGRAY};
 
         PieDataSet set = new PieDataSet(entries, "");
         set.setColors(colors);
@@ -234,6 +254,12 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public interface StudentAidSiteClickListener{
         public void onStudentAidSiteButtonClicked();
+    }
+
+    public interface MainInfoCallback{
+        public boolean getIsPublic();
+        public int getInStateTuition();
+        public int getOutStateTuition();
     }
 
 

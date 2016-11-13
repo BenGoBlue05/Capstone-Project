@@ -227,9 +227,9 @@ public class EarningsFragment extends Fragment implements LoaderManager.LoaderCa
         BarDataSet set75pct = new BarDataSet(pct75Entries,"75th percentile");
 
 
-        set25pct.setColor(Color.RED);
-        set50pct.setColor(Color.GREEN);
-        set75pct.setColor(Color.BLUE);
+        set25pct.setColor(Color.MAGENTA);
+        set50pct.setColor(Color.BLUE);
+        set75pct.setColor(Color.GREEN);
 
         set25pct.setValueTextSize(10f);
         set50pct.setValueTextSize(10f);

@@ -102,7 +102,7 @@ public final class CollegeService extends IntentService {
                 String state = college.getString(STATE);
                 int earnings = college.getInt(MED_EARNINGS_10_YEARS);
                 int tuitionInState = college.getInt(IN_STATE_TUITION_AND_FEES);
-                int tuitionOutState = college.getInt(IN_STATE_TUITION_AND_FEES);
+                int tuitionOutState = college.getInt(OUT_STATE_TUITION_AND_FEES);
                 int ownership = college.getInt(OWNERSHIP);
                 double graduationRate4yr = college.getDouble(GRADUATION_RATE_4_YEARS);
                 double graduationRate6yr = college.getDouble(GRADUATION_RATE_6_YEARS);
