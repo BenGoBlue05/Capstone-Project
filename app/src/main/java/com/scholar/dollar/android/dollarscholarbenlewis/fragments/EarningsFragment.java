@@ -1,16 +1,9 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
 
-import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +23,6 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
-import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.service.DetailService;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
@@ -43,7 +34,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EarningsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EarningsFragment extends Fragment{
 
     private static final String LOG_TAG = EarningsFragment.class.getSimpleName();
     private ArrayList<CandleEntry> mEntries;
@@ -74,6 +65,117 @@ public class EarningsFragment extends Fragment implements LoaderManager.LoaderCa
     public EarningsFragment() {
     }
 
+    public int getmCollegeId() {
+        return mCollegeId;
+    }
+
+    public void setmCollegeId(int mCollegeId) {
+        this.mCollegeId = mCollegeId;
+    }
+
+    public boolean ismIsPublic() {
+        return mIsPublic;
+    }
+
+    public void setmIsPublic(boolean mIsPublic) {
+        this.mIsPublic = mIsPublic;
+    }
+
+    public float getM6yrs25pct() {
+        return m6yrs25pct;
+    }
+
+    public void setM6yrs25pct(float m6yrs25pct) {
+        this.m6yrs25pct = m6yrs25pct;
+    }
+
+    public float getM6yrs50pct() {
+        return m6yrs50pct;
+    }
+
+    public void setM6yrs50pct(float m6yrs50pct) {
+        this.m6yrs50pct = m6yrs50pct;
+    }
+
+    public float getM6yrs75pct() {
+        return m6yrs75pct;
+    }
+
+    public void setM6yrs75pct(float m6yrs75pct) {
+        this.m6yrs75pct = m6yrs75pct;
+    }
+
+    public float getM8yrs25pct() {
+        return m8yrs25pct;
+    }
+
+    public void setM8yrs25pct(float m8yrs25pct) {
+        this.m8yrs25pct = m8yrs25pct;
+    }
+
+    public float getM8yrs50pct() {
+        return m8yrs50pct;
+    }
+
+    public void setM8yrs50pct(float m8yrs50pct) {
+        this.m8yrs50pct = m8yrs50pct;
+    }
+
+    public float getM8yrs75pct() {
+        return m8yrs75pct;
+    }
+
+    public void setM8yrs75pct(float m8yrs75pct) {
+        this.m8yrs75pct = m8yrs75pct;
+    }
+
+    public float getM10yrs25pct() {
+        return m10yrs25pct;
+    }
+
+    public void setM10yrs25pct(float m10yrs25pct) {
+        this.m10yrs25pct = m10yrs25pct;
+    }
+
+    public float getM10yrs50pct() {
+        return m10yrs50pct;
+    }
+
+    public void setM10yrs50pct(float m10yrs50pct) {
+        this.m10yrs50pct = m10yrs50pct;
+    }
+
+    public float getM10yrs75pct() {
+        return m10yrs75pct;
+    }
+
+    public void setM10yrs75pct(float m10yrs75pct) {
+        this.m10yrs75pct = m10yrs75pct;
+    }
+
+    public TextView getM10yrsTV() {
+        return m10yrsTV;
+    }
+
+    public void setM10yrsTV(TextView m10yrsTV) {
+        this.m10yrsTV = m10yrsTV;
+    }
+
+    public TextView getM8yrsTV() {
+        return m8yrsTV;
+    }
+
+    public void setM8yrsTV(TextView m8yrsTV) {
+        this.m8yrsTV = m8yrsTV;
+    }
+
+    public TextView getM6yrsTV() {
+        return m6yrsTV;
+    }
+
+    public void setM6yrsTV(TextView m6yrsTV) {
+        this.m6yrsTV = m6yrsTV;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,76 +213,22 @@ public class EarningsFragment extends Fragment implements LoaderManager.LoaderCa
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
 
+        createGraphs();
+
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mCollegeId = getActivity().getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
-        mIsPublic = getActivity().getIntent().getBooleanExtra(Utility.PUBLIC_COLLEGE_KEY, false);
-        getLoaderManager().initLoader(Utility.EARNINGS_LOADER, null, this);
-        Log.i(LOG_TAG, "COLLEGE ID: " + mCollegeId);
-    }
+    public void createGraphs(){
+        m6yrsTV.setText(Utility.formatThousandsCircle(m6yrs50pct));
+        m8yrsTV.setText(Utility.formatThousandsCircle(m8yrs50pct));
+        m10yrsTV.setText(Utility.formatThousandsCircle(m10yrs50pct));
+        CombinedData combinedData = new CombinedData();
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case Utility.EARNINGS_LOADER:
-                return new CursorLoader(getContext(), CollegeContract.EarningsEntry.buildEarningsWithCollegeId(mCollegeId),
-                        Utility.EARNINGS_COLUMNS, null, null, null);
-            default:
-                Log.i(LOG_TAG, "CURSOR LOADER ID NOT FOUND");
-        }
-        return null;
-    }
+        combinedData.setData(generateLineData());
+        combinedData.setData(generateBarData());
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.i(LOG_TAG, "ON LOAD FINISHED STARTED");
-        if (data == null || !data.moveToFirst()) {
-            Log.i(LOG_TAG, "CURSOR IS NULL");
-            getContext().startService(new Intent(getContext(), DetailService.class)
-                    .putExtra(Utility.COLLEGE_ID_KEY, mCollegeId)
-                    .putExtra(Utility.PUBLIC_COLLEGE_KEY, mIsPublic));
-            return;
-        }
-        Log.i(LOG_TAG, "BEFORE ID CHECKED");
-        switch (loader.getId()) {
-            case Utility.EARNINGS_LOADER:
-                Log.i(LOG_TAG, "LOADER ID IDENTIFIED");
-                m6yrs25pct = (float) data.getInt(Utility.COL_EARN_6YRS_25PCT);
-                m6yrs50pct = (float) data.getInt(Utility.COL_EARN_6YRS_50PCT);
-                m6yrs75pct = (float) data.getInt(Utility.COL_EARN_6YRS_75PCT);
-
-                m8yrs25pct = (float) data.getInt(Utility.COL_EARN_8YRS_25PCT);
-                m8yrs50pct = (float) data.getInt(Utility.COL_EARN_8YRS_50PCT);
-                m8yrs75pct = (float) data.getInt(Utility.COL_EARN_8YRS_75PCT);
-
-                m10yrs25pct = (float) data.getInt(Utility.COL_EARN_10YRS_25PCT);
-                m10yrs50pct = (float) data.getInt(Utility.COL_EARN_10YRS_50PCT);
-                m10yrs75pct = (float) data.getInt(Utility.COL_EARN_10YRS_75PCT);
-
-                m6yrsTV.setText(Utility.formatThousandsCircle(m6yrs50pct));
-                m8yrsTV.setText(Utility.formatThousandsCircle(m8yrs50pct));
-                m10yrsTV.setText(Utility.formatThousandsCircle(m10yrs50pct));
-
-                CombinedData combinedData = new CombinedData();
-
-                combinedData.setData(generateLineData());
-                combinedData.setData(generateBarData());
-
-                mChart.setData(combinedData);
-                mChart.invalidate();
-
-            default:
-                Log.i(LOG_TAG, "CURSOR LOADER ID NOT FOUND");
-        }
-    }
-
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+        mChart.setData(combinedData);
+        mChart.invalidate();
     }
 
     private LineData generateLineData(){

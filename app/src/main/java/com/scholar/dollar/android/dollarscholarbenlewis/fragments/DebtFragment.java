@@ -1,13 +1,8 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +17,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
-import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
 
@@ -31,11 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class DebtFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DebtFragment extends Fragment {
 
     private static final String LOG_TAG = DebtFragment.class.getSimpleName();
-
-    private int mCollegeId;
 
     private float mLoanPrincipal;
     private float mCompleters;
@@ -44,6 +35,35 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
     private float m0to30;
     private float m30to75;
     private float m75plus;
+
+
+    public void setmLoanPrincipal(float mLoanPrincipal) {
+        this.mLoanPrincipal = mLoanPrincipal;
+    }
+
+    public void setmCompleters(float mCompleters) {
+        this.mCompleters = mCompleters;
+    }
+
+    public void setmNoncompleters(float mNoncompleters) {
+        this.mNoncompleters = mNoncompleters;
+    }
+
+    public void setmMonthly(float mMonthly) {
+        this.mMonthly = mMonthly;
+    }
+
+    public void setM0to30(float m0to30) {
+        this.m0to30 = m0to30;
+    }
+
+    public void setM30to75(float m30to75) {
+        this.m30to75 = m30to75;
+    }
+
+    public void setM75plus(float m75plus) {
+        this.m75plus = m75plus;
+    }
 
     @BindView(R.id.debt_barchart)
     BarChart mChart;
@@ -54,7 +74,7 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView =  inflater.inflate(R.layout.fragment_debt, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_debt, container, false);
         ButterKnife.bind(this, rootView);
 
         mChart.setDrawBarShadow(false);
@@ -84,48 +104,20 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
         l.setTextSize(11f);
         l.setXEntrySpace(4f);
 
+        createBarGraph();
+
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mCollegeId = getActivity().getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
-        getActivity().getSupportLoaderManager().initLoader(Utility.DEBT_LOADER, null, this);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), CollegeContract.DebtEntry.buildDebtWithCollegeId(mCollegeId),
-                Utility.DEBT_COLUMNS, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data == null || !data.moveToFirst()){
-            Log.i(LOG_TAG, "CURSOR IS NULL");
-            return;
+    public void createBarGraph() {
+        if (mChart != null) {
+            setData();
+            mChart.setFitBars(true);
+            mChart.invalidate();
         }
-
-        mLoanPrincipal = (float) data.getDouble(Utility.COL_DEBT_LOAN_PPL);
-        mCompleters = (float) data.getDouble(Utility.COL_DEBT_COMPLETERS);
-        mNoncompleters = (float) data.getDouble(Utility.COL_DEBT_NONCOMPLETERS);
-        mMonthly = (float) data.getDouble(Utility.COL_DEBT_MONTHLY);
-        m0to30 = (float) data.getDouble(Utility.COL_DEBT_0to30);
-        m30to75 = (float) data.getDouble(Utility.COL_DEBT_30to75);
-        m75plus = (float) data.getDouble(Utility.COL_DEBT_75plus);
-
-        setData();
-        mChart.setFitBars(true);
-        mChart.invalidate();
-
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
-    private void setData(){
+    private void setData() {
         ArrayList<BarEntry> entries = new ArrayList<>();
         BarDataSet barDataSet;
 
@@ -136,9 +128,7 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
         entries.add(new BarEntry(7f, m0to30));
         entries.add(new BarEntry(8f, m30to75));
         entries.add(new BarEntry(9f, m75plus));
-
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
+        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
             barDataSet = (BarDataSet) mChart.getData().getDataSetByIndex(0);
             barDataSet.setValues(entries);
             mChart.getData().notifyDataChanged();
@@ -156,6 +146,7 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
 
             mChart.setData(data);
         }
+
     }
 
 }

@@ -19,7 +19,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     public static final String REAL_NN = " REAL NOT NULL";
     public static final String REAL = " REAL";
     static final String DATABASE = "college.db";
-    private static final int VERSION = 42;
+    private static final int VERSION = 45;
 
     public CollegeDbHelper(Context context) {
         super(context, DATABASE, null, VERSION);

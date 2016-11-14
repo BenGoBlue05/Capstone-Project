@@ -26,14 +26,6 @@ public final class Utility {
     public static String LON_KEY = "lonKey";
     public static String LAT_KEY = "latKey";
 
-    public static final int COLLEGE_MAIN_LOADER = 100;
-    public static final int EARNINGS_LOADER = 200;
-    public static final int COST_LOADER = 300;
-    public static final int DEBT_LOADER = 400;
-    public static final int COMPLETION_LOADER = 500;
-    public static final int ADMISSION_LOADER = 600;
-    public static final int PLACE_LOADER = 700;
-
 
     public static String[] EARNINGS_COLUMNS = {
             CollegeContract.EarningsEntry.EARNINGS_6YRS_25PCT,
@@ -57,7 +49,7 @@ public final class Utility {
             CollegeContract.CostEntry.PELL_STUDENTS_PCT
     };
 
-    public final static String[] PLACE_COLUMNS = {
+    public static String[] PLACE_COLUMNS = {
             CollegeContract.CollegeMainEntry.COLLEGE_ID,
             CollegeContract.CollegeMainEntry.NAME,
             CollegeContract.PlaceEntry.LATITUDE,
@@ -65,7 +57,7 @@ public final class Utility {
             CollegeContract.PlaceEntry.PLACE_ID
     };
 
-    public static final String[] COLLEGE_COLUMNS = {
+    public static String[] COLLEGE_COLUMNS = {
             CollegeContract.CollegeMainEntry.COLLEGE_ID,
             CollegeContract.CollegeMainEntry.NAME,
             CollegeContract.CollegeMainEntry.LOGO_URL,
@@ -82,7 +74,6 @@ public final class Utility {
     };
 
     public static String[] DEBT_COLUMNS = {
-            CollegeContract.CollegeMainEntry.COLLEGE_ID,
             CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED,
             CollegeContract.DebtEntry.DEBT_COMPLETERS_MED,
             CollegeContract.DebtEntry.DEBT_NONCOMPLETERS_MED,
@@ -93,7 +84,6 @@ public final class Utility {
     };
 
     public static String[] ADMISSION_COLUMNS = {
-            CollegeContract.CollegeMainEntry.COLLEGE_ID,
             CollegeContract.AdmissionEntry.ACT_CUM_25_PCT,
             CollegeContract.AdmissionEntry.ACT_CUM_50_PCT,
             CollegeContract.AdmissionEntry.ACT_CUM_75_PCT,
@@ -112,32 +102,30 @@ public final class Utility {
             CollegeContract.AdmissionEntry.SAT_READ_75_PCT,
     };
 
-    public static int COL_ADMSN_CSC_ID = 0;
-    public static int COL_ADMSN_ACT25 = 1;
-    public static int COL_ADMSN_ACT50 = 2;
-    public static int COL_ADMSN_ACT75 = 3;
-    public static int COL_ADMSN_ACT_MATH25 = 4;
-    public static int COL_ADMSN_ACT_MATH50 = 5;
-    public static int COL_ADMSN_ACT_MATH75 = 6;
-    public static int COL_ADMSN_ACT_ENG25 = 7;
-    public static int COL_ADMSN_ACT_ENG50 = 8;
-    public static int COL_ADMSN_ACT_ENG75 = 9;
-    public static int COL_ADMSN_SAT50 = 10;
-    public static int COL_ADMSN_SAT_MATH25 = 11;
-    public static int COL_ADMSN_SAT_MATH50 = 12;
-    public static int COL_ADMSN_SAT_MATH75 = 13;
-    public static int COL_ADMSN_SAT_READ25 = 14;
-    public static int COL_ADMSN_SAT_READ50 = 15;
-    public static int COL_ADMSN_SAT_READ75 = 16;
+    public static int COL_ADMSN_ACT25 = 0;
+    public static int COL_ADMSN_ACT50 = 1;
+    public static int COL_ADMSN_ACT75 = 2;
+    public static int COL_ADMSN_ACT_MATH25 = 3;
+    public static int COL_ADMSN_ACT_MATH50 = 4;
+    public static int COL_ADMSN_ACT_MATH75 = 5;
+    public static int COL_ADMSN_ACT_ENG25 = 6;
+    public static int COL_ADMSN_ACT_ENG50 = 7;
+    public static int COL_ADMSN_ACT_ENG75 = 8;
+    public static int COL_ADMSN_SAT50 = 9;
+    public static int COL_ADMSN_SAT_MATH25 = 10;
+    public static int COL_ADMSN_SAT_MATH50 = 11;
+    public static int COL_ADMSN_SAT_MATH75 = 12;
+    public static int COL_ADMSN_SAT_READ25 = 13;
+    public static int COL_ADMSN_SAT_READ50 = 14;
+    public static int COL_ADMSN_SAT_READ75 = 15;
 
-    public static int COL_DEBT_COLLEGE_ID = 0;
-    public static int COL_DEBT_LOAN_PPL = 1;
-    public static int COL_DEBT_COMPLETERS = 2;
-    public static int COL_DEBT_NONCOMPLETERS = 3;
-    public static int COL_DEBT_MONTHLY = 4;
-    public static int COL_DEBT_0to30 = 5;
-    public static int COL_DEBT_30to75 = 6;
-    public static int COL_DEBT_75plus = 7;
+    public static int COL_DEBT_LOAN_PPL = 0;
+    public static int COL_DEBT_COMPLETERS = 1;
+    public static int COL_DEBT_NONCOMPLETERS = 2;
+    public static int COL_DEBT_MONTHLY = 3;
+    public static int COL_DEBT_0to30 = 4;
+    public static int COL_DEBT_30to75 = 5;
+    public static int COL_DEBT_75plus = 6;
 
 
     public static final int COLLEGE_ID = 0;
@@ -154,11 +142,11 @@ public final class Utility {
     public static final int UG_SIZE = 11;
     public static final int FAVORITE = 12;
 
-    public static final int COL_COLLEGE_ID = 0;
-    public static final int COL_CSC_NAME = 1;
-    public static final int COL_LAT = 2;
-    public static final int COL_LON = 3;
-    public static final int COL_PLACE_ID = 4;
+    public static int COL_COLLEGE_ID = 0;
+    public static int COL_CSC_NAME = 1;
+    public static int COL_LAT = 2;
+    public static int COL_LON = 3;
+    public static int COL_PLACE_ID = 4;
 
     public static int COL_EARN_6YRS_25PCT = 0;
     public static int COL_EARN_6YRS_50PCT = 1;
