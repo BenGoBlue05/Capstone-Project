@@ -1,13 +1,18 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
 
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +33,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
+import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.text.NumberFormat;
@@ -37,11 +43,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.scholar.dollar.android.dollarscholarbenlewis.R.string.cost;
-
-public class CostFragment extends Fragment {
+public class CostFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = CostFragment.class.getSimpleName();
+    private int mCollegeId;
 
     private float mCost0to30;
     private float mCost30to48;
@@ -50,14 +55,15 @@ public class CostFragment extends Fragment {
     private float mCost110plus;
     private boolean mIsPublic;
 
-    private float mLoanPct;
-    private float mGrantPct;
+    private static final String[] TUITION_PROJECTION =
+            {CollegeContract.CollegeMainEntry.TUITION_IN_STATE, CollegeContract.CollegeMainEntry.TUITION_OUT_STATE};
 
-    private int mTuitionInState;
-    private int mTuitionOutState;
+    private static final int COL_IN_STATE = 0;
+    private static final int COL_OUT_STATE = 1;
 
     @BindView(R.id.cost_barchart)
     HorizontalBarChart mChart;
+
     @BindView(R.id.cost_grant_piechart)
     PieChart mGrantPiechart;
     @BindView(R.id.cost_loan_piechart)
@@ -73,47 +79,11 @@ public class CostFragment extends Fragment {
     @BindView(R.id.cost_instate_ll)
     LinearLayout mInStateLL;
 
+    private static final int COLLEGE_MAIN_LOADER = 100;
+    private static final int COST_LOADER = 200;
 
-    public void setmLoanPct(float mLoanPct) {
-        this.mLoanPct = mLoanPct;
-    }
-
-    public void setmGrantPct(float mGrantPct) {
-        this.mGrantPct = mGrantPct;
-    }
-
-    public void setmIsPublic(boolean mIsPublic) {
-        this.mIsPublic = mIsPublic;
-    }
 
     public CostFragment() {
-    }
-
-    public void setmCost0to30(float mCost0to30) {
-        this.mCost0to30 = mCost0to30;
-    }
-
-    public void setmCost30to48(float mCost30to48) {
-        this.mCost30to48 = mCost30to48;
-    }
-
-    public void setmCost48to75(float mCost48to75) {
-        this.mCost48to75 = mCost48to75;
-    }
-
-    public void setmCost75to110(float mCost75to110) {
-        this.mCost75to110 = mCost75to110;
-    }
-
-    public void setmCost110plus(float mCost110plus) {
-        this.mCost110plus = mCost110plus;
-    }
-    public void setmTuitionInState(int mTuitionInState) {
-        this.mTuitionInState = mTuitionInState;
-    }
-
-    public void setmTuitionOutState(int mTuitionOutState) {
-        this.mTuitionOutState = mTuitionOutState;
     }
 
     @Override
@@ -135,11 +105,14 @@ public class CostFragment extends Fragment {
             }
         });
 
+        mGrantPiechart.setRotationEnabled(false);
+        mLoanPiechart.setRotationEnabled(false);
         XAxis xl = mChart.getXAxis();
         xl.setPosition(XAxis.XAxisPosition.BOTTOM);
         xl.setDrawAxisLine(true);
         xl.setDrawGridLines(false);
         xl.setGranularity(10f);
+
 
         YAxis yl = mChart.getAxisLeft();
         yl.setDrawAxisLine(true);
@@ -154,7 +127,11 @@ public class CostFragment extends Fragment {
         l.setFormSize(8f);
         l.setXEntrySpace(4f);
 
-        createGraphs();
+        mCollegeId = getActivity().getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
+        mIsPublic = getActivity().getIntent().getBooleanExtra(Utility.PUBLIC_COLLEGE_KEY, false);
+        getLoaderManager().initLoader(COST_LOADER, null, this);
+        getLoaderManager().initLoader(COLLEGE_MAIN_LOADER, null, this);
+
         return rootView;
     }
 
@@ -168,13 +145,14 @@ public class CostFragment extends Fragment {
 
         BarDataSet set;
 
+
         if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
             set = (BarDataSet) mChart.getData().getDataSetByIndex(0);
             set.setValues(entries);
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            set = new BarDataSet(entries, getResources().getString(cost));
+            set = new BarDataSet(entries, getResources().getString(R.string.cost));
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);
@@ -185,25 +163,73 @@ public class CostFragment extends Fragment {
         }
     }
 
-    public void createGraphs() {
-        if (mIsPublic) {
-            mInStateLL.setVisibility(View.VISIBLE);
-            mOutStateLabelTV.setVisibility(View.VISIBLE);
-            mInStateTV.setText(Utility.formatThousandsCircle(mTuitionInState));
-        } else {
-            mInStateLL.setVisibility(View.GONE);
-            mOutStateLabelTV.setVisibility(View.GONE);
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case COLLEGE_MAIN_LOADER:
+                return new CursorLoader(getContext(), CollegeContract.CollegeMainEntry.buildMainWithCollegeId(mCollegeId),
+                        TUITION_PROJECTION, null, null, null);
+            case COST_LOADER:
+                return new CursorLoader(getContext(), CollegeContract.CostEntry.buildCostWithCollegeId(mCollegeId),
+                        Utility.COST_COLUMNS, null, null, null);
+            default:
+                Log.i(LOG_TAG, "CURSOR LOADER ID NOT FOUND");
         }
-        mOutStateTV.setText(Utility.formatThousandsCircle(mTuitionOutState));
-        createPieChart(mGrantPiechart, mGrantPct);
-        createPieChart(mLoanPiechart, mLoanPct);
-
-        setData();
-        mChart.setFitBars(true);
-        mChart.invalidate();
+        return null;
     }
 
-    private void createPieChart(PieChart pieChart, double pct) {
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i(LOG_TAG, "ON LOAD FINISHED STARTED");
+        if (data == null || !data.moveToFirst()) {
+            Log.i(LOG_TAG, "CURSOR IS NULL");
+            return;
+        }
+        Log.i(LOG_TAG, "BEFORE ID CHECKED");
+        switch (loader.getId()) {
+
+            case COLLEGE_MAIN_LOADER:
+                if (mIsPublic){
+                    mInStateLL.setVisibility(View.VISIBLE);
+                    mOutStateLabelTV.setVisibility(View.VISIBLE);
+                    mInStateTV.setText(Utility.formatThousandsCircle(
+                            (data.getInt(COL_IN_STATE))));
+                } else {
+                    mInStateLL.setVisibility(View.GONE);
+                    mOutStateLabelTV.setVisibility(View.GONE);
+                }
+                mOutStateTV.setText(Utility.formatThousandsCircle(
+                        (data.getInt(COL_OUT_STATE))));
+                break;
+
+            case COST_LOADER:
+                Log.i(LOG_TAG, "LOADER ID IDENTIFIED");
+                mCost0to30 = (float) data.getInt(Utility.COL_COST_0to30);
+                mCost30to48 = (float) data.getInt(Utility.COL_COST_30to48);
+                mCost48to75 = (float) data.getInt(Utility.COL_COST_48to75);
+                mCost75to110 = (float) data.getInt(Utility.COL_COST_75to110);
+                mCost110plus = (float) data.getInt(Utility.COL_COST_110plus);
+                double grantPct = data.getDouble(Utility.COL_COST_GRANT_PCT);
+                double loanPct = data.getDouble(Utility.COL_COST_LOAN_PCT);
+
+                createPieChart(mGrantPiechart, grantPct);
+                createPieChart(mLoanPiechart, loanPct);
+
+                setData();
+                mChart.setFitBars(true);
+                mChart.invalidate();
+                break;
+
+            default:
+                Log.i(LOG_TAG, "CURSOR LOADER ID NOT FOUND");
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    private void createPieChart(PieChart pieChart, double pct){
         pieChart.setHoleColor(Color.WHITE);
         pieChart.setHoleRadius(75f);
         pieChart.getLegend().setEnabled(false);
@@ -228,7 +254,7 @@ public class CostFragment extends Fragment {
         pieChart.invalidate();
     }
 
-    private SpannableString createCenterText(double pct) {
+    private SpannableString createCenterText(double pct){
         NumberFormat nf = NumberFormat.getPercentInstance();
         String str = nf.format(pct);
         SpannableString s = new SpannableString(str);
@@ -237,9 +263,8 @@ public class CostFragment extends Fragment {
         return s;
     }
 
-    public interface StudentAidSiteClickListener {
-        public void onStudentAidSiteButtonClicked();
+    public interface StudentAidSiteClickListener{
+        void onStudentAidSiteButtonClicked();
     }
-
 
 }

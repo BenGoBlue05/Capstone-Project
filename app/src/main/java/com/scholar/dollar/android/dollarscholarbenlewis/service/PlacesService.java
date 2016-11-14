@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
@@ -76,13 +77,13 @@ public class PlacesService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        mCollegeId = intent.getIntExtra(Utility.COLLEGE_ID_KEY, -1);
+        mCollegeId = intent.getIntExtra(DetailActivity.COLLEGE_ID_KEY, -1);
         Log.i(LOG_TAG, "PLACES_SERVICES STARTED");
         if (mCollegeId != -1) {
-            mName = intent.getStringExtra(Utility.NAME_KEY);
+            mName = intent.getStringExtra(DetailActivity.NAME_KEY);
             Log.i(LOG_TAG, mName);
-            mLat = intent.getDoubleExtra(Utility.LAT_KEY, -1);
-            mLon = intent.getDoubleExtra(Utility.LON_KEY, -1);
+            mLat = intent.getDoubleExtra(DetailActivity.LAT_KEY, -1);
+            mLon = intent.getDoubleExtra(DetailActivity.LON_KEY, -1);
             try {
                 addPlace();
             } catch (IOException e) {
