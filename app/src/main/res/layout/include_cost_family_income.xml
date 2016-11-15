@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/cardview"
-    android:layout_marginBottom="@dimen/cardview_margin">
+    android:layout_marginBottom="@dimen/cardview_outer_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/cardview_margin">
+        android:padding="@dimen/cardview_outer_margin">
 
         <TextView
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/cost_barchart"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/bargraph_earnings_height"
+            android:layout_height="@dimen/bargraph_height"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"/>

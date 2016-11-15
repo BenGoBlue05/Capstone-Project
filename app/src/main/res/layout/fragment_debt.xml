@@ -5,11 +5,39 @@
     android:layout_height="fill_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.scholar.dollar.android.dollarscholarbenlewis.fragments.DebtFragment">
-        <include layout="@layout/barchart_debt" />
-    </RelativeLayout>
+        android:orientation="vertical">
+        <include layout="@layout/include_debt_loan_ppl"/>
+        <include layout="@layout/include_debt_monthly"/>
+        <include layout="@layout/include_debt_grad_rate" />
+
+        <android.support.v7.widget.CardView
+            style="@style/cardview"
+            android:layout_marginBottom="@dimen/cardview_inner_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="@dimen/cardview_inner_margin">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@string/cum_debt"
+                    android:gravity="center"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/bargraph_height"
+                    android:id="@+id/debt_barchart"/>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

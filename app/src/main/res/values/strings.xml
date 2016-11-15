@@ -29,6 +29,12 @@
     <string name="grant_vs_loan">A Federal Grant, unlike a loan, does not have to be repaid.</string>
     <string name="federal_student_aid_website">Federal Student Aid Website</string>
     <string name="family_income">Family Income ($)</string>
+    <string name="loan_principal">Loan Principal ($)</string>
+    <string name="median_entering_repayment">Median ($) upon Entering Repayment</string>
+    <string name="monthly_payments">Monthly Payments</string>
+    <string name="ten_year_amort">Median Debt ($) of Completers for 10-year Amortization Plan</string>
+    <string name="cum_debt">Cumulative Debt</string>
+    
 
 
     <!-- Fragment tab page title -->
@@ -44,6 +50,12 @@
     <string name="median">Median</string>
     <string name="middle_50">Middle 50%</string>
     <string name="price_by_family_income">Average Net Price by Family Income</string>
+    <string name="completers_noncompleters">Completers vs Non-Completers</string>
+    <string name="median_debt">Median Debt upon Entering Repayment</string>
+    <string name="completers">Completers</string>
+    <string name="noncompleters">Non-Completers</string>
+    <string name="overall">Overall</string>
+
 
 
     <string name="finance">Finance</string>
@@ -53,7 +65,7 @@
     <string name="six_year_grad_rate">Six-year: <xliff:g id="grad_rate">%f</xliff:g></string>
     <string name="act">ACT: <xliff:g id="score">%d</xliff:g></string>
     <string name="sat">SAT: <xliff:g id="score">%d</xliff:g></string>
-    <string name="loan_principal">Loan principal upon entering repayment: $<xliff:g id="debt">%d</xliff:g></string>
+    <string name="loan_principal_entering_repayment">Loan principal upon entering repayment: $<xliff:g id="debt">%d</xliff:g></string>
     <string name="mp">Median loan debt of completers in monthly payments (10-year amortization plan): $<xliff:g id="payment">%d</xliff:g></string>
     <string name="logo">School logo</string>
     <string name="favorites_button">Add to favorites button</string>
@@ -67,6 +79,7 @@
     <string name="six_yrs">6 yrs</string>
 
     <string name="average_net_price">Price ($)</string>
+    
 
 
     <string name="thousand">Thousand</string>
