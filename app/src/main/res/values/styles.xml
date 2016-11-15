@@ -42,15 +42,19 @@
         <item name="android:text">@string/thousand</item>
     </style>
 
+    <style name="cardview">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/cardview_margin</item>
+        <item name="android:layout_marginStart">@dimen/cardview_margin</item>
+        <item name="android:layout_marginEnd">@dimen/cardview_margin</item>
 
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_horizontal"-->
-    <!--android:backgroundTint="@color/colorPrimary"-->
-    <!--android:fontFamily="sans-serif-medium"-->
-    <!--android:gravity="center"-->
-    <!--android:text="@string/thousand"-->
-    <!--android:textAllCaps="true"-->
-    <!--android:textColor="@color/colorPrimary"-->
-    <!--android:textSize="12sp"-->
+
+    </style>
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/cardview_margin"
+    android:layout_marginEnd="@dimen/cardview_margin"
+    android:layout_marginStart="@dimen/cardview_margin"
 </resources>

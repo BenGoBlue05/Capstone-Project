@@ -18,7 +18,7 @@
     <string name="fourYears">4 years</string>
     <string name="fourToSixYears">4–6 years</string>
     <string name="didNotGraduate">Did not Graduate</string>
-    <string name="tuition_and_fees">Tuition &amp; Fees</string>
+    <string name="tuition_and_fees">Tuition &amp; Fees ($)</string>
     <string name="in_state">In-State</string>
     <string name="out_of_state">Out-of-State</string>
     <string name="federal_aid_and_loans">Federal Aid &amp; Loans</string>
@@ -28,6 +28,7 @@
     <string name="share_of_student_body_receiving">Share of Students Receiving:</string>
     <string name="grant_vs_loan">A Federal Grant, unlike a loan, does not have to be repaid.</string>
     <string name="federal_student_aid_website">Federal Student Aid Website</string>
+    <string name="family_income">Family Income ($)</string>
 
 
     <!-- Fragment tab page title -->
@@ -38,9 +39,11 @@
     <string name="completion">Completion</string>
     <string name="admission">Admission</string>
     <string name="photos">Photos</string>
-    <string name="median_earnings">Median Earnings</string>
+    <string name="median_earnings">Median Earnings ($)</string>
     <string name="years_after_completion">(Years After Completion)</string>
     <string name="median">Median</string>
+    <string name="middle_50">Middle 50%</string>
+    <string name="price_by_family_income">Average Net Price by Family Income</string>
 
 
     <string name="finance">Finance</string>
@@ -62,6 +65,8 @@
     <string name="ten_yrs">10 yrs</string>
     <string name="eight_yrs">8 yrs</string>
     <string name="six_yrs">6 yrs</string>
+
+    <string name="average_net_price">Price ($)</string>
 
 
     <string name="thousand">Thousand</string>

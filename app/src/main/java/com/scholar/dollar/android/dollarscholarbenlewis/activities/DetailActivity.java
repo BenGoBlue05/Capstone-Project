@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -79,8 +80,8 @@ public class DetailActivity extends AppCompatActivity
     ImageView mLogoIV;
     @BindView(R.id.detail_collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
-    //    @BindView(R.id.detail_star_iv)
-//    ImageView mStarIV;
+    @BindView(R.id.detail_toolbar)
+    Toolbar mToolbar;
     @BindView(R.id.detail_viewpager)
     ViewPager mViewPager;
     @BindView(R.id.detail_tabs)
@@ -96,15 +97,14 @@ public class DetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         mCollegeId = getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
+        setSupportActionBar(mToolbar);
         ActionBar supportActionBar = getSupportActionBar();
+        setupDetailViewPager(mViewPager);
         mDetailTabs.setupWithViewPager(mViewPager);
+        setUpCollapsingToolbar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        setupDetailViewPager(mViewPager);
-        mDetailTabs.setupWithViewPager(mViewPager);
-
-        setUpCollapsingToolbar();
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -114,8 +114,9 @@ public class DetailActivity extends AppCompatActivity
 
         getSupportLoaderManager().initLoader(COLLEGE_MAIN_LOADER, null, this);
         getSupportLoaderManager().initLoader(PLACE_LOADER, null, this);
-
     }
+
+
 
     private void setupDetailViewPager(ViewPager viewPager) {
         mAdapter = new PageAdapter(getSupportFragmentManager());
