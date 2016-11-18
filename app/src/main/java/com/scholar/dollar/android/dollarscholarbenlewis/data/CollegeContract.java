@@ -44,6 +44,7 @@ public class CollegeContract {
         public static final String GRADUATION_RATE_4_YEARS = "grad_rate_4_yrs";
         public static final String GRADUATION_RATE_6_YEARS = "grad_rate_6_years";
         public static final String UNDERGRAD_SIZE = "undergrads"; //New addition
+        public static final String ADMISSION_RATE = "admission_rate";
         public static final String IS_FAVORITE = "is_favorite";
 
 
@@ -137,13 +138,12 @@ public class CollegeContract {
         public static final String DEBT_TABLE = "debt";
 
         public static final String LOAN_PRINCIPAL_MED = "loan_principal";
-        public static final String DEBT_NONCOMPLETERS_MED = "debt_noncomplerers";
-        public static final String DEBT_COMPLETERS_MED = "debt_completers";
         public static final String MONTH_PAYMENT_10YR_MED = "monthly_payment";
 
-        public static final String DEBT_FAM_0to30_MED = "debt_fam_0to30_med";
-        public static final String DEBT_FAM_30to75_MED = "debt_fam_30to75_med";
-        public static final String DEBT_FAM_75up_MED = "debt_fam_75up_med";
+        public static final String DEBT_10PCT = "debt_10pct";
+        public static final String DEBT_25PCT = "debt_25pct";
+        public static final String DEBT_75PCT = "debt_75pct";
+        public static final String DEBT_90PCT = "debt_90pct";
 
         public static Uri buildDebtUri(long id){
             return ContentUris.withAppendedId(DEBT_CONTENT_URI, id);

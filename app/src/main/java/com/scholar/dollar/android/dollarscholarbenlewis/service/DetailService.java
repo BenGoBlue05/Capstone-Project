@@ -39,7 +39,6 @@ public class DetailService extends IntentService {
     public static final String COST_PUBLIC_48to75 = "2014.cost.net_price.public.by_income_level.48001-75000";
     public static final String COST_PUBLIC_75to110 = "2014.cost.net_price.public.by_income_level.75001-110000";
     public static final String COST_PUBLIC_110plus = "2014.cost.net_price.public.by_income_level.110001-plus";
-
     public static final String COST_LOANS_PCT = "2014.aid.federal_loan_rate";
     public static final String COST_GRANTS_PCT = "2014.student.students_with_pell_grant";
     public static final String[] COST_PUBLIC_FIELDS =
@@ -50,41 +49,33 @@ public class DetailService extends IntentService {
     public static final String COST_PRIVATE_48to75 = "2014.cost.net_price.private.by_income_level.48001-75000";
     public static final String COST_PRIVATE_75to110 = "2014.cost.net_price.private.by_income_level.75001-110000";
     public static final String COST_PRIVATE_110plus = "2014.cost.net_price.private.by_income_level.110001-plus";
-
     public static final String[] COST_PRIVATE_FIELDS =
             {COST_PRIVATE_0to30, COST_PRIVATE_30to48, COST_PRIVATE_48to75, COST_PRIVATE_75to110, COST_PRIVATE_110plus,
             COST_LOANS_PCT, COST_GRANTS_PCT};
 
     public static final String DEBT_LOAN_PRINCIPAL = "2014.aid.loan_principal";
-    public static final String DEBT_COMPLETERS = "2014.aid.median_debt.completers.overall"; //students who completed/graduated
-    public static final String DEBT_NONCOMPLETERS = "2014.aid.median_debt.noncompleters";
     public static final String DEBT_MONTHLY_PAYMENT = "2014.aid.median_debt.completers.monthly_payments"; //10-year amortization plan
-    public static final String DEBT_0to30 = "2014.aid.median_debt.income.0_30000";
-    public static final String DEBT_30to75 = "2014.aid.median_debt.income.30001_75000";
-    public static final String DEBT_75plus = "2014.aid.median_debt.income.greater_than_75000";
-    public static final String[] DEBT_FIELDS = {DEBT_LOAN_PRINCIPAL, DEBT_COMPLETERS, DEBT_NONCOMPLETERS,
-    DEBT_MONTHLY_PAYMENT, DEBT_0to30, DEBT_30to75, DEBT_75plus};
+    public static final String DEBT_10_PCT = "2014.aid.cumulative_debt.10th_percentile";
+    public static final String DEBT_25_PCT = "2014.aid.cumulative_debt.25th_percentile";
+    public static final String DEBT_75_PCT = "2014.aid.cumulative_debt.75th_percentile";
+    public static final String DEBT_90_PCT = "2014.aid.cumulative_debt.90th_percentile";
+    public static final String[] DEBT_FIELDS = {DEBT_LOAN_PRINCIPAL, DEBT_MONTHLY_PAYMENT,
+            DEBT_10_PCT, DEBT_25_PCT, DEBT_75_PCT, DEBT_90_PCT};
 
     public static final String ADMISSION_RATE = "2014.admissions.admission_rate.overall";
-
     public static final String ADMISSION_ACT_25PCT = "2014.admissions.act_scores.25th_percentile.cumulative";
     public static final String ADMISSION_ACT_50PCT = "2014.admissions.act_scores.midpoint.cumulative";
     public static final String ADMISSION_ACT_75PCT = "2014.admissions.act_scores.75th_percentile.cumulative";
-
     public static final String ADMISSION_ACT_ENG_25PCT = "2014.admissions.act_scores.25th_percentile.english";
     public static final String ADMISSION_ACT_ENG_50PCT = "2014.admissions.act_scores.midpoint.english";
     public static final String ADMISSION_ACT_ENG_75PCT = "2014.admissions.act_scores.75th_percentile.english";
-
     public static final String ADMISSION_ACT_MATH_25PCT = "2014.admissions.act_scores.25th_percentile.math";
     public static final String ADMISSION_ACT_MATH_50PCT = "2014.admissions.act_scores.midpoint.math";
     public static final String ADMISSION_ACT_MATH_75PCT = "2014.admissions.act_scores.75th_percentile.math";
-
     public static final String ADMISSION_SAT_50PCT = "2014.admissions.sat_scores.average.overall";
-
     public static final String ADMISSION_SAT_READ_25PCT = "2014.admissions.sat_scores.25th_percentile.critical_reading";
     public static final String ADMISSION_SAT_READ_50PCT = "2014.admissions.sat_scores.midpoint.critical_reading";
     public static final String ADMISSION_SAT_READ_75PCT = "2014.admissions.sat_scores.75th_percentile.critical_reading";
-
     public static final String ADMISSION_SAT_MATH_25PCT = "2014.admissions.sat_scores.25th_percentile.math";
     public static final String ADMISSION_SAT_MATH_50PCT = "2014.admissions.sat_scores.midpoint.math";
     public static final String ADMISSION_SAT_MATH_75PCT = "2014.admissions.sat_scores.75th_percentile.math";
@@ -147,12 +138,11 @@ public class DetailService extends IntentService {
 
                 debtValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
                 debtValues.put(CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED, college.getDouble(DEBT_LOAN_PRINCIPAL));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_COMPLETERS_MED, college.getDouble(DEBT_COMPLETERS));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_NONCOMPLETERS_MED, college.getDouble(DEBT_NONCOMPLETERS));
                 debtValues.put(CollegeContract.DebtEntry.MONTH_PAYMENT_10YR_MED, college.getDouble(DEBT_MONTHLY_PAYMENT));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_FAM_0to30_MED, college.getDouble(DEBT_0to30));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_FAM_30to75_MED, college.getDouble(DEBT_30to75));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_FAM_75up_MED, college.getDouble(DEBT_75plus));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_10PCT, college.getDouble(DEBT_10_PCT));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_25PCT, college.getDouble(DEBT_25_PCT));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_75PCT, college.getDouble(DEBT_75_PCT));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_90PCT, college.getDouble(DEBT_90_PCT));
 
                 admissionValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
                 admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_25_PCT, college.getDouble(ADMISSION_ACT_25PCT));

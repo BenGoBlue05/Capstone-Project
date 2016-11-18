@@ -17,9 +17,6 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by bplewis5 on 10/5/16.
- */
 
 public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeAdapterViewHolder> {
     private static final String LOG_TAG = CollegeAdapter.class.getSimpleName();

@@ -31,10 +31,11 @@
     <string name="family_income">Family Income ($)</string>
     <string name="loan_principal">Loan Principal ($)</string>
     <string name="median_entering_repayment">Median ($) upon Entering Repayment</string>
-    <string name="monthly_payments">Monthly Payments</string>
-    <string name="ten_year_amort">Median Debt ($) of Completers for 10-year Amortization Plan</string>
+    <string name="monthly_payments">Monthly Payments ($)</string>
+    <string name="ten_year_amort">Median for Completers (10-year Amortization Plan)</string>
     <string name="cum_debt">Cumulative Debt</string>
-    
+    <string name="size">Size</string>
+    <string name="graduation">Graduation</string>
 
 
     <!-- Fragment tab page title -->
@@ -45,6 +46,7 @@
     <string name="completion">Completion</string>
     <string name="admission">Admission</string>
     <string name="photos">Photos</string>
+    <string name="photo_of_campus">Photo of Campus</string>
     <string name="median_earnings">Median Earnings ($)</string>
     <string name="years_after_completion">(Years After Completion)</string>
     <string name="median">Median</string>

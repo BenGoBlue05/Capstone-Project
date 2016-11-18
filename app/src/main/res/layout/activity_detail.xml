@@ -27,7 +27,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/detail_ab_background_photo"
+                android:id="@+id/detail_photo"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/app_bar_image_height"
                 android:fitsSystemWindows="true"
@@ -35,7 +35,7 @@
                 app:layout_collapseMode="parallax"
                 tools:background="@drawable/ic_school_black_24dp" />
             <include
-                layout="@layout/include_app_bar_bottom"
+                layout="@layout/include_detail_appbar"
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax" />
 

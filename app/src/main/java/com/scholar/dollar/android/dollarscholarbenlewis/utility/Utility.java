@@ -70,19 +70,11 @@ public final class Utility {
             CollegeContract.CollegeMainEntry.GRADUATION_RATE_4_YEARS,
             CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEARS,
             CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE,
-            CollegeContract.CollegeMainEntry.IS_FAVORITE
+            CollegeContract.CollegeMainEntry.IS_FAVORITE,
+            CollegeContract.CollegeMainEntry.ADMISSION_RATE
     };
 
-    public static String[] DEBT_COLUMNS = {
-            CollegeContract.CollegeMainEntry.COLLEGE_ID,
-            CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED,
-            CollegeContract.DebtEntry.DEBT_COMPLETERS_MED,
-            CollegeContract.DebtEntry.DEBT_NONCOMPLETERS_MED,
-            CollegeContract.DebtEntry.MONTH_PAYMENT_10YR_MED,
-            CollegeContract.DebtEntry.DEBT_FAM_0to30_MED,
-            CollegeContract.DebtEntry.DEBT_FAM_30to75_MED,
-            CollegeContract.DebtEntry.DEBT_FAM_75up_MED
-    };
+
 
     public static String[] ADMISSION_COLUMNS = {
             CollegeContract.CollegeMainEntry.COLLEGE_ID,
@@ -122,16 +114,6 @@ public final class Utility {
     public static int COL_ADMSN_SAT_READ50 = 15;
     public static int COL_ADMSN_SAT_READ75 = 16;
 
-    public static int COL_DEBT_COLLEGE_ID = 0;
-    public static int COL_DEBT_LOAN_PPL = 1;
-    public static int COL_DEBT_COMPLETERS = 2;
-    public static int COL_DEBT_NONCOMPLETERS = 3;
-    public static int COL_DEBT_MONTHLY = 4;
-    public static int COL_DEBT_0to30 = 5;
-    public static int COL_DEBT_30to75 = 6;
-    public static int COL_DEBT_75plus = 7;
-
-
     public static final int COLLEGE_ID = 0;
     public static final int NAME = 1;
     public static final int LOGO = 2;
@@ -143,8 +125,9 @@ public final class Utility {
     public static final int EARNINGS = 8;
     public static final int GRAD_RATE_4_YEARS = 9;
     public static final int GRAD_RATE_6_YEARS = 10;
-    public static final int UG_SIZE = 11;
+    public static final int SIZE = 11;
     public static final int FAVORITE = 12;
+    public static final int ADMISSION_RATE = 13;
 
     public static final int COL_COLLEGE_ID = 0;
     public static final int COL_CSC_NAME = 1;

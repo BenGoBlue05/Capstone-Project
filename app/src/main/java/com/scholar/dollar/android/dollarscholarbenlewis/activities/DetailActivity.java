@@ -9,17 +9,25 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -39,13 +47,18 @@ import com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
         GoogleApiClient.OnConnectionFailedListener,
-        CostFragment.StudentAidSiteClickListener{
+        CostFragment.StudentAidSiteClickListener {
 
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
@@ -61,22 +74,15 @@ public class DetailActivity extends AppCompatActivity
     public static final String LAT_KEY = "lat";
     public static final String LON_KEY = "lon";
 
-    private String mPhotoId;
-    private int mIsFavorite;
-    private PageAdapter mAdapter;
-    @BindView(R.id.detail_ab_background_photo)
+    @BindView(R.id.detail_photo)
     ImageView mBackgroundPhotoIV;
-    @BindView(R.id.detail_ab_name)
+    @BindView(R.id.detail_name)
     TextView mNameTV;
-    @BindView(R.id.detail_ab_city_state)
+    @BindView(R.id.detail_city_state)
     TextView mCityStateTV;
-    @BindView(R.id.detail_ab_ownership)
+    @BindView(R.id.detail_ownership)
     TextView mOwnershipTV;
-    @BindView(R.id.detail_ab_size)
-    TextView mSizeTV;
-
-    TextView mAttrTV;
-    @BindView(R.id.detail_ab_logo)
+    @BindView(R.id.detail_logo)
     ImageView mLogoIV;
     @BindView(R.id.detail_collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
@@ -86,6 +92,15 @@ public class DetailActivity extends AppCompatActivity
     ViewPager mViewPager;
     @BindView(R.id.detail_tabs)
     TabLayout mDetailTabs;
+    @BindView(R.id.detail_size_tv)
+    TextView mSizeTV;
+    @BindView(R.id.detail_admission_pieChart)
+    PieChart mAdmissionPieChart;
+    @BindView(R.id.detail_grad_piechart)
+    PieChart mGradRatePieChart;
+    @BindView(R.id.detail_grad4yrs_tv)
+    TextView m4yearGradRateTV;
+
 
 
     private GoogleApiClient mGoogleApiClient;
@@ -117,9 +132,8 @@ public class DetailActivity extends AppCompatActivity
     }
 
 
-
     private void setupDetailViewPager(ViewPager viewPager) {
-        mAdapter = new PageAdapter(getSupportFragmentManager());
+        PageAdapter mAdapter = new PageAdapter(getSupportFragmentManager());
         mAdapter.addFragment(new EarningsFragment(), getString(R.string.earnings));
         mAdapter.addFragment(new CostFragment(), getString(R.string.cost));
         mAdapter.addFragment(new DebtFragment(), getString(R.string.debt));
@@ -173,12 +187,16 @@ public class DetailActivity extends AppCompatActivity
                     String ownership = mIsPublic ? "Public" : "Private";
                     mOwnershipTV.setText(ownership);
                     mOwnershipTV.setContentDescription(ownership);
-
+                    mSizeTV.setText(Utility.formatThousandsCircle((float) data.getInt(Utility.SIZE)));
                     Picasso.with(this).load(data.getString(Utility.LOGO))
                             .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
+                    createPieChart(mAdmissionPieChart, data.getDouble(Utility.ADMISSION_RATE));
+                    m4yearGradRateTV.setText(String.format(Locale.getDefault(), "%f", data.getDouble(Utility.GRAD_RATE_4_YEARS)));
+                    createPieChart(mGradRatePieChart, data.getDouble(Utility.GRAD_RATE_6_YEARS));
                     mLogoIV.setContentDescription(getString(R.string.logo));
                 }
                 break;
+
             case PLACE_LOADER:
                 if (data != null && data.moveToFirst()) {
                     String placeId = data.getString(Utility.COL_PLACE_ID);
@@ -242,7 +260,41 @@ public class DetailActivity extends AppCompatActivity
                 });
     }
 
-    public void setUpCollapsingToolbar(){
+    private void createPieChart(PieChart pieChart, double pct){
+        pieChart.setHoleColor(Color.WHITE);
+        pieChart.setHoleRadius(75f);
+        pieChart.getLegend().setEnabled(false);
+        pieChart.setCenterText(createCenterText(pct));
+        pieChart.getDescription().setEnabled(false);
+
+        List<PieEntry> entries = new ArrayList<>();
+
+        float grant = 100f * (float) pct;
+        entries.add(new PieEntry(grant, ""));
+        entries.add(new PieEntry(100f - grant, ""));
+
+        int[] colors = {ContextCompat.getColor(this, R.color.colorPrimary), Color.LTGRAY};
+
+        PieDataSet set = new PieDataSet(entries, "");
+        set.setColors(colors);
+
+        PieData pieData = new PieData(set);
+        pieData.setValueTextColor(Color.TRANSPARENT);
+
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+    }
+
+    private SpannableString createCenterText(double pct){
+        NumberFormat nf = NumberFormat.getPercentInstance();
+        String str = nf.format(pct);
+        SpannableString s = new SpannableString(str);
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorPrimary)), 0, s.length(), 0);
+        return s;
+    }
+
+    public void setUpCollapsingToolbar() {
         mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
         mCollapsingToolbar.setExpandedTitleGravity(Gravity.TOP);
         mCollapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);

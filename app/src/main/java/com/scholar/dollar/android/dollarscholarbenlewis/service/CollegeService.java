@@ -45,9 +45,10 @@ public final class CollegeService extends IntentService {
     public static final String LATITUDE = "location.lat";
     public static final String LONGITUDE = "location.lon";
     public static final String LOCALE = "school.locale";
+    public static final String ADMISSION_RATE = "2014.admissions.admission_rate.overall";
     public static final String[] MAIN_FIELDS = {ID, NAME, SCHOOL_URL, CITY, STATE, MED_EARNINGS_10_YEARS,
             IN_STATE_TUITION_AND_FEES, OUT_STATE_TUITION_AND_FEES, OWNERSHIP, GRADUATION_RATE_4_YEARS,
-            GRADUATION_RATE_6_YEARS, UNDERGRAD_SIZE, LATITUDE, LONGITUDE, LOCALE};
+            GRADUATION_RATE_6_YEARS, UNDERGRAD_SIZE, LATITUDE, LONGITUDE, LOCALE, ADMISSION_RATE};
     public String FIELDS_PARAMS = Utility.buildFieldsUrl(new ArrayList<>(Arrays.asList(MAIN_FIELDS)));
 
     //filters
@@ -110,9 +111,10 @@ public final class CollegeService extends IntentService {
                 double lat = college.getDouble(LATITUDE);
                 double lon = college.getDouble(LONGITUDE);
                 int locale = college.getInt(LOCALE);
+                double admissionRate = college.getDouble(ADMISSION_RATE);
                 CollegeMain collegeMain = new CollegeMain(id, name, logoUrl, city, state, ownership,
                         tuitionInState, tuitionOutState, earnings, graduationRate4yr, graduationRate6yr,
-                        undergradSize, lat, lon, locale);
+                        undergradSize, lat, lon, locale, admissionRate);
                 collegesInfo.add(collegeMain);
             }
             return collegesInfo;
@@ -150,6 +152,7 @@ public final class CollegeService extends IntentService {
                 values.put(CollegeContract.CollegeMainEntry.GRADUATION_RATE_6_YEARS, college.getGraduationRate6yr());
                 values.put(CollegeContract.CollegeMainEntry.UNDERGRAD_SIZE, college.getUndergradSize());
                 values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, 0);
+                values.put(CollegeContract.CollegeMainEntry.ADMISSION_RATE, college.getAdmissionRate());
 
                 placeValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, collegeId);
                 placeValues.put(CollegeContract.CollegeMainEntry.NAME, name);

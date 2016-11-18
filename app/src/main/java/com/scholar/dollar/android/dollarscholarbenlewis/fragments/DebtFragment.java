@@ -1,6 +1,7 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,16 +12,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
@@ -38,16 +42,36 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
     private int mCollegeId;
 
     private float mLoanPrincipal;
-    private float mCompleters;
-    private float mNoncompleters;
+    private float m90pct;
+    private float m10pct;
     private float mMonthly;
-    private float m0to30;
-    private float m30to75;
-    private float m75plus;
+    private float m25pct;
+    private float m75pct;
     private static final int DEBT_LOADER = 100;
+    private static final String[] PERCENTILES = {"10", "25", "50", "75", "90"};
+
+    public static final String[] DEBT_COLUMNS = {
+            CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED,
+            CollegeContract.DebtEntry.DEBT_10PCT,
+            CollegeContract.DebtEntry.DEBT_25PCT,
+            CollegeContract.DebtEntry.DEBT_75PCT,
+            CollegeContract.DebtEntry.DEBT_90PCT,
+            CollegeContract.DebtEntry.MONTH_PAYMENT_10YR_MED
+    };
+
+    private static final int COL_PRINCIPAL = 0;
+    private static final int COL_10_PCT = 1;
+    private static final int COL_25_PCT = 2;
+    private static final int COL_75_PCT = 3;
+    private static final int COL_90_PCT = 4;
+    private static final int COL_MONTHLY = 5;
 
     @BindView(R.id.debt_barchart)
     BarChart mChart;
+    @BindView(R.id.debt_principal_tv)
+    TextView mPrincipalTV;
+    @BindView(R.id.debt_monthly)
+    TextView mMonthlyTV;
 
     public DebtFragment() {
     }
@@ -63,27 +87,33 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
 
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return PERCENTILES[(int) value];
+            }
+
+            @Override
+            public int getDecimalDigits() {
+                return 0;
+            }
+        };
+
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(formatter);
         xAxis.setDrawGridLines(false);
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setValueFormatter(new LargeValueFormatter());
         leftAxis.setAxisMinimum(0f);
 
         YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        rightAxis.setAxisMinimum(0f);
+        rightAxis.setEnabled(false);
 
         Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(11f);
-        l.setXEntrySpace(4f);
+        l.setEnabled(false);
 
         mCollegeId = getActivity().getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
         getLoaderManager().initLoader(DEBT_LOADER, null, this);
@@ -94,7 +124,7 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getContext(), CollegeContract.DebtEntry.buildDebtWithCollegeId(mCollegeId),
-                Utility.DEBT_COLUMNS, null, null, null);
+                DEBT_COLUMNS, null, null, null);
     }
 
     @Override
@@ -104,13 +134,17 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
             return;
         }
 
-        mLoanPrincipal = (float) data.getDouble(Utility.COL_DEBT_LOAN_PPL);
-        mCompleters = (float) data.getDouble(Utility.COL_DEBT_COMPLETERS);
-        mNoncompleters = (float) data.getDouble(Utility.COL_DEBT_NONCOMPLETERS);
-        mMonthly = (float) data.getDouble(Utility.COL_DEBT_MONTHLY);
-        m0to30 = (float) data.getDouble(Utility.COL_DEBT_0to30);
-        m30to75 = (float) data.getDouble(Utility.COL_DEBT_30to75);
-        m75plus = (float) data.getDouble(Utility.COL_DEBT_75plus);
+        mLoanPrincipal = (float) data.getDouble(COL_PRINCIPAL);
+        m10pct = (float) data.getDouble(COL_10_PCT);
+        m25pct = (float) data.getDouble(COL_25_PCT);
+        m75pct = (float) data.getDouble(COL_75_PCT);
+        m90pct = (float) data.getDouble(COL_90_PCT);
+        mMonthly = (float) data.getDouble(COL_MONTHLY);
+
+
+        mPrincipalTV.setText(Utility.formatThousandsCircle(mLoanPrincipal));
+        String monthly = Integer.toString(Math.round(mMonthly));
+        mMonthlyTV.setText(monthly);
 
         setData();
         mChart.setFitBars(true);
@@ -125,32 +159,28 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
     private void setData(){
         ArrayList<BarEntry> entries = new ArrayList<>();
         BarDataSet barDataSet;
+        entries.add(new BarEntry(0f, m10pct));
+        entries.add(new BarEntry(1f, m25pct));
+        entries.add(new BarEntry(2f, mLoanPrincipal));
+        entries.add(new BarEntry(3f, m75pct));
+        entries.add(new BarEntry(4f, m90pct));
 
-        entries.add(new BarEntry(0f, mLoanPrincipal));
-        entries.add(new BarEntry(2f, mCompleters));
-        entries.add(new BarEntry(3f, mNoncompleters));
-        entries.add(new BarEntry(5f, mMonthly));
-        entries.add(new BarEntry(7f, m0to30));
-        entries.add(new BarEntry(8f, m30to75));
-        entries.add(new BarEntry(9f, m75plus));
+        BarDataSet set;
 
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
-            barDataSet = (BarDataSet) mChart.getData().getDataSetByIndex(0);
-            barDataSet.setValues(entries);
+        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
+            set = (BarDataSet) mChart.getData().getDataSetByIndex(0);
+            set.setValues(entries);
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            barDataSet = new BarDataSet(entries, getResources().getString(R.string.debt));
-            barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-
+            set = new BarDataSet(entries, getResources().getString(R.string.debt));
+            set.setColor(Color.RED);
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-            dataSets.add(barDataSet);
-
+            dataSets.add(set);
             BarData data = new BarData(dataSets);
-            data.setValueTextSize(10f);
-            data.setBarWidth(0.9f);
-
+            data.setBarWidth(.9f);
+            data.setValueFormatter(new LargeValueFormatter());
+            data.setValueTextSize(12f);
             mChart.setData(data);
         }
     }
