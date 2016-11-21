@@ -100,7 +100,6 @@ public class DetailActivity extends AppCompatActivity
 //    TextView m4yearGradRateTV;
 
 
-
     private GoogleApiClient mGoogleApiClient;
 
 
@@ -258,7 +257,7 @@ public class DetailActivity extends AppCompatActivity
                 });
     }
 
-    private void createPieChart(PieChart pieChart, double pct){
+    private void createPieChart(PieChart pieChart, double pct) {
         pieChart.setHoleColor(Color.WHITE);
         pieChart.setHoleRadius(75f);
         pieChart.getLegend().setEnabled(false);
@@ -283,7 +282,7 @@ public class DetailActivity extends AppCompatActivity
         pieChart.invalidate();
     }
 
-    private SpannableString createCenterText(double pct){
+    private SpannableString createCenterText(double pct) {
         NumberFormat nf = NumberFormat.getPercentInstance();
         String str = nf.format(pct);
         SpannableString s = new SpannableString(str);
@@ -312,11 +311,12 @@ public class DetailActivity extends AppCompatActivity
     @Override
     public void onCalculatorButtonClicked(String uri) {
         Log.i(LOG_TAG, "CALCULATOR BUTTON CLICKED");
+        if (!uri.contains("http")){
+            uri = "https://" + uri;
+        }
         Log.i(LOG_TAG, "URI: " + uri);
         Uri webpage = Uri.parse(uri);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
+        startActivity(intent);
     }
 }

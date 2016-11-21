@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
         CollegeMainFragment favoritesFragment = new CollegeMainFragment();
         favoritesFragment.setArguments(favoriteBundle);
 
-        mAdapter.addFragment(new CollegeMainFragment(), getString(R.string.colleges));
+        mAdapter.addFragment(new CollegeMainFragment(), getString(R.string.all));
         mAdapter.addFragment(publicCollegeFragment, getString(R.string.public_));
         mAdapter.addFragment(favoritesFragment, getString(R.string.favorites));
         viewPager.setAdapter(mAdapter);

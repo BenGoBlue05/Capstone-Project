@@ -36,6 +36,7 @@
     <string name="cum_debt">Cumulative Debt</string>
     <string name="size">Size</string>
     <string name="graduation">Graduation</string>
+    <string name="tuition_plus_fees">Tuition and Fees</string>
 
 
     <!-- Fragment tab page title -->
@@ -57,6 +58,9 @@
     <string name="completers">Completers</string>
     <string name="noncompleters">Non-Completers</string>
     <string name="overall">Overall</string>
+    <string name="salary">Salary</string>
+    <string name="ten_yrs_after_enters">10 yrs after entering</string>
+    <string name="all">All</string>
 
 
 

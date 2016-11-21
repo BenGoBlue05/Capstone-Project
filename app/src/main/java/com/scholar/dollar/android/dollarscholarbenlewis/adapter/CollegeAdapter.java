@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
@@ -60,30 +61,30 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         holder.mOwnershipTV.setText(schoolType);
         holder.mOwnershipTV.setContentDescription(schoolType);
 
-        int tuitionIs = mCursor.getInt(Utility.TUITION_IN_STATE);
-        String tuitionInState =  mContext.getString(R.string.tuition_cardview, tuitionIs);
-        holder.mTuitionIsTV.setText(tuitionInState);
-        holder.mTuitionIsTV.setContentDescription(tuitionInState);
-
-        int tuitionOs = mCursor.getInt(Utility.TUITION_OUT_STATE);
-        String tuitionOutState = mContext.getString(R.string.tuition_cardview, tuitionOs);
-        holder.mTuitionOsTV.setText(tuitionOutState);
-        holder.mTuitionOsTV.setContentDescription(tuitionOutState);
-
-        int earnings = mCursor.getInt(Utility.EARNINGS);
-        String income = mContext.getString(R.string.earnings_cardview, earnings);
+        float earnings = (float) mCursor.getInt(Utility.EARNINGS);
+        String income = "" + Math.round((earnings/1000f));
         holder.mEarningsTV.setText(income);
         holder.mEarningsTV.setContentDescription(income);
-
-        double gradRate = mCursor.getDouble(Utility.GRAD_RATE_6_YEARS);
-        String sixYearGradRate = mContext.getString(R.string.graduation_rate_cardview, gradRate);
-        holder.mGradRateTV.setText(sixYearGradRate);
-        holder.mGradRateTV.setContentDescription(sixYearGradRate);
 
         String logoUrl = mCursor.getString(Utility.LOGO);
         Picasso.with(mContext).load(logoUrl).placeholder(R.drawable.ic_school_black_24dp).into(holder.mLogoIV);
         holder.mLogoIV.setContentDescription(mContext.getString(R.string.logo));
 
+        if (ownership == 1){
+            holder.mInStateLL.setVisibility(View.VISIBLE);
+            float tuitionIs = (float) mCursor.getInt(Utility.TUITION_IN_STATE);
+            String tuitionInState = "" + Math.round((tuitionIs/1000f));
+            holder.mTuitionIsTV.setText(tuitionInState);
+            holder.mTuitionIsTV.setContentDescription(tuitionInState);
+            holder.mOutStateLabelTV.setVisibility(View.VISIBLE);
+        } else{
+            holder.mInStateLL.setVisibility(View.GONE);
+            holder.mOutStateLabelTV.setVisibility(View.GONE);
+        }
+        float tuitionOs = (float) mCursor.getInt(Utility.TUITION_OUT_STATE);
+        String tuitionOutState = "" + Math.round((tuitionOs/1000f));
+        holder.mTuitionOsTV.setText(tuitionOutState);
+        holder.mTuitionOsTV.setContentDescription(tuitionOutState);
     }
 
     @Override
@@ -105,11 +106,12 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         @BindView(R.id.name_tv) TextView mNameTV;
         @BindView(R.id.city_state_tv) TextView mCityStateTV;
         @BindView(R.id.ownership_tv) TextView mOwnershipTV;
-        @BindView(R.id.tuition_is_tv) TextView mTuitionIsTV;
+        @BindView(R.id.main_tuition_is_tv) TextView mTuitionIsTV;
         @BindView(R.id.tuition_os_tv) TextView mTuitionOsTV;
         @BindView(R.id.earnings_tv) TextView mEarningsTV;
-        @BindView(R.id.grad_rate_tv) TextView mGradRateTV;
         @BindView(R.id.logo_iv) ImageView mLogoIV;
+        @BindView(R.id.main_is_ll) LinearLayout mInStateLL;
+        @BindView(R.id.main_os_label_tv) TextView mOutStateLabelTV;
 
         public CollegeAdapterViewHolder(View itemView) {
             super(itemView);
