@@ -19,7 +19,7 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
     public static final String REAL_NN = " REAL NOT NULL";
     public static final String REAL = " REAL";
     static final String DATABASE = "college.db";
-    private static final int VERSION = 50;
+    private static final int VERSION = 56;
 
     public CollegeDbHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -71,18 +71,19 @@ public class CollegeDbHelper extends SQLiteOpenHelper {
                         CollegeContract.CostEntry.COST_FAM_75to110 + INT + COMMA_SEPERATOR +
                         CollegeContract.CostEntry.COST_FAM_OVER_110 + INT + COMMA_SEPERATOR +
                         CollegeContract.CostEntry.LOAN_STUDENTS_PCT + REAL + COMMA_SEPERATOR +
-                        CollegeContract.CostEntry.PELL_STUDENTS_PCT + REAL + " );";
+                        CollegeContract.CostEntry.PELL_STUDENTS_PCT + REAL + COMMA_SEPERATOR +
+                        CollegeContract.CostEntry.PRICE_CALCULATOR_URL + TEXT + " );";
 
         final String CREATE_TABLE_DEBT =
                 "CREATE TABLE " + CollegeContract.DebtEntry.DEBT_TABLE + " (" +
                         CollegeContract.DebtEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEPERATOR +
                         CollegeContract.CollegeMainEntry.COLLEGE_ID + INT_NN + COMMA_SEPERATOR +
-                        CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED + REAL +COMMA_SEPERATOR +
+                        CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED + INT +COMMA_SEPERATOR +
                         CollegeContract.DebtEntry.MONTH_PAYMENT_10YR_MED + REAL + COMMA_SEPERATOR +
-                        CollegeContract.DebtEntry.DEBT_10PCT + REAL + COMMA_SEPERATOR +
-                        CollegeContract.DebtEntry.DEBT_25PCT + REAL + COMMA_SEPERATOR +
-                        CollegeContract.DebtEntry.DEBT_75PCT + REAL + COMMA_SEPERATOR +
-                        CollegeContract.DebtEntry.DEBT_90PCT + REAL + " );";
+                        CollegeContract.DebtEntry.DEBT_10PCT + INT + COMMA_SEPERATOR +
+                        CollegeContract.DebtEntry.DEBT_25PCT + INT + COMMA_SEPERATOR +
+                        CollegeContract.DebtEntry.DEBT_75PCT + INT + COMMA_SEPERATOR +
+                        CollegeContract.DebtEntry.DEBT_90PCT + INT + " );";
 
         final String CREATE_TABLE_ADMISSION =
                 "CREATE TABLE " + CollegeContract.AdmissionEntry.ADMISSION_TABLE + " (" +

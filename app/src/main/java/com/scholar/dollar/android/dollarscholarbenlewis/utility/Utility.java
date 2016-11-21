@@ -39,15 +39,7 @@ public final class Utility {
             CollegeContract.EarningsEntry.EARNINGS_10YRS_75PCT
     };
 
-    public static String[] COST_COLUMNS = {
-            CollegeContract.CostEntry.COST_FAM_0to30,
-            CollegeContract.CostEntry.COST_FAM_30to48,
-            CollegeContract.CostEntry.COST_FAM_48to75,
-            CollegeContract.CostEntry.COST_FAM_75to110,
-            CollegeContract.CostEntry.COST_FAM_OVER_110,
-            CollegeContract.CostEntry.LOAN_STUDENTS_PCT,
-            CollegeContract.CostEntry.PELL_STUDENTS_PCT
-    };
+
 
     public final static String[] PLACE_COLUMNS = {
             CollegeContract.CollegeMainEntry.COLLEGE_ID,
@@ -145,13 +137,6 @@ public final class Utility {
     public static int COL_EARN_10YRS_50PCT = 7;
     public static int COL_EARN_10YRS_75PCT = 8;
 
-    public static int COL_COST_0to30 = 0;
-    public static int COL_COST_30to48 = 1;
-    public static int COL_COST_48to75 = 2;
-    public static int COL_COST_75to110 = 3;
-    public static int COL_COST_110plus = 4;
-    public static int COL_COST_LOAN_PCT = 5;
-    public static int COL_COST_GRANT_PCT= 6;
 
     //filters
     public static final String PREDOMINANT_DEGREE = "school.degrees_awarded.predominant=3"; // 3: bachelors

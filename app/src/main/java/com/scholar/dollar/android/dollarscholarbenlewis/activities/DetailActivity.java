@@ -38,7 +38,6 @@ import com.google.android.gms.location.places.Places;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.fragments.AdmissionFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CostFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.DebtFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.EarningsFragment;
@@ -50,7 +49,6 @@ import com.squareup.picasso.Picasso;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +56,7 @@ import butterknife.ButterKnife;
 public class DetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
         GoogleApiClient.OnConnectionFailedListener,
-        CostFragment.StudentAidSiteClickListener {
+        CostFragment.CostClickListener {
 
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
@@ -98,8 +96,8 @@ public class DetailActivity extends AppCompatActivity
     PieChart mAdmissionPieChart;
     @BindView(R.id.detail_grad_piechart)
     PieChart mGradRatePieChart;
-    @BindView(R.id.detail_grad4yrs_tv)
-    TextView m4yearGradRateTV;
+//    @BindView(R.id.detail_grad4yrs_tv)
+//    TextView m4yearGradRateTV;
 
 
 
@@ -137,7 +135,7 @@ public class DetailActivity extends AppCompatActivity
         mAdapter.addFragment(new EarningsFragment(), getString(R.string.earnings));
         mAdapter.addFragment(new CostFragment(), getString(R.string.cost));
         mAdapter.addFragment(new DebtFragment(), getString(R.string.debt));
-        mAdapter.addFragment(new AdmissionFragment(), getResources().getString(R.string.admission));
+//        mAdapter.addFragment(new AdmissionFragment(), getResources().getString(R.string.admission));
 //        mAdapter.addFragment(new PhotoFragment(), getString(R.string.photos));
         viewPager.setAdapter(mAdapter);
 
@@ -191,7 +189,7 @@ public class DetailActivity extends AppCompatActivity
                     Picasso.with(this).load(data.getString(Utility.LOGO))
                             .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
                     createPieChart(mAdmissionPieChart, data.getDouble(Utility.ADMISSION_RATE));
-                    m4yearGradRateTV.setText(String.format(Locale.getDefault(), "%f", data.getDouble(Utility.GRAD_RATE_4_YEARS)));
+//                    m4yearGradRateTV.setText(String.format(Locale.getDefault(), "%f", data.getDouble(Utility.GRAD_RATE_4_YEARS)));
                     createPieChart(mGradRatePieChart, data.getDouble(Utility.GRAD_RATE_6_YEARS));
                     mLogoIV.setContentDescription(getString(R.string.logo));
                 }
@@ -303,7 +301,19 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public void onStudentAidSiteButtonClicked() {
+        Log.i(LOG_TAG, "STUDENT AID BUTTON CLICKED");
         Uri webpage = Uri.parse("https://studentaid.ed.gov/sa/types");
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onCalculatorButtonClicked(String uri) {
+        Log.i(LOG_TAG, "CALCULATOR BUTTON CLICKED");
+        Log.i(LOG_TAG, "URI: " + uri);
+        Uri webpage = Uri.parse(uri);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);

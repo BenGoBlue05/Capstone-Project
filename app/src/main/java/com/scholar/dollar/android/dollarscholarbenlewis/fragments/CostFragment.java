@@ -57,6 +57,26 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
     private float mCost110plus;
     private boolean mIsPublic;
 
+    public static final String[] COST_COLUMNS = {
+            CollegeContract.CostEntry.COST_FAM_0to30,
+            CollegeContract.CostEntry.COST_FAM_30to48,
+            CollegeContract.CostEntry.COST_FAM_48to75,
+            CollegeContract.CostEntry.COST_FAM_75to110,
+            CollegeContract.CostEntry.COST_FAM_OVER_110,
+            CollegeContract.CostEntry.LOAN_STUDENTS_PCT,
+            CollegeContract.CostEntry.PELL_STUDENTS_PCT,
+            CollegeContract.CostEntry.PRICE_CALCULATOR_URL
+    };
+
+    public static final int COL_COST_0to30 = 0;
+    public static final int COL_COST_30to48 = 1;
+    public static final int COL_COST_48to75 = 2;
+    public static final int COL_COST_75to110 = 3;
+    public static final int COL_COST_110plus = 4;
+    public static final int COL_LOAN_PCT = 5;
+    public static final int COL_GRANT_PCT = 6;
+    public static final int COL_PRICE_CALC = 7;
+
     private static final String[] TUITION_PROJECTION =
             {CollegeContract.CollegeMainEntry.TUITION_IN_STATE, CollegeContract.CollegeMainEntry.TUITION_OUT_STATE};
 
@@ -80,11 +100,14 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
     TextView mOutStateLabelTV;
     @BindView(R.id.cost_instate_ll)
     LinearLayout mInStateLL;
+    @BindView(R.id.cost_calculator_button)
+    Button mCalculatorButton;
+
 
     private static final int COLLEGE_MAIN_LOADER = 100;
     private static final int COST_LOADER = 200;
 
-    final String[] QUINTILES = {"", "0-30k", "30-48k", "48-75k", "75-110k", "110k+"};
+    final String[] QUINTILES = {"0-30k", "30-48k", "48-75k", "75-110k", "110k+"};
 
 
     public CostFragment() {
@@ -104,9 +127,11 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         mStudentAidSiteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((StudentAidSiteClickListener) getActivity()).onStudentAidSiteButtonClicked();
+                ((CostClickListener) getActivity()).onStudentAidSiteButtonClicked();
             }
         });
+
+
 
         mGrantPiechart.setRotationEnabled(false);
         mLoanPiechart.setRotationEnabled(false);
@@ -117,6 +142,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         leftAxis.setValueFormatter(new LargeValueFormatter());
         leftAxis.setAxisMinimum(0f);
         leftAxis.setTextSize(12f);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);
@@ -135,7 +161,6 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAxisMinimum(0f);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(formatter);
@@ -158,7 +183,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
                         TUITION_PROJECTION, null, null, null);
             case COST_LOADER:
                 return new CursorLoader(getContext(), CollegeContract.CostEntry.buildCostWithCollegeId(mCollegeId),
-                        Utility.COST_COLUMNS, null, null, null);
+                        COST_COLUMNS, null, null, null);
             default:
                 Log.i(LOG_TAG, "CURSOR LOADER ID NOT FOUND");
         }
@@ -191,13 +216,21 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
 
             case COST_LOADER:
                 Log.i(LOG_TAG, "LOADER ID IDENTIFIED");
-                mCost0to30 = (float) data.getInt(Utility.COL_COST_0to30);
-                mCost30to48 = (float) data.getInt(Utility.COL_COST_30to48);
-                mCost48to75 = (float) data.getInt(Utility.COL_COST_48to75);
-                mCost75to110 = (float) data.getInt(Utility.COL_COST_75to110);
-                mCost110plus = (float) data.getInt(Utility.COL_COST_110plus);
-                double grantPct = data.getDouble(Utility.COL_COST_GRANT_PCT);
-                double loanPct = data.getDouble(Utility.COL_COST_LOAN_PCT);
+                mCost0to30 = (float) data.getInt(COL_COST_0to30);
+                mCost30to48 = (float) data.getInt(COL_COST_30to48);
+                mCost48to75 = (float) data.getInt(COL_COST_48to75);
+                mCost75to110 = (float) data.getInt(COL_COST_75to110);
+                mCost110plus = (float) data.getInt(COL_COST_110plus);
+                final String priceCalc = data.getString(COL_PRICE_CALC);
+                Log.i(LOG_TAG, "PRICE CALC: " + priceCalc);
+                mCalculatorButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ((CostClickListener) getActivity()).onCalculatorButtonClicked(priceCalc);
+                    }
+                });
+                double grantPct = data.getDouble(COL_GRANT_PCT);
+                double loanPct = data.getDouble(COL_LOAN_PCT);
 
                 createPieChart(mGrantPiechart, grantPct);
                 createPieChart(mLoanPiechart, loanPct);
@@ -218,12 +251,11 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void setData() {
         List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0f, 0f));
-        entries.add(new BarEntry(1f, mCost0to30));
-        entries.add(new BarEntry(2f, mCost30to48));
-        entries.add(new BarEntry(3f, mCost48to75));
-        entries.add(new BarEntry(4f, mCost75to110));
-        entries.add(new BarEntry(5f, mCost110plus));
+        entries.add(new BarEntry(0f, mCost0to30));
+        entries.add(new BarEntry(1f, mCost30to48));
+        entries.add(new BarEntry(2f, mCost48to75));
+        entries.add(new BarEntry(3f, mCost75to110));
+        entries.add(new BarEntry(4f, mCost110plus));
 
         BarDataSet set;
 
@@ -280,8 +312,9 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
         return s;
     }
 
-    public interface StudentAidSiteClickListener{
+    public interface CostClickListener {
         void onStudentAidSiteButtonClicked();
+        void onCalculatorButtonClicked(String uri);
     }
 
 }

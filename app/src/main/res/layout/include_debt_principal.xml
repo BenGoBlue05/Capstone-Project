@@ -41,9 +41,11 @@
             <TextView
                 android:id="@+id/debt_principal_tv"
                 style="@style/circle_style"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:backgroundTint="@android:color/holo_red_dark"/>
 
-            <TextView style="@style/thousand_style" />
+            <TextView style="@style/thousand_style"
+                android:textColor="@android:color/holo_red_dark"/>
 
         </LinearLayout>
 

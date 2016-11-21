@@ -20,8 +20,8 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:contentDescription="@string/logo"
-            android:src="@drawable/ic_school_black_24dp"
-            android:padding="4dp"/>
+            android:padding="4dp"
+            android:src="@drawable/ic_school_black_24dp" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -34,12 +34,11 @@
                 android:id="@+id/detail_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:padding="4dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/black"
-                tools:text="University of Michigan"
-                android:padding="4dp"
-                android:layout_marginStart="4dp"
-                />
+                tools:text="University of Michigan" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -50,24 +49,23 @@
                     android:id="@+id/detail_city_state"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@android:color/black"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    tools:text="Ann Arbor, MI"
-                    android:textStyle="italic"
-
-                    android:paddingStart="4dp"
-                    android:paddingEnd="8dp"
                     android:layout_marginStart="4dp"
-                   />
+                    android:paddingEnd="8dp"
+                    android:paddingStart="4dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+
+                    android:textColor="@android:color/black"
+                    android:textStyle="italic"
+                    tools:text="Ann Arbor, MI" />
 
                 <TextView
                     android:id="@+id/detail_ownership"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textColor="@android:color/black"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    tools:text="Public"
-                    android:textStyle="bold" />
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    tools:text="Public" />
 
             </LinearLayout>
 
@@ -87,7 +85,7 @@
             android:gravity="center"
             android:text="@string/size"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
         <TextView
             android:layout_width="0dp"
@@ -96,7 +94,7 @@
             android:gravity="center"
             android:text="@string/admission"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
         <TextView
             android:layout_width="0dp"
@@ -105,7 +103,7 @@
             android:gravity="center"
             android:text="@string/graduation"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 
@@ -123,45 +121,34 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/circle_style"
-                android:gravity="center"
                 android:id="@+id/detail_size_tv"
-                android:backgroundTint="@android:color/black"/>
+                style="@style/circle_style"
+                android:backgroundTint="@color/colorPrimary"
+                android:gravity="center"
+                android:textSize="20sp" />
 
             <TextView
                 style="@style/thousand_style"
                 android:gravity="center"
-                android:textColor="@android:color/black"/>
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
         <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/detail_admission_pieChart"
             android:layout_width="0dp"
             android:layout_height="@dimen/piechart_height"
-            android:layout_weight="1"
-            android:id="@+id/detail_admission_pieChart" />
+            android:layout_gravity="center"
+            android:layout_weight="1" />
 
-        <LinearLayout
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/detail_grad_piechart"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="@dimen/piechart_height"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/piechart_height"
-                android:id="@+id/detail_grad_piechart"/>
-
-            <TextView
-                android:id="@+id/detail_grad4yrs_tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                tools:text="4 years: 76%"
-                android:gravity="center_horizontal|top"
-                android:textSize="12sp"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 

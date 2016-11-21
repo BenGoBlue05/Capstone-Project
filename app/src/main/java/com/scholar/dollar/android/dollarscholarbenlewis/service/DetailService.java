@@ -41,9 +41,10 @@ public class DetailService extends IntentService {
     public static final String COST_PUBLIC_110plus = "2014.cost.net_price.public.by_income_level.110001-plus";
     public static final String COST_LOANS_PCT = "2014.aid.federal_loan_rate";
     public static final String COST_GRANTS_PCT = "2014.student.students_with_pell_grant";
+    public static final String COST_PRICE_CALCULATOR = "school.price_calculator_url";
     public static final String[] COST_PUBLIC_FIELDS =
             {COST_PUBLIC_0to30, COST_PUBLIC_30to48, COST_PUBLIC_48to75, COST_PUBLIC_75to110, COST_PUBLIC_110plus,
-                    COST_LOANS_PCT, COST_GRANTS_PCT};
+                    COST_LOANS_PCT, COST_GRANTS_PCT, COST_PRICE_CALCULATOR};
     public static final String COST_PRIVATE_0to30 = "2014.cost.net_price.private.by_income_level.0-30000";
     public static final String COST_PRIVATE_30to48 = "2014.cost.net_price.private.by_income_level.30001-48000";
     public static final String COST_PRIVATE_48to75 = "2014.cost.net_price.private.by_income_level.48001-75000";
@@ -51,7 +52,7 @@ public class DetailService extends IntentService {
     public static final String COST_PRIVATE_110plus = "2014.cost.net_price.private.by_income_level.110001-plus";
     public static final String[] COST_PRIVATE_FIELDS =
             {COST_PRIVATE_0to30, COST_PRIVATE_30to48, COST_PRIVATE_48to75, COST_PRIVATE_75to110, COST_PRIVATE_110plus,
-            COST_LOANS_PCT, COST_GRANTS_PCT};
+            COST_LOANS_PCT, COST_GRANTS_PCT,COST_PRICE_CALCULATOR};
 
     public static final String DEBT_LOAN_PRINCIPAL = "2014.aid.loan_principal";
     public static final String DEBT_MONTHLY_PAYMENT = "2014.aid.median_debt.completers.monthly_payments"; //10-year amortization plan
@@ -62,28 +63,28 @@ public class DetailService extends IntentService {
     public static final String[] DEBT_FIELDS = {DEBT_LOAN_PRINCIPAL, DEBT_MONTHLY_PAYMENT,
             DEBT_10_PCT, DEBT_25_PCT, DEBT_75_PCT, DEBT_90_PCT};
 
-    public static final String ADMISSION_RATE = "2014.admissions.admission_rate.overall";
-    public static final String ADMISSION_ACT_25PCT = "2014.admissions.act_scores.25th_percentile.cumulative";
-    public static final String ADMISSION_ACT_50PCT = "2014.admissions.act_scores.midpoint.cumulative";
-    public static final String ADMISSION_ACT_75PCT = "2014.admissions.act_scores.75th_percentile.cumulative";
-    public static final String ADMISSION_ACT_ENG_25PCT = "2014.admissions.act_scores.25th_percentile.english";
-    public static final String ADMISSION_ACT_ENG_50PCT = "2014.admissions.act_scores.midpoint.english";
-    public static final String ADMISSION_ACT_ENG_75PCT = "2014.admissions.act_scores.75th_percentile.english";
-    public static final String ADMISSION_ACT_MATH_25PCT = "2014.admissions.act_scores.25th_percentile.math";
-    public static final String ADMISSION_ACT_MATH_50PCT = "2014.admissions.act_scores.midpoint.math";
-    public static final String ADMISSION_ACT_MATH_75PCT = "2014.admissions.act_scores.75th_percentile.math";
-    public static final String ADMISSION_SAT_50PCT = "2014.admissions.sat_scores.average.overall";
-    public static final String ADMISSION_SAT_READ_25PCT = "2014.admissions.sat_scores.25th_percentile.critical_reading";
-    public static final String ADMISSION_SAT_READ_50PCT = "2014.admissions.sat_scores.midpoint.critical_reading";
-    public static final String ADMISSION_SAT_READ_75PCT = "2014.admissions.sat_scores.75th_percentile.critical_reading";
-    public static final String ADMISSION_SAT_MATH_25PCT = "2014.admissions.sat_scores.25th_percentile.math";
-    public static final String ADMISSION_SAT_MATH_50PCT = "2014.admissions.sat_scores.midpoint.math";
-    public static final String ADMISSION_SAT_MATH_75PCT = "2014.admissions.sat_scores.75th_percentile.math";
-
-    public static final String[] ADMISSION_FIELDS = {ADMISSION_RATE, ADMISSION_ACT_25PCT, ADMISSION_ACT_50PCT, ADMISSION_ACT_75PCT,
-    ADMISSION_ACT_ENG_25PCT, ADMISSION_ACT_ENG_50PCT, ADMISSION_ACT_ENG_75PCT, ADMISSION_ACT_MATH_25PCT, ADMISSION_ACT_MATH_50PCT,
-    ADMISSION_ACT_MATH_75PCT, ADMISSION_SAT_50PCT, ADMISSION_SAT_READ_25PCT, ADMISSION_SAT_READ_50PCT, ADMISSION_SAT_READ_75PCT,
-    ADMISSION_SAT_MATH_25PCT, ADMISSION_SAT_MATH_50PCT, ADMISSION_SAT_MATH_75PCT};
+//    public static final String ADMISSION_RATE = "2014.admissions.admission_rate.overall";
+//    public static final String ADMISSION_ACT_25PCT = "2014.admissions.act_scores.25th_percentile.cumulative";
+//    public static final String ADMISSION_ACT_50PCT = "2014.admissions.act_scores.midpoint.cumulative";
+//    public static final String ADMISSION_ACT_75PCT = "2014.admissions.act_scores.75th_percentile.cumulative";
+//    public static final String ADMISSION_ACT_ENG_25PCT = "2014.admissions.act_scores.25th_percentile.english";
+//    public static final String ADMISSION_ACT_ENG_50PCT = "2014.admissions.act_scores.midpoint.english";
+//    public static final String ADMISSION_ACT_ENG_75PCT = "2014.admissions.act_scores.75th_percentile.english";
+//    public static final String ADMISSION_ACT_MATH_25PCT = "2014.admissions.act_scores.25th_percentile.math";
+//    public static final String ADMISSION_ACT_MATH_50PCT = "2014.admissions.act_scores.midpoint.math";
+//    public static final String ADMISSION_ACT_MATH_75PCT = "2014.admissions.act_scores.75th_percentile.math";
+//    public static final String ADMISSION_SAT_50PCT = "2014.admissions.sat_scores.average.overall";
+//    public static final String ADMISSION_SAT_READ_25PCT = "2014.admissions.sat_scores.25th_percentile.critical_reading";
+//    public static final String ADMISSION_SAT_READ_50PCT = "2014.admissions.sat_scores.midpoint.critical_reading";
+//    public static final String ADMISSION_SAT_READ_75PCT = "2014.admissions.sat_scores.75th_percentile.critical_reading";
+//    public static final String ADMISSION_SAT_MATH_25PCT = "2014.admissions.sat_scores.25th_percentile.math";
+//    public static final String ADMISSION_SAT_MATH_50PCT = "2014.admissions.sat_scores.midpoint.math";
+//    public static final String ADMISSION_SAT_MATH_75PCT = "2014.admissions.sat_scores.75th_percentile.math";
+//
+//    public static final String[] ADMISSION_FIELDS = {ADMISSION_RATE, ADMISSION_ACT_25PCT, ADMISSION_ACT_50PCT, ADMISSION_ACT_75PCT,
+//    ADMISSION_ACT_ENG_25PCT, ADMISSION_ACT_ENG_50PCT, ADMISSION_ACT_ENG_75PCT, ADMISSION_ACT_MATH_25PCT, ADMISSION_ACT_MATH_50PCT,
+//    ADMISSION_ACT_MATH_75PCT, ADMISSION_SAT_50PCT, ADMISSION_SAT_READ_25PCT, ADMISSION_SAT_READ_50PCT, ADMISSION_SAT_READ_75PCT,
+//    ADMISSION_SAT_MATH_25PCT, ADMISSION_SAT_MATH_50PCT, ADMISSION_SAT_MATH_75PCT};
 
 
     public DetailService(String name) {
@@ -98,7 +99,7 @@ public class DetailService extends IntentService {
         ContentValues earningsValues = new ContentValues();
         ContentValues costValues = new ContentValues();
         ContentValues debtValues = new ContentValues();
-        ContentValues admissionValues = new ContentValues();
+//        ContentValues admissionValues = new ContentValues();
         Cursor cursor = getContentResolver().query(
                 CollegeContract.EarningsEntry.buildEarningsWithCollegeId(mCollegeId),
                 new String[]{CollegeContract.CollegeMainEntry.COLLEGE_ID}, null, null, null, null);
@@ -108,6 +109,7 @@ public class DetailService extends IntentService {
                 JSONObject college = jsonObject.getJSONArray("results").getJSONObject(0);
 
                 earningsValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
+
                 earningsValues.put(CollegeContract.EarningsEntry.EARNINGS_6YRS_25PCT, college.getInt(EARNINGS_6YRS_25PCT));
                 earningsValues.put(CollegeContract.EarningsEntry.EARNINGS_6YRS_50PCT, college.getInt(EARNINGS_6YRS_50PCT));
                 earningsValues.put(CollegeContract.EarningsEntry.EARNINGS_6YRS_75PCT, college.getInt(EARNINGS_6YRS_75PCT));
@@ -135,38 +137,39 @@ public class DetailService extends IntentService {
 
                 costValues.put(CollegeContract.CostEntry.LOAN_STUDENTS_PCT, college.getDouble(COST_LOANS_PCT));
                 costValues.put(CollegeContract.CostEntry.PELL_STUDENTS_PCT, college.getDouble(COST_GRANTS_PCT));
+                costValues.put(CollegeContract.CostEntry.PRICE_CALCULATOR_URL, college.getString(COST_PRICE_CALCULATOR));
 
                 debtValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
                 debtValues.put(CollegeContract.DebtEntry.LOAN_PRINCIPAL_MED, college.getDouble(DEBT_LOAN_PRINCIPAL));
-                debtValues.put(CollegeContract.DebtEntry.MONTH_PAYMENT_10YR_MED, college.getDouble(DEBT_MONTHLY_PAYMENT));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_10PCT, college.getDouble(DEBT_10_PCT));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_25PCT, college.getDouble(DEBT_25_PCT));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_75PCT, college.getDouble(DEBT_75_PCT));
-                debtValues.put(CollegeContract.DebtEntry.DEBT_90PCT, college.getDouble(DEBT_90_PCT));
+                debtValues.put(CollegeContract.DebtEntry.MONTH_PAYMENT_10YR_MED, college.getInt(DEBT_MONTHLY_PAYMENT));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_10PCT, handleNullInt(college.get(DEBT_10_PCT)));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_25PCT, college.getInt(DEBT_25_PCT));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_75PCT, college.getInt(DEBT_75_PCT));
+                debtValues.put(CollegeContract.DebtEntry.DEBT_90PCT, handleNullInt(college.get(DEBT_90_PCT)));
 
-                admissionValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_25_PCT, college.getDouble(ADMISSION_ACT_25PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_50_PCT, college.getDouble(ADMISSION_ACT_50PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_75_PCT, college.getDouble(ADMISSION_ACT_75PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_25_PCT, college.getDouble(ADMISSION_ACT_MATH_25PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_50_PCT, college.getDouble(ADMISSION_ACT_MATH_50PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_75_PCT, college.getDouble(ADMISSION_ACT_MATH_75PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_25_PCT, college.getDouble(ADMISSION_ACT_ENG_25PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_50_PCT, college.getDouble(ADMISSION_ACT_ENG_50PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_75_PCT, college.getDouble(ADMISSION_ACT_ENG_75PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.SAT_CUM_50_PCT, college.getDouble(ADMISSION_SAT_50PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_25_PCT, college.getDouble(ADMISSION_SAT_MATH_25PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_50_PCT, college.getDouble(ADMISSION_SAT_MATH_50PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_75_PCT, college.getDouble(ADMISSION_SAT_MATH_75PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_25_PCT, college.getDouble(ADMISSION_SAT_READ_25PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_50_PCT, college.getDouble(ADMISSION_SAT_READ_50PCT));
-                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_75_PCT, college.getDouble(ADMISSION_SAT_READ_75PCT));
+//                admissionValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_25_PCT, college.getDouble(ADMISSION_ACT_25PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_50_PCT, college.getDouble(ADMISSION_ACT_50PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_75_PCT, college.getDouble(ADMISSION_ACT_75PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_25_PCT, college.getDouble(ADMISSION_ACT_MATH_25PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_50_PCT, college.getDouble(ADMISSION_ACT_MATH_50PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_75_PCT, college.getDouble(ADMISSION_ACT_MATH_75PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_25_PCT, college.getDouble(ADMISSION_ACT_ENG_25PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_50_PCT, college.getDouble(ADMISSION_ACT_ENG_50PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_75_PCT, college.getDouble(ADMISSION_ACT_ENG_75PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_CUM_50_PCT, college.getDouble(ADMISSION_SAT_50PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_25_PCT, college.getDouble(ADMISSION_SAT_MATH_25PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_50_PCT, college.getDouble(ADMISSION_SAT_MATH_50PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_75_PCT, college.getDouble(ADMISSION_SAT_MATH_75PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_25_PCT, college.getDouble(ADMISSION_SAT_READ_25PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_50_PCT, college.getDouble(ADMISSION_SAT_READ_50PCT));
+//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_75_PCT, college.getDouble(ADMISSION_SAT_READ_75PCT));
 
 
                 getContentResolver().insert(CollegeContract.EarningsEntry.EARNINGS_CONTENT_URI, earningsValues);
                 getContentResolver().insert(CollegeContract.CostEntry.COST_CONTENT_URI, costValues);
                 getContentResolver().insert(CollegeContract.DebtEntry.DEBT_CONTENT_URI, debtValues);
-                getContentResolver().insert(CollegeContract.AdmissionEntry.ADMISSION_CONTENT_URI, admissionValues);
+//                getContentResolver().insert(CollegeContract.AdmissionEntry.ADMISSION_CONTENT_URI, admissionValues);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -175,6 +178,18 @@ public class DetailService extends IntentService {
                     cursor.close();
                 }
             }
+        }
+    }
+
+    private Integer handleNullInt(Object o){
+        if (o == null){
+            return null;
+        }
+        try{
+            return (Integer) o;
+        } catch (ClassCastException e){
+            Log.e(LOG_TAG, "CLASS CAST EXCEPTION: " + e);
+            return null;
         }
     }
 
@@ -193,7 +208,7 @@ public class DetailService extends IntentService {
             fieldArrays.add(EARNINGS_FIELDS);
             fieldArrays.add(costFields);
             fieldArrays.add(DEBT_FIELDS);
-            fieldArrays.add(ADMISSION_FIELDS);
+//            fieldArrays.add(ADMISSION_FIELDS);
             String url = Utility.BASE_URL + Utility.createCollegeFilter(mCollegeId) + Utility.buildFields(fieldArrays);
             Log.i(LOG_TAG, url);
 

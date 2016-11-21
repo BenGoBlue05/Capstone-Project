@@ -53,16 +53,13 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     private static final int COLLEGE_LOADER = 1000;
     private CollegeAdapter mCollegeAdapter;
 
-
-    private LoaderManager mLoaderManager;
-
     public CollegeMainFragment() {
     }
 
     public void updateStateSelection(String state) {
         Log.i(LOG_TAG, "STATE INPUT UPDATE_STATE_SELECTION: " + state);
         getStateSelection(state);
-        mLoaderManager.restartLoader(COLLEGE_LOADER, null, this);
+        getLoaderManager().restartLoader(COLLEGE_LOADER, null, this);
     }
 
     @Nullable
@@ -84,6 +81,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         recyclerView.setAdapter(mCollegeAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        getLoaderManager().initLoader(COLLEGE_LOADER, null, this);
         return recyclerView;
     }
 
@@ -112,13 +110,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
             mSelectionArgs = null;
         }
         Log.i(LOG_TAG, "SELECTION: " + mSelection);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mLoaderManager = getLoaderManager();
-        mLoaderManager.initLoader(COLLEGE_LOADER, null, this);
     }
 
 

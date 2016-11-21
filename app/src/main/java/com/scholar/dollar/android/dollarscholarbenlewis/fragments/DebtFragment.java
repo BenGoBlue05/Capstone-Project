@@ -101,6 +101,7 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
         xAxis.setValueFormatter(formatter);
         xAxis.setDrawGridLines(false);
 
@@ -158,13 +159,11 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void setData(){
         ArrayList<BarEntry> entries = new ArrayList<>();
-        BarDataSet barDataSet;
         entries.add(new BarEntry(0f, m10pct));
         entries.add(new BarEntry(1f, m25pct));
         entries.add(new BarEntry(2f, mLoanPrincipal));
         entries.add(new BarEntry(3f, m75pct));
         entries.add(new BarEntry(4f, m90pct));
-
         BarDataSet set;
 
         if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
@@ -173,7 +172,7 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            set = new BarDataSet(entries, getResources().getString(R.string.debt));
+            set = new BarDataSet(entries, getResources().getString(R.string.average_net_price));
             set.setColor(Color.RED);
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);

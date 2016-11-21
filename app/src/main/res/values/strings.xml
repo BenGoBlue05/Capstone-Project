@@ -81,8 +81,7 @@
     <string name="six_yrs">6 yrs</string>
 
     <string name="average_net_price">Price ($)</string>
-    
-
+    <string name="percentile">Percentile</string>
 
     <string name="thousand">Thousand</string>
     <string name="act_middle_50">ACT Middle 50 Percentile</string>
@@ -109,4 +108,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="price_calculator">Price Calculator</string>
 </resources>
