@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,45 +37,41 @@ import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility.STATE_KEY;
-
 public class MainActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener
-//        CollegeMainFragment.OnStateSelectedListener
-{
+        GoogleApiClient.OnConnectionFailedListener {
 
-//    private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mTitle;
     public static final String ANONYMOUS = "anonymous";
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private String mUsername;
     private String mPhotoUrl;
-    private String mStateSelected;
     public GoogleApiClient mGoogleApiClient;
+    private String mState;
+    private PageAdapter mPageAdapter;
+    private Bundle mFavoriteArgs;
+    private Bundle mPublicArgs;
+    private Spinner mSpinner;
+    private AdapterView.OnItemSelectedListener mStateListener;
+    private TabLayout.ViewPagerOnTabSelectedListener mTabListener;
 
-    private PageAdapter mAdapter;
-
-    @BindView(R.id.nav_view) NavigationView mNavView;
-    @BindView(R.id.drawer) DrawerLayout mDrawerLayout;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.viewpager) ViewPager mViewPager;
-    @BindView(R.id.tabs) TabLayout mTabs;
-
-    public final String getState() {
-        return mStateSelected;
-    }
+    @BindView(R.id.nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.drawer)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
+    @BindView(R.id.tabs)
+    TabLayout mTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
-
         ButterKnife.bind(this);
-
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
@@ -89,106 +85,99 @@ public class MainActivity extends AppCompatActivity implements
             return;
         } else {
             mUsername = mFirebaseUser.getDisplayName();
-            mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
+            mPhotoUrl = mFirebaseUser.getPhotoUrl() != null ? mFirebaseUser.getPhotoUrl().toString() : null;
         }
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API)
-                .build();
+
+        if (savedInstanceState == null) {
+            Intent publicCollegesIntent = new Intent(this, CollegeService.class)
+                    .putExtra(Utility.PUBLIC_COLLEGE_KEY, true);
+            startService(new Intent(this, CollegeService.class));
+            startService(publicCollegesIntent);
+        }
+        mPublicArgs = new Bundle();
+        mPublicArgs.putBoolean(Utility.PUBLIC_COLLEGE_KEY, true);
+        mFavoriteArgs = new Bundle();
+        mFavoriteArgs.putBoolean(Utility.FAVORITE_COLLEGE_KEY, true);
 
         setSupportActionBar(mToolbar);
-//        setupViewPager(viewPager, createCollegeFragment(false, false), createCollegeFragment(true, false));
         setupViewPager(mViewPager);
         mTabs.setupWithViewPager(mViewPager);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
                     = VectorDrawableCompat.create(getResources(), R.drawable.ic_filter_list_black_24dp, getTheme());
-            indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
+            if (indicator != null) {
+                indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
+            }
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        mTitle  = getTitle();
-        Log.i(LOG_TAG, "M_TITLE: " + mTitle);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                if (!mStateSelected.equals("All")) {
-                    mTitle = mStateSelected;
-                } else {
-                    mTitle = getString(R.string.app_name);
-                }
-                updatePages();
-                getSupportActionBar().setTitle(mTitle);
-            }
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-
-        Spinner spinner = (Spinner) mNavView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(
+        mSpinner = (Spinner) mNavView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
+        ArrayAdapter<CharSequence> mSpinnerAdapter = ArrayAdapter.createFromResource(
                 this, R.array.states_array, android.R.layout.simple_spinner_item);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(mSpinnerAdapter);
+
+        mTabListener = new TabLayout.ViewPagerOnTabSelectedListener(mViewPager);
+        mStateListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mStateSelected = parent.getSelectedItem().toString();
-                Log.i(LOG_TAG, "STATE SELECTED: " + mStateSelected);
-                if (mStateSelected.equals("All")){
-                    startService(new Intent(getApplicationContext(), CollegeService.class));
-                    Intent publicCollegesIntent = new Intent(getApplicationContext(), CollegeService.class)
-                            .putExtra(Utility.PUBLIC_COLLEGE_KEY, true);
-                    startService(publicCollegesIntent);
-                } else{
-                    startService(new Intent(getApplicationContext(), CollegeService.class)
-                            .putExtra(STATE_KEY, mStateSelected));
+                if (!parent.getSelectedItem().toString().equals(mState)) {
+                    mState = parent.getSelectedItem().toString();
+                    Log.i(LOG_TAG, "STATE: " + mState);
+                    if (!mState.equals("All")) {
+                        startService(new Intent(getApplicationContext(), CollegeService.class)
+                                .putExtra(Utility.STATE_KEY, mState));
+                    }
+                    CollegeMainFragment collegeMainFragment = (CollegeMainFragment) mPageAdapter.getItem(0);
+                    CollegeMainFragment publicFragment = (CollegeMainFragment) mPageAdapter.getItem(1);
+
+                    collegeMainFragment.setState(mState);
+                    publicFragment.setState(mState);
                 }
+                mToolbar.setTitle(mState);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                Log.i(LOG_TAG, "NOTHING SELECTED FOR SPINNER");
             }
-        });
-        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        };
+
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        mAdapter = new PageAdapter(getSupportFragmentManager());
+        mPageAdapter = new PageAdapter(getSupportFragmentManager());
+        Bundle stateArg = new Bundle();
+        Bundle publicArgs = new Bundle(mPublicArgs);
+        Bundle favoriteArgs = new Bundle(mFavoriteArgs);
+        stateArg.putString(Utility.STATE_KEY, mState);
+        publicArgs.putString(Utility.STATE_KEY, mState);
+        favoriteArgs.putString(Utility.STATE_KEY, mState);
 
-        Bundle publicBundle = new Bundle();
-        publicBundle.putBoolean(Utility.PUBLIC_COLLEGE_KEY, true);
-        CollegeMainFragment publicCollegeFragment = new CollegeMainFragment();
-        publicCollegeFragment.setArguments(publicBundle);
+        CollegeMainFragment mainFragment = new CollegeMainFragment();
+        CollegeMainFragment publicFragment = new CollegeMainFragment();
+        CollegeMainFragment favoriteFragment = new CollegeMainFragment();
 
-        Bundle favoriteBundle = new Bundle();
-        favoriteBundle.putBoolean(Utility.FAVORITE_COLLEGE_KEY, true);
-        CollegeMainFragment favoritesFragment = new CollegeMainFragment();
-        favoritesFragment.setArguments(favoriteBundle);
+        mainFragment.setArguments(stateArg);
+        publicFragment.setArguments(publicArgs);
+        favoriteFragment.setArguments(favoriteArgs);
 
-        mAdapter.addFragment(new CollegeMainFragment(), getString(R.string.all));
-        mAdapter.addFragment(publicCollegeFragment, getString(R.string.public_));
-        mAdapter.addFragment(favoritesFragment, getString(R.string.favorites));
-        viewPager.setAdapter(mAdapter);
+        mPageAdapter.addFragment(mainFragment, getString(R.string.all));
+        mPageAdapter.addFragment(publicFragment, getString(R.string.public_));
+        mPageAdapter.addFragment(favoriteFragment, getString(R.string.favorites));
+        viewPager.setAdapter(mPageAdapter);
     }
 
-    private void updatePages(){
-        Log.i(LOG_TAG, "UPDATE_PAGES STATE SELECTED: " + mStateSelected);
-        CollegeMainFragment collegeFragment = (CollegeMainFragment) mAdapter.getItem(0);
-        CollegeMainFragment publicFragment = (CollegeMainFragment) mAdapter.getItem(1);
-        collegeFragment.updateStateSelection(mStateSelected);
-        publicFragment.updateStateSelection(mStateSelected);
 
-    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -204,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.sign_out:
                 mFirebaseAuth.signOut();
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient);
@@ -222,4 +211,15 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSpinner.setOnItemSelectedListener(mStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
 }

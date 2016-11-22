@@ -5,5 +5,5 @@
     <item
         android:id="@+id/navigation_drawer_item3"
         android:title="@string/state"
-        app:actionLayout="@layout/spinner"/>
+        app:actionLayout="@layout/nav_spinner"/>
 </menu>

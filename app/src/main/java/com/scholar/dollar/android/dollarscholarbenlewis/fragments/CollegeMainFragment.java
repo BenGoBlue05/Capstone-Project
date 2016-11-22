@@ -2,7 +2,6 @@ package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,48 +23,47 @@ import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
-/**
- * Created by bplewis5 on 10/3/16.
- */
+import java.util.List;
 
 public class CollegeMainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = CollegeMainFragment.class.getSimpleName();
 //    OnStateSelectedListener mCallback;
 
-    private String mSelection;
-    private String[] mSelectionArgs;
-    private ArrayList<String> mSelectionList;
-    private ArrayList<String> mSelectionArgList;
-    private FirebaseAnalytics mFirebaseAnalytics;
-    public static final String OWNERSHIP_SELECTION =
-            CollegeContract.CollegeMainEntry.OWNERSHIP + " = ? ";
-    public static final String FAVORITES_SELECTION =
-            CollegeContract.CollegeMainEntry.IS_FAVORITE + " = ? ";
-    public static final String STATES_SELECTION =
-            CollegeContract.CollegeMainEntry.STATE + " = ? ";
-    public static final String SORT_HIGHEST_EARNINGS = CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + " DESC";
-    private boolean mOnlyPublic;
 
-    private Uri mUri;
-    private static final int COLLEGE_LOADER = 1000;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    public static final String SORT_HIGHEST_EARNINGS = CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + " DESC";
+    public static final int COLLEGE_LOADER = 1000;
     private CollegeAdapter mCollegeAdapter;
+    private boolean mIsPublic;
+    private String mState;
+    private Bundle mArgs;
 
     public CollegeMainFragment() {
     }
 
-    public void updateStateSelection(String state) {
-        Log.i(LOG_TAG, "STATE INPUT UPDATE_STATE_SELECTION: " + state);
-        getStateSelection(state);
-        getLoaderManager().restartLoader(COLLEGE_LOADER, null, this);
+    public String getState() {
+        return mState;
+    }
+
+    public void setState(String mState) {
+        this.mState = mState;
+        onStateChanged();
+    }
+
+    private void onStateChanged(){
+        Bundle args = mArgs != null ? (Bundle) mArgs.clone() : null;
+        if (args != null) {
+            args.putString(Utility.STATE_KEY, mState);
+        }
+        getLoaderManager().restartLoader(COLLEGE_LOADER, args, this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         mCollegeAdapter = new CollegeAdapter(getContext(), new CollegeAdapter.CollegeAdapterOnClickHandler() {
             @Override
             public void onClick(int collegeId, boolean isPublic, CollegeAdapter.CollegeAdapterViewHolder vh) {
@@ -81,35 +79,10 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         recyclerView.setAdapter(mCollegeAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        getLoaderManager().initLoader(COLLEGE_LOADER, null, this);
+        mArgs = getArguments() != null ? getArguments() : null;
+        mIsPublic = mArgs != null && mArgs.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false);
+        getLoaderManager().initLoader(COLLEGE_LOADER, mArgs, this);
         return recyclerView;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
-        mSelectionList = new ArrayList<>();
-        mSelectionArgList = new ArrayList<>();
-        if (args != null) {
-            mSelectionArgs = new String[]{"1"};
-            mSelectionArgList.add("1");
-            if (args.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false)) {
-                mOnlyPublic = true;
-                mSelectionList.add(OWNERSHIP_SELECTION);
-                mSelection = OWNERSHIP_SELECTION;
-            } else {
-                mSelection = FAVORITES_SELECTION;
-                mSelectionList.add(FAVORITES_SELECTION);
-                mOnlyPublic = false;
-            }
-        } else {
-            mOnlyPublic = false;
-            mSelection = null;
-            mSelectionArgs = null;
-        }
-        Log.i(LOG_TAG, "SELECTION: " + mSelection);
     }
 
 
@@ -120,37 +93,52 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.i(LOG_TAG, "SELECTION FROM ON_CREATE_LOADER: " + mSelection);
-        Log.i(LOG_TAG, "SELECTION ARGS FROM ON_CREATE_LOADER: " + Arrays.toString(mSelectionArgs));
+        String selection;
+        String[] selectionArgs;
+        List<String> selectList = new ArrayList<>();
+        List<String> argList = new ArrayList<>();
+
+        if (args != null) {
+            String state = args.getString(Utility.STATE_KEY, "All");
+            Log.i(LOG_TAG, "ON_CREATE_LOADER STATE: " + state);
+            if (!state.equals("All")) {
+                selectList.add(CollegeContract.CollegeMainEntry.STATE + " = ? ");
+                argList.add(state);
+            }
+            if (args.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false)) {
+                Log.i(LOG_TAG, "ON CREATE LOADER: PUBLIC");
+                selectList.add(CollegeContract.CollegeMainEntry.OWNERSHIP + " = ? ");
+                argList.add("1");
+            } else if (args.getBoolean(Utility.FAVORITE_COLLEGE_KEY)) {
+                selectList.add(CollegeContract.CollegeMainEntry.IS_FAVORITE + " = ? ");
+                argList.add("1");
+            }
+        }
+        int size = selectList.size();
+        if (size > 0) {
+            selection = "";
+            selectionArgs = new String[size];
+            for (int i = 0; i < size; i++) {
+                selection += selectList.get(i);
+                selectionArgs[i] = argList.get(i);
+                Log.i(LOG_TAG, "SELECTION ARG: " + selectionArgs[i]);
+                if (i < size - 1) {
+                    selection += " AND ";
+                }
+            }
+            Log.i(LOG_TAG, "SELECTION: " + selection);
+        } else {
+            selection = null;
+            selectionArgs = null;
+        }
+
         return new CursorLoader(getContext(), CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI,
-                Utility.COLLEGE_COLUMNS, mSelection, mSelectionArgs, SORT_HIGHEST_EARNINGS);
+                Utility.COLLEGE_COLUMNS, selection, selectionArgs, SORT_HIGHEST_EARNINGS);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCollegeAdapter.swapCursor(data);
-    }
-
-    private void getStateSelection(String state) {
-        if (state.equals("All")) {
-            if (mOnlyPublic) {
-                mSelection = OWNERSHIP_SELECTION;
-                mSelectionArgs = new String[]{"1"};
-            } else {
-                mSelection = null;
-                mSelectionArgs = null;
-            }
-            return;
-        }
-        if (!mOnlyPublic) {
-            mSelection = STATES_SELECTION;
-            mSelectionArgs = new String[]{state};
-            Log.i(LOG_TAG, "GET_STATE_SELECTION: " + mSelection);
-        } else {
-            mSelection = OWNERSHIP_SELECTION + " AND " + STATES_SELECTION;
-            mSelectionArgs = new String[]{"1", state};
-            Log.i(LOG_TAG, "GET_STATE_SELECTION: " + mSelection);
-        }
     }
 
 }
