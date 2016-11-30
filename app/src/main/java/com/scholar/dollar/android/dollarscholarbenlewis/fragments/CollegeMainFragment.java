@@ -62,8 +62,8 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.alt_layout, container, false);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         mCollegeAdapter = new CollegeAdapter(getContext(), new CollegeAdapter.CollegeAdapterOnClickHandler() {
             @Override

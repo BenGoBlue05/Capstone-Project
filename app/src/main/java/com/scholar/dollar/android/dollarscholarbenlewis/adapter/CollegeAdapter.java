@@ -65,8 +65,14 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         String income = "" + Math.round((earnings/1000f));
         holder.mEarningsTV.setText(income);
         holder.mEarningsTV.setContentDescription(income);
+        if (position < 50){
+            holder.mRankTV.setText(String.valueOf(position + 1));
+            holder.mRankTV.setVisibility(View.VISIBLE);
+        } else{ holder.mRankTV.setVisibility(View.GONE);
+        }
         String logoUrl = mCursor.getString(Utility.LOGO);
-        Picasso.with(mContext).load(logoUrl).placeholder(R.drawable.ic_school_black_24dp).into(holder.mLogoIV);
+        Picasso.with(mContext).load(logoUrl).placeholder(R.drawable.gray)
+                .error(R.drawable.ic_school_black_24dp).into(holder.mLogoIV);
         holder.mLogoIV.setContentDescription(mContext.getString(R.string.logo));
 
         if (ownership == 1){
@@ -111,6 +117,8 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         @BindView(R.id.logo_iv) ImageView mLogoIV;
         @BindView(R.id.main_is_ll) LinearLayout mInStateLL;
         @BindView(R.id.main_os_label_tv) TextView mOutStateLabelTV;
+        @BindView(R.id.item_star_tv) TextView mStarTV;
+        @BindView(R.id.rank_tv) TextView mRankTV;
 
         public CollegeAdapterViewHolder(View itemView) {
             super(itemView);
