@@ -37,6 +37,7 @@
     <string name="size">Size</string>
     <string name="graduation">Graduation</string>
     <string name="tuition_plus_fees">Tuition and Fees</string>
+    <string name="highest_med_salary">Highest Median Salary 10 yrs from entering</string>
 
 
     <!-- Fragment tab page title -->
@@ -49,7 +50,7 @@
     <string name="photos">Photos</string>
     <string name="photo_of_campus">Photo of Campus</string>
     <string name="median_earnings">Median Earnings ($)</string>
-    <string name="years_after_completion">(Years After Completion)</string>
+    <string name="years_after_entry">(Years After Entering)</string>
     <string name="median">Median</string>
     <string name="middle_50">Middle 50%</string>
     <string name="price_by_family_income">Average Net Price by Family Income</string>

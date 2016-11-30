@@ -62,7 +62,8 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
+        View rootView = inflater.inflate(R.layout.alt_layout, container, false);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         mCollegeAdapter = new CollegeAdapter(getContext(), new CollegeAdapter.CollegeAdapterOnClickHandler() {
             @Override
@@ -82,7 +83,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         mArgs = getArguments() != null ? getArguments() : null;
         mIsPublic = mArgs != null && mArgs.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false);
         getLoaderManager().initLoader(COLLEGE_LOADER, mArgs, this);
-        return recyclerView;
+        return rootView;
     }
 
 

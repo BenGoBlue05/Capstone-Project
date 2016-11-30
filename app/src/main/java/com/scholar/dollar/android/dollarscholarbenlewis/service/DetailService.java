@@ -52,7 +52,7 @@ public class DetailService extends IntentService {
     public static final String COST_PRIVATE_110plus = "2014.cost.net_price.private.by_income_level.110001-plus";
     public static final String[] COST_PRIVATE_FIELDS =
             {COST_PRIVATE_0to30, COST_PRIVATE_30to48, COST_PRIVATE_48to75, COST_PRIVATE_75to110, COST_PRIVATE_110plus,
-            COST_LOANS_PCT, COST_GRANTS_PCT,COST_PRICE_CALCULATOR};
+                    COST_LOANS_PCT, COST_GRANTS_PCT, COST_PRICE_CALCULATOR};
 
     public static final String DEBT_LOAN_PRINCIPAL = "2014.aid.loan_principal";
     public static final String DEBT_MONTHLY_PAYMENT = "2014.aid.median_debt.completers.monthly_payments"; //10-year amortization plan
@@ -99,11 +99,12 @@ public class DetailService extends IntentService {
         ContentValues earningsValues = new ContentValues();
         ContentValues costValues = new ContentValues();
         ContentValues debtValues = new ContentValues();
-//        ContentValues admissionValues = new ContentValues();
         Cursor cursor = getContentResolver().query(
                 CollegeContract.EarningsEntry.buildEarningsWithCollegeId(mCollegeId),
                 new String[]{CollegeContract.CollegeMainEntry.COLLEGE_ID}, null, null, null, null);
-        if (cursor == null || !cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.close();
+        } else {
             try {
                 JSONObject jsonObject = new JSONObject(json);
                 JSONObject college = jsonObject.getJSONArray("results").getJSONObject(0);
@@ -121,13 +122,13 @@ public class DetailService extends IntentService {
                 earningsValues.put(CollegeContract.EarningsEntry.EARNINGS_10YRS_75PCT, college.getInt(EARNINGS_10YRS_75PCT));
                 costValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
 
-                if (mIsPublic){
+                if (mIsPublic) {
                     costValues.put(CollegeContract.CostEntry.COST_FAM_0to30, college.getInt(COST_PUBLIC_0to30));
                     costValues.put(CollegeContract.CostEntry.COST_FAM_30to48, college.getInt(COST_PUBLIC_30to48));
                     costValues.put(CollegeContract.CostEntry.COST_FAM_48to75, college.getInt(COST_PUBLIC_48to75));
                     costValues.put(CollegeContract.CostEntry.COST_FAM_75to110, college.getInt(COST_PUBLIC_75to110));
                     costValues.put(CollegeContract.CostEntry.COST_FAM_OVER_110, college.getInt(COST_PUBLIC_110plus));
-                } else{
+                } else {
                     costValues.put(CollegeContract.CostEntry.COST_FAM_0to30, college.getInt(COST_PRIVATE_0to30));
                     costValues.put(CollegeContract.CostEntry.COST_FAM_30to48, college.getInt(COST_PRIVATE_30to48));
                     costValues.put(CollegeContract.CostEntry.COST_FAM_48to75, college.getInt(COST_PRIVATE_48to75));
@@ -147,47 +148,27 @@ public class DetailService extends IntentService {
                 debtValues.put(CollegeContract.DebtEntry.DEBT_75PCT, college.getInt(DEBT_75_PCT));
                 debtValues.put(CollegeContract.DebtEntry.DEBT_90PCT, handleNullInt(college.get(DEBT_90_PCT)));
 
-//                admissionValues.put(CollegeContract.CollegeMainEntry.COLLEGE_ID, mCollegeId);
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_25_PCT, college.getDouble(ADMISSION_ACT_25PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_50_PCT, college.getDouble(ADMISSION_ACT_50PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_CUM_75_PCT, college.getDouble(ADMISSION_ACT_75PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_25_PCT, college.getDouble(ADMISSION_ACT_MATH_25PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_50_PCT, college.getDouble(ADMISSION_ACT_MATH_50PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_MATH_75_PCT, college.getDouble(ADMISSION_ACT_MATH_75PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_25_PCT, college.getDouble(ADMISSION_ACT_ENG_25PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_50_PCT, college.getDouble(ADMISSION_ACT_ENG_50PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.ACT_ENG_75_PCT, college.getDouble(ADMISSION_ACT_ENG_75PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_CUM_50_PCT, college.getDouble(ADMISSION_SAT_50PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_25_PCT, college.getDouble(ADMISSION_SAT_MATH_25PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_50_PCT, college.getDouble(ADMISSION_SAT_MATH_50PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_MATH_75_PCT, college.getDouble(ADMISSION_SAT_MATH_75PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_25_PCT, college.getDouble(ADMISSION_SAT_READ_25PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_50_PCT, college.getDouble(ADMISSION_SAT_READ_50PCT));
-//                admissionValues.put(CollegeContract.AdmissionEntry.SAT_READ_75_PCT, college.getDouble(ADMISSION_SAT_READ_75PCT));
-
-
                 getContentResolver().insert(CollegeContract.EarningsEntry.EARNINGS_CONTENT_URI, earningsValues);
                 getContentResolver().insert(CollegeContract.CostEntry.COST_CONTENT_URI, costValues);
                 getContentResolver().insert(CollegeContract.DebtEntry.DEBT_CONTENT_URI, debtValues);
-//                getContentResolver().insert(CollegeContract.AdmissionEntry.ADMISSION_CONTENT_URI, admissionValues);
-
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(LOG_TAG, "JSON EXCEPTION: " + e);
             } finally {
                 if (cursor != null) {
                     cursor.close();
                 }
             }
         }
+
     }
 
-    private Integer handleNullInt(Object o){
-        if (o == null){
+    private Integer handleNullInt(Object o) {
+        if (o == null) {
             return null;
         }
-        try{
+        try {
             return (Integer) o;
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.e(LOG_TAG, "CLASS CAST EXCEPTION: " + e);
             return null;
         }
@@ -218,8 +199,7 @@ public class DetailService extends IntentService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else{
+        } else {
             Log.i(LOG_TAG, "SERVICE INTENT IS NULL");
         }
     }

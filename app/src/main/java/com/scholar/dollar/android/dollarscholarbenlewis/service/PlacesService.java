@@ -45,9 +45,7 @@ public class PlacesService extends IntentService {
 
     private void addPlace() throws IOException {
         String url = buildPlaceStringUrl();
-        Log.i(LOG_TAG, url);
         String json = Utility.fetch(url);
-        Log.i(LOG_TAG, json);
         insertPlace(json);
     }
 

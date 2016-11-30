@@ -65,7 +65,6 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         String income = "" + Math.round((earnings/1000f));
         holder.mEarningsTV.setText(income);
         holder.mEarningsTV.setContentDescription(income);
-
         String logoUrl = mCursor.getString(Utility.LOGO);
         Picasso.with(mContext).load(logoUrl).placeholder(R.drawable.ic_school_black_24dp).into(holder.mLogoIV);
         holder.mLogoIV.setContentDescription(mContext.getString(R.string.logo));
