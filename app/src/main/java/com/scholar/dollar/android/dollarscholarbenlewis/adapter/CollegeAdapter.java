@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
-import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 import com.squareup.picasso.Picasso;
 
@@ -23,11 +22,13 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
     private static final String LOG_TAG = CollegeAdapter.class.getSimpleName();
     final private Context mContext;
     final private CollegeAdapterOnClickHandler mClickHandler;
+    final private StarClickHandler mStarClickHandler;
     private Cursor mCursor;
 
-    public CollegeAdapter(Context mContext, CollegeAdapterOnClickHandler mClickHandler) {
+    public CollegeAdapter(Context mContext, CollegeAdapterOnClickHandler mClickHandler, StarClickHandler starClickHandler) {
         this.mContext = mContext;
         this.mClickHandler = mClickHandler;
+        mStarClickHandler = starClickHandler;
     }
 
     @Override
@@ -42,7 +43,10 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
     }
 
     @Override
-    public void onBindViewHolder(CollegeAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(final CollegeAdapterViewHolder holder, int position) {
+        if (!mCursor.moveToPosition(position)){
+            return;
+        }
         mCursor.moveToPosition(position);
 
         String name = mCursor.getString(Utility.NAME);
@@ -60,6 +64,13 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
                 mContext.getString(R.string.public_) : mContext.getString(R.string.private_);
         holder.mOwnershipTV.setText(schoolType);
         holder.mOwnershipTV.setContentDescription(schoolType);
+
+        boolean isFavorite = mCursor.getInt(Utility.FAVORITE) == 1;
+        if (isFavorite) {
+            holder.mStarTV.setImageResource(R.drawable.ic_star_yellow_24dp);
+        } else{
+            holder.mStarTV.setImageResource(R.drawable.ic_star_gray_24dp);
+        }
 
         float earnings = (float) mCursor.getInt(Utility.EARNINGS);
         String income = "" + Math.round((earnings/1000f));
@@ -106,6 +117,9 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
     public interface CollegeAdapterOnClickHandler {
         void onClick(int collegeId, boolean isPublic, CollegeAdapterViewHolder vh);
     }
+    public interface StarClickHandler{
+        void onStarClick(int collegeId, boolean isFavorite, ImageView star);
+    }
 
     public class CollegeAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.name_tv) TextView mNameTV;
@@ -117,23 +131,26 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         @BindView(R.id.logo_iv) ImageView mLogoIV;
         @BindView(R.id.main_is_ll) LinearLayout mInStateLL;
         @BindView(R.id.main_os_label_tv) TextView mOutStateLabelTV;
-        @BindView(R.id.item_star_tv) TextView mStarTV;
+        @BindView(R.id.item_star_tv) ImageView mStarTV;
         @BindView(R.id.rank_tv) TextView mRankTV;
 
         public CollegeAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
+            mStarTV.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-            int collegeIdInd = mCursor.getColumnIndex(CollegeContract.CollegeMainEntry.COLLEGE_ID);
-            int isPublicInd = mCursor.getColumnIndex(CollegeContract.CollegeMainEntry.OWNERSHIP);
-            boolean isPublic = mCursor.getInt(isPublicInd) == 1;
-            mClickHandler.onClick(mCursor.getInt(collegeIdInd), isPublic, this);
+            int collegeId = mCursor.getInt(Utility.COLLEGE_ID);
+            if (v.getId() == mStarTV.getId()){
+                mStarClickHandler.onStarClick(collegeId, mCursor.getInt(Utility.FAVORITE) == 1, mStarTV);
+            } else{
+                mClickHandler.onClick(collegeId, mCursor.getInt(Utility.OWNERSHIP) == 1, this);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
@@ -75,6 +77,20 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 startActivity(new Intent(getContext(), DetailActivity.class)
                         .putExtra(Utility.COLLEGE_ID_KEY, collegeId)
                         .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic));
+            }
+        }, new CollegeAdapter.StarClickHandler() {
+            @Override
+            public void onStarClick(int collegeId, boolean isFavorite, ImageView star) {
+                int newFavorite = !isFavorite ? 1 : 0;
+                ContentValues values = new ContentValues();
+                values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, newFavorite);
+                getContext().getContentResolver().update(CollegeContract.CollegeMainEntry.buildMainWithCollegeId(collegeId),
+                        values, null, null);
+                if (!isFavorite){
+                    star.setImageResource(R.drawable.ic_star_yellow_24dp);
+                } else{
+                    star.setImageResource(R.drawable.ic_star_gray_24dp);;
+                }
             }
         });
         recyclerView.setAdapter(mCollegeAdapter);
