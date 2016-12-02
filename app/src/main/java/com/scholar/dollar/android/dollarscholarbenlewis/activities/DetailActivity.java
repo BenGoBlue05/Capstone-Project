@@ -279,6 +279,7 @@ public class DetailActivity extends AppCompatActivity
         pieData.setValueTextColor(Color.TRANSPARENT);
 
         pieChart.setData(pieData);
+        pieChart.setRotationEnabled(false);
         pieChart.invalidate();
     }
 

@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        Log.i(LOG_TAG, "LATEST CODE");
 
         if (mFirebaseUser == null) {
             Intent publicCollegesIntent = new Intent(this, CollegeService.class)

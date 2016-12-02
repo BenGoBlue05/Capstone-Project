@@ -52,7 +52,7 @@
     <string name="median_earnings">Median Earnings ($)</string>
     <string name="years_after_entry">(Years After Entering)</string>
     <string name="median">Median</string>
-    <string name="middle_50">Middle 50%</string>
+    <string name="middle_50">Salary for Middle 50%</string>
     <string name="price_by_family_income">Average Net Price by Family Income</string>
     <string name="completers_noncompleters">Completers vs Non-Completers</string>
     <string name="median_debt">Median Debt upon Entering Repayment</string>

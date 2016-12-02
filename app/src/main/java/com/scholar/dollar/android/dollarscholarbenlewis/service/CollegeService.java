@@ -58,7 +58,8 @@ public final class CollegeService extends IntentService {
     public static final String ACT_FILTER = "2014.admissions.act_scores.midpoint.cumulative__range=10.."; //act scores signals undergraduate program
     public static final String OWNERSHIP_FILTER = OWNERSHIP + "=1";
     public static final String API_KEY = "api_key=" + BuildConfig.COLLEGE_SCORECARD_API_KEY;
-    public static final String[] FILTERS = {API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER, ACT_FILTER};
+    public static final String[] FILTERS = {API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER,
+            IN_STATE_TUITION_AND_FEES + "__range=1000..", ACT_FILTER};
     private static final String LOG_TAG = CollegeService.class.getSimpleName();
     public static final String SORT_BY = "sort=2012.earnings.10_yrs_after_entry.median:desc";
     public static final String PER_PAGE = "per_page=50";
@@ -72,10 +73,9 @@ public final class CollegeService extends IntentService {
         super("CollegeService");
     }
 
-    public static String createFinalUrl(String baseUrl, String filterUrl, String fieldsUrl, String sortBy, String perPage){
+    public static String createFinalUrl(String baseUrl, String filterUrl, String fieldsUrl, String sortBy, String perPage) {
         return baseUrl + filterUrl + fieldsUrl + "&" + sortBy + "&" + perPage;
     }
-
 
 
     public ArrayList<CollegeMain> getCollegeInfo(String url) {
@@ -105,16 +105,16 @@ public final class CollegeService extends IntentService {
                 int tuitionInState = college.getInt(IN_STATE_TUITION_AND_FEES);
                 int tuitionOutState = college.getInt(OUT_STATE_TUITION_AND_FEES);
                 int ownership = college.getInt(OWNERSHIP);
-                double graduationRate4yr = college.getDouble(GRADUATION_RATE_4_YEARS);
-                double graduationRate6yr = college.getDouble(GRADUATION_RATE_6_YEARS);
                 int undergradSize = college.getInt(UNDERGRAD_SIZE);
                 double lat = college.getDouble(LATITUDE);
                 double lon = college.getDouble(LONGITUDE);
                 int locale = college.getInt(LOCALE);
-                double admissionRate = college.getDouble(ADMISSION_RATE);
                 CollegeMain collegeMain = new CollegeMain(id, name, logoUrl, city, state, ownership,
-                        tuitionInState, tuitionOutState, earnings, graduationRate4yr, graduationRate6yr,
-                        undergradSize, lat, lon, locale, admissionRate);
+                        tuitionInState, tuitionOutState, earnings,
+                        handleNullDouble(college.get(GRADUATION_RATE_4_YEARS)),
+                        handleNullDouble(college.get(GRADUATION_RATE_6_YEARS)),
+                        undergradSize, lat, lon, locale,
+                        handleNullDouble(college.get(ADMISSION_RATE)));
                 collegesInfo.add(collegeMain);
             }
             return collegesInfo;
@@ -125,14 +125,27 @@ public final class CollegeService extends IntentService {
         return null;
     }
 
-    public void addColleges(ArrayList<CollegeMain> colleges){
+    private Double handleNullDouble(Object o) {
+        if (o == null || o.toString().contains("null")) {
+            return null;
+        }
+        try {
+            return (Double) o;
+        } catch (ClassCastException e) {
+            Log.e(LOG_TAG, o.toString());
+            Log.e(LOG_TAG, "CLASS CAST EXCEPTION: " + e);
+            return null;
+        }
+    }
+
+    public void addColleges(ArrayList<CollegeMain> colleges) {
         Vector<ContentValues> cvVector = new Vector<>();
         Vector<ContentValues> placeVector = new Vector<>();
         Cursor cursor = null;
-        for (CollegeMain college : colleges){
+        for (CollegeMain college : colleges) {
             Uri uri = CollegeContract.CollegeMainEntry.buildMainWithCollegeId(college.getId());
             cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor == null || !cursor.moveToFirst()){
+            if (cursor == null || !cursor.moveToFirst()) {
                 ContentValues values = new ContentValues();
                 ContentValues placeValues = new ContentValues();
 
@@ -165,29 +178,30 @@ public final class CollegeService extends IntentService {
             }
         }
         Log.i(LOG_TAG, "NUMBER OF COLLEGES: " + cvVector.size());
-        if (cvVector.size() > 0){
+        if (cvVector.size() > 0) {
             ContentValues[] cvArray = new ContentValues[cvVector.size()];
             cvVector.toArray(cvArray);
-            try{
+            try {
                 getContentResolver().bulkInsert(CollegeContract.CollegeMainEntry.COLLEGE_MAIN_CONTENT_URI, cvArray);
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 Log.e(LOG_TAG, "CONTENT URI NOT RECOGNIZED");
             }
         }
-        if (placeVector.size() > 0){
+        if (placeVector.size() > 0) {
             ContentValues[] placeArray = new ContentValues[placeVector.size()];
             placeVector.toArray(placeArray);
-            try{
+            try {
                 getContentResolver().bulkInsert(CollegeContract.PlaceEntry.PLACE_CONTENT_URI, placeArray);
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 Log.e(LOG_TAG, "CONTENT URI NOT RECOGNIZED");
             }
         }
-        if (cursor != null){
+        if (cursor != null) {
             cursor.close();
         }
     }
-    public String getLogo(String domainUrl){
+
+    public String getLogo(String domainUrl) {
         String domain = domainUrl.toLowerCase();
         int indWww = domain.indexOf("www.") + 4;
 //        Log.i(LOG_TAG, "" + indWww);
@@ -204,22 +218,38 @@ public final class CollegeService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        ArrayList<String> filter = new ArrayList<>(Arrays.asList(FILTERS));
+        String[] filterArr;
+        String state = intent.getStringExtra(Utility.STATE_KEY);
+        if (state == null || !isSpecialState(state)){
+            filterArr = FILTERS;
+        } else{
+            filterArr =  Arrays.copyOfRange(FILTERS, 0, 5);
+        }
+        ArrayList<String> filter = new ArrayList<>(Arrays.asList(filterArr));
         if (intent.getBooleanExtra(Utility.PUBLIC_COLLEGE_KEY, false))
             filter.add(OWNERSHIP_FILTER);
-        String state = intent.getStringExtra(Utility.STATE_KEY);
-        if (state != null)
+        if (state != null){
             filter.add(STATE + "=" + state);
+        }
         String filterParams = Utility.joinFilters(filter);
         Log.i(LOG_TAG, filterParams);
         String requestUrl = createFinalUrl(Utility.BASE_URL, filterParams, FIELDS_PARAMS, SORT_BY, PER_PAGE);
         Log.i(LOG_TAG, requestUrl);
-        try{
+        try {
             ArrayList<CollegeMain> colleges = getCollegeInfo(requestUrl);
             addColleges(colleges);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.e(LOG_TAG, "NULL EXCEPTION");
         }
     }
 
+    private boolean isSpecialState(String state) {
+        String[] specialStates = {"NV", "AZ", "AK", "WY"};
+        for (String specialState : specialStates) {
+            if (state.equals(specialState)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
