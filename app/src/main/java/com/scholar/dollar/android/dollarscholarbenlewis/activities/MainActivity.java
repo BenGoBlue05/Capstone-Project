@@ -34,6 +34,9 @@ import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFra
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -47,13 +50,14 @@ public class MainActivity extends AppCompatActivity implements
     private String mUsername;
     private String mPhotoUrl;
     public GoogleApiClient mGoogleApiClient;
+    private String mStateAbbrev;
     private String mState;
     private PageAdapter mPageAdapter;
     private Bundle mFavoriteArgs;
     private Bundle mPublicArgs;
     private Spinner mSpinner;
     private AdapterView.OnItemSelectedListener mStateListener;
-    private TabLayout.ViewPagerOnTabSelectedListener mTabListener;
+    private ArrayList<String> mStatesAbbrevs;
 
     @BindView(R.id.nav_view)
     NavigationView mNavView;
@@ -94,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements
             startService(new Intent(this, CollegeService.class));
             startService(publicCollegesIntent);
         }
+
+        mStatesAbbrevs = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.state_abbrevs)));
         mPublicArgs = new Bundle();
         mPublicArgs.putBoolean(Utility.PUBLIC_COLLEGE_KEY, true);
         mFavoriteArgs = new Bundle();
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
-                    = VectorDrawableCompat.create(getResources(), R.drawable.ic_filter_list_black_24dp, getTheme());
+                    = VectorDrawableCompat.create(getResources(), R.drawable.ic_filter_list_white_24dp, getTheme());
             if (indicator != null) {
                 indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
             }
@@ -117,28 +123,36 @@ public class MainActivity extends AppCompatActivity implements
 
         mSpinner = (Spinner) mNavView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
         ArrayAdapter<CharSequence> mSpinnerAdapter = ArrayAdapter.createFromResource(
-                this, R.array.states_array, android.R.layout.simple_spinner_item);
+                this, R.array.states, android.R.layout.simple_spinner_item);
         mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(mSpinnerAdapter);
 
-        mTabListener = new TabLayout.ViewPagerOnTabSelectedListener(mViewPager);
+        TabLayout.ViewPagerOnTabSelectedListener mTabListener = new TabLayout.ViewPagerOnTabSelectedListener(mViewPager);
         mStateListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!parent.getSelectedItem().toString().equals(mState)) {
+                if (!parent.getSelectedItem().toString().equals(mStateAbbrev)) {
                     mState = parent.getSelectedItem().toString();
-                    Log.i(LOG_TAG, "STATE: " + mState);
-                    if (!mState.equals("All")) {
+                    mStateAbbrev = mStatesAbbrevs.get(position);
+                    Log.i(LOG_TAG, "STATE: " + mStateAbbrev);
+                    if (!mStateAbbrev.equals(getString(R.string.all))) {
                         startService(new Intent(getApplicationContext(), CollegeService.class)
-                                .putExtra(Utility.STATE_KEY, mState));
+                                .putExtra(Utility.STATE_KEY, mStateAbbrev));
+                        mToolbar.setTitle(getString(R.string.app_name));
                     }
                     CollegeMainFragment collegeMainFragment = (CollegeMainFragment) mPageAdapter.getItem(0);
                     CollegeMainFragment publicFragment = (CollegeMainFragment) mPageAdapter.getItem(1);
 
-                    collegeMainFragment.setState(mState);
-                    publicFragment.setState(mState);
+                    collegeMainFragment.setState(mStateAbbrev);
+                    publicFragment.setState(mStateAbbrev);
                 }
-                mToolbar.setTitle(mState);
+                if (mStateAbbrev.equals(getString(R.string.all))) {
+                    mToolbar.setTitle(getString(R.string.app_name));
+                } else {
+                    if (mState != null){
+                        mToolbar.setTitle(mState);
+                    }
+                }
             }
 
             @Override
@@ -159,9 +173,9 @@ public class MainActivity extends AppCompatActivity implements
         Bundle stateArg = new Bundle();
         Bundle publicArgs = new Bundle(mPublicArgs);
         Bundle favoriteArgs = new Bundle(mFavoriteArgs);
-        stateArg.putString(Utility.STATE_KEY, mState);
-        publicArgs.putString(Utility.STATE_KEY, mState);
-        favoriteArgs.putString(Utility.STATE_KEY, mState);
+        stateArg.putString(Utility.STATE_KEY, mStateAbbrev);
+        publicArgs.putString(Utility.STATE_KEY, mStateAbbrev);
+        favoriteArgs.putString(Utility.STATE_KEY, mStateAbbrev);
 
         CollegeMainFragment mainFragment = new CollegeMainFragment();
         CollegeMainFragment publicFragment = new CollegeMainFragment();
@@ -176,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements
         mPageAdapter.addFragment(favoriteFragment, getString(R.string.favorites));
         viewPager.setAdapter(mPageAdapter);
     }
-
 
 
     @Override
