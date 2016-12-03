@@ -53,7 +53,7 @@ public class CollegeContract {
         }
 
         public static Uri buildMainWithCollegeId(int collegeId){
-            return COLLEGE_MAIN_CONTENT_URI.buildUpon().appendPath(Integer.toString(collegeId)).build();
+            return COLLEGE_MAIN_CONTENT_URI.buildUpon().appendPath(String.valueOf(collegeId)).build();
         }
 
     }

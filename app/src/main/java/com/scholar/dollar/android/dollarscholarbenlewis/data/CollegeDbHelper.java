@@ -11,13 +11,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CollegeDbHelper extends SQLiteOpenHelper {
 
 
-    public static final String COMMA_SEPERATOR = ", ";
-    public static final String TEXT = " TEXT";
-    public static final String TEXT_NN = " TEXT NOT NULL";
-    public static final String INT_NN = " INTEGER NOT NULL";
-    public static final String INT = " INTEGER";
-    public static final String REAL_NN = " REAL NOT NULL";
-    public static final String REAL = " REAL";
+    private static final String COMMA_SEPERATOR = ", ";
+    private static final String TEXT = " TEXT";
+    private static final String TEXT_NN = " TEXT NOT NULL";
+    private static final String INT_NN = " INTEGER NOT NULL";
+    private static final String INT = " INTEGER";
+    private static final String REAL_NN = " REAL NOT NULL";
+    private static final String REAL = " REAL";
     static final String DATABASE = "college.db";
     private static final int VERSION = 67;
 
