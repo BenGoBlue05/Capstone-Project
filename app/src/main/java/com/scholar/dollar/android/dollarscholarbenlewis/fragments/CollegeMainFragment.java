@@ -18,10 +18,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
+import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeBasic;
+import com.scholar.dollar.android.dollarscholarbenlewis.model.User;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
@@ -34,12 +44,15 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
 
     private FirebaseAnalytics mFirebaseAnalytics;
+    private DatabaseReference mDatabase;
     public static final String SORT_HIGHEST_EARNINGS = CollegeContract.CollegeMainEntry.MED_EARNINGS_2012 + " DESC";
     public static final int COLLEGE_LOADER = 1000;
     private CollegeAdapter mCollegeAdapter;
     private boolean mIsPublic;
+    private boolean mIsFavorite;
     private String mState;
     private Bundle mArgs;
+    private String mUid;
 
     public CollegeMainFragment() {
     }
@@ -53,7 +66,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         onStateChanged();
     }
 
-    private void onStateChanged(){
+    private void onStateChanged() {
         Bundle args = mArgs != null ? (Bundle) mArgs.clone() : null;
         if (args != null) {
             args.putString(Utility.STATE_KEY, mState);
@@ -66,7 +79,14 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+
+        mArgs = getArguments() != null ? getArguments() : null;
+        mIsPublic = mArgs != null && mArgs.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false);
+        mIsFavorite = mArgs != null && mArgs.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        mUid = user != null ? user.getUid() : null;
         mCollegeAdapter = new CollegeAdapter(getContext(), new CollegeAdapter.CollegeAdapterOnClickHandler() {
             @Override
             public void onClick(int collegeId, boolean isPublic, CollegeAdapter.CollegeAdapterViewHolder vh) {
@@ -86,20 +106,91 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, newFavorite);
                 getContext().getContentResolver().update(CollegeContract.CollegeMainEntry.buildMainWithCollegeId(collegeId),
                         values, null, null);
-                if (!isFavorite){
+                if (!isFavorite) {
                     star.setImageResource(R.drawable.ic_star_yellow_24dp);
-                } else{
-                    star.setImageResource(R.drawable.ic_star_gray_24dp);;
+                } else {
+                    star.setImageResource(R.drawable.ic_star_gray_24dp);
                 }
+
+                DatabaseReference userFavRef = mDatabase.child("users").child(mUid);
+                DatabaseReference collegeRef = mDatabase.child("csc-ref").child(String.valueOf(collegeId));
+                onStarClicked(userFavRef, true, collegeId, !isFavorite);
+                onStarClicked(collegeRef, false, collegeId, !isFavorite);
             }
         });
         recyclerView.setAdapter(mCollegeAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mArgs = getArguments() != null ? getArguments() : null;
-        mIsPublic = mArgs != null && mArgs.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false);
         getLoaderManager().initLoader(COLLEGE_LOADER, mArgs, this);
         return rootView;
+    }
+
+    private void onStarClicked(DatabaseReference ref, boolean isUser, final int collegeId, final boolean newFavorite) {
+        if (!isUser) {
+            ref.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    CollegeBasic college = mutableData.getValue(CollegeBasic.class);
+
+                    if (college == null) {
+                        return Transaction.success(mutableData);
+                    }
+
+                    if (newFavorite) {
+                        if (!college.stars.containsKey(mUid)) {
+                            college.starCount = college.starCount + 1;
+                            college.stars.put(mUid, true);
+                        }
+                    } else {
+                        if (college.stars.containsKey(mUid)) {
+                            college.starCount = college.starCount - 1;
+                            college.stars.remove(mUid);
+                        }
+                    }
+                    // Set value and report transaction success
+                    mutableData.setValue(college);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean b,
+                                       DataSnapshot dataSnapshot) {
+                    // Transaction completed
+                    Log.d(LOG_TAG, "postTransaction:onComplete:" + databaseError);
+                }
+            });
+        } else {
+            ref.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    User user = mutableData.getValue(User.class);
+                    if (user == null) {
+                        return Transaction.success(mutableData);
+                    }
+
+                    if (newFavorite){
+                        if (!user.favorites.containsKey(String.valueOf(collegeId))){
+                            user.favoritesCount = user.favoritesCount + 1;
+                            user.favorites.put(String.valueOf(collegeId), true);
+                        }
+                    } else{
+                        if (user.favorites.containsKey(String.valueOf(collegeId))){
+                            user.favoritesCount = user.favoritesCount - 1;
+                            user.favorites.remove(String.valueOf(collegeId));
+                        }
+                    }
+                    // Set value and report transaction success
+                    mutableData.setValue(user);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                    Log.d(LOG_TAG, "postTransaction:onComplete:" + databaseError);
+                }
+            });
+        }
+
     }
 
 
@@ -157,5 +248,6 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCollegeAdapter.swapCursor(data);
     }
+
 
 }

@@ -40,12 +40,14 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     private DatabaseReference mDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -57,8 +59,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -85,9 +85,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                     // User is signed out
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
                 }
-                // [START_EXCLUDE]
-//                updateUI(user);
-                // [END_EXCLUDE]
             }
         };
     }
@@ -124,50 +121,22 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
         showProgressDialog();
-        // [END_EXCLUDE]
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                        finish();
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.i(LOG_TAG, "signInWithCredential", task.getException());
                             Toast.makeText(SignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        // [START_EXCLUDE]
+                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
                         hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
     }
-
-//    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
-//        Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
-//        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//        mAuth.signInWithCredential(credential)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        Log.d(LOG_TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-//                        if (!task.isSuccessful()) {
-//                            Log.w(LOG_TAG, "signInWithCredential", task.getException());
-//                            Toast.makeText(SignInActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            onAuthSuccess(task.getResult().getUser());
-//                        }
-//                    }
-//                });
-//    }
 
 
     @Override
@@ -191,28 +160,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
-
-
-//    private void onAuthSuccess(FirebaseUser user) {
-//        Log.i(LOG_TAG, "ON_AUTH_STARTED");
-//        String displayName = user.getDisplayName();
-//        String email = user.getEmail();
-//        String photoUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
-//        String id = user.getUid();
-//        User usr = new User(displayName, email, photoUrl);
-//        Map<String, Object> values = usr.toMap();
-//
-//        Log.i(LOG_TAG, "NAME: " + displayName);
-//        Log.i(LOG_TAG, "EMAIL: " + email);
-//        Log.i(LOG_TAG, "PHOTO_URL: " + photoUrl);
-//        Log.i(LOG_TAG, "USER_ID: " + id);
-//
-//        mDatabase.child("users").child(id).setValue(values);
-//
-//        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-//        finish();
-//    }
 
 }
 

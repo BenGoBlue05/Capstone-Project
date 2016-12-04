@@ -71,6 +71,7 @@ public class DetailActivity extends AppCompatActivity
     public static final String NAME_KEY = "name";
     public static final String LAT_KEY = "lat";
     public static final String LON_KEY = "lon";
+    private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback;
 
     @BindView(R.id.detail_photo)
     ImageView mBackgroundPhotoIV;
@@ -117,6 +118,16 @@ public class DetailActivity extends AppCompatActivity
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        mDisplayPhotoResultCallback = new ResultCallback<PlacePhotoResult>() {
+            @Override
+            public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
+                if (!placePhotoResult.getStatus().isSuccess()) {
+                    return;
+                }
+                mBackgroundPhotoIV.setImageBitmap(placePhotoResult.getBitmap());
+
+            }
+        };
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -219,31 +230,15 @@ public class DetailActivity extends AppCompatActivity
         Log.e(LOG_TAG, "GOOGLE_API CONNECTION FAILED");
     }
 
-    private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
-            = new ResultCallback<PlacePhotoResult>() {
-        @Override
-        public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
-            if (!placePhotoResult.getStatus().isSuccess()) {
-                return;
-            }
-            mBackgroundPhotoIV.setImageBitmap(placePhotoResult.getBitmap());
-
-        }
-    };
-
-
     private void placePhotosAsync(String placeId) {
         Log.i(LOG_TAG, "PLACE PHOTOS ASYNC CALLED");
         Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
                 .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
-
-
                     @Override
                     public void onResult(@NonNull PlacePhotoMetadataResult photos) {
                         if (!photos.getStatus().isSuccess()) {
                             return;
                         }
-
                         PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
                         if (photoMetadataBuffer.getCount() > 0) {
                             // Display the first bitmap in an ImageView in the size of the view
