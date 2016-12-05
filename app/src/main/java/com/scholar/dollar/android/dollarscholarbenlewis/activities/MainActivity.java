@@ -43,6 +43,7 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     public static final String ANONYMOUS = "anonymous";
+    private static final String STATE_POSITION_KEY = "state_position_key";
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
@@ -55,8 +56,8 @@ public class MainActivity extends BaseActivity implements
     private Bundle mFavoriteArgs;
     private Bundle mPublicArgs;
     private Spinner mSpinner;
-    private AdapterView.OnItemSelectedListener mStateListener;
     private ArrayList<String> mStatesAbbrevs;
+    public static final int REQUEST_CODE = 1;
 
     @BindView(R.id.nav_view)
     NavigationView mNavView;
@@ -93,6 +94,7 @@ public class MainActivity extends BaseActivity implements
         }
 
         if (savedInstanceState == null) {
+            Log.i(LOG_TAG, "SAVED INSTANCE STATE IS NULL");
             Intent publicCollegesIntent = new Intent(this, CollegeService.class)
                     .putExtra(Utility.PUBLIC_COLLEGE_KEY, true);
             startService(new Intent(this, CollegeService.class));
@@ -122,13 +124,17 @@ public class MainActivity extends BaseActivity implements
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         mSpinner = (Spinner) mNavView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
-        ArrayAdapter<CharSequence> mSpinnerAdapter = ArrayAdapter.createFromResource(
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
                 this, R.array.states, android.R.layout.simple_spinner_item);
-        mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(mSpinnerAdapter);
-
-        TabLayout.ViewPagerOnTabSelectedListener mTabListener = new TabLayout.ViewPagerOnTabSelectedListener(mViewPager);
-        mStateListener = new AdapterView.OnItemSelectedListener() {
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(spinnerAdapter);
+        if (savedInstanceState != null){
+            Log.i(LOG_TAG, "SAVED INSTANCE STATE NOT NULL");
+            int position = savedInstanceState.getInt(STATE_POSITION_KEY);
+            Log.i(LOG_TAG, "POSITION: " + position);
+            mSpinner.setSelection(position);
+        }
+        AdapterView.OnItemSelectedListener mStateListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (!parent.getSelectedItem().toString().equals(mStateAbbrev)) {
@@ -149,7 +155,7 @@ public class MainActivity extends BaseActivity implements
                 if (mStateAbbrev.equals(getString(R.string.all))) {
                     mToolbar.setTitle(getString(R.string.app_name));
                 } else {
-                    if (mState != null){
+                    if (mState != null) {
                         mToolbar.setTitle(mState);
                     }
                 }
@@ -160,8 +166,7 @@ public class MainActivity extends BaseActivity implements
                 Log.i(LOG_TAG, "NOTHING SELECTED FOR SPINNER");
             }
         };
-
-
+        mSpinner.setOnItemSelectedListener(mStateListener);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
@@ -225,15 +230,22 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mSpinner.setOnItemSelectedListener(mStateListener);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE){
+            if (resultCode == RESULT_OK){
+                String state = data.getStringExtra(Intent.EXTRA_TEXT);
+                if (mSpinner != null){
+                    String[] stateAbbrevs = getResources().getStringArray(R.array.state_abbrevs);
+                    mSpinner.setSelection(Arrays.asList(stateAbbrevs).indexOf(state));
+                }
+            }
+        }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_POSITION_KEY, mSpinner.getSelectedItemPosition());
     }
-
-
 }

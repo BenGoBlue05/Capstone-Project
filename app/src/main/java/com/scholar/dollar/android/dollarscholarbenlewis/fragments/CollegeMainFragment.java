@@ -28,6 +28,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
+import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeBasic;
@@ -94,9 +95,10 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(collegeId));
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-                startActivity(new Intent(getContext(), DetailActivity.class)
+                Intent intent = new Intent(getContext(), DetailActivity.class)
                         .putExtra(Utility.COLLEGE_ID_KEY, collegeId)
-                        .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic));
+                        .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic);
+                getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE);
             }
         }, new CollegeAdapter.StarClickHandler() {
             @Override

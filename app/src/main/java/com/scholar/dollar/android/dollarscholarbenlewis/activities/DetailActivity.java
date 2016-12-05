@@ -21,6 +21,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,6 +72,7 @@ public class DetailActivity extends AppCompatActivity
     public static final String NAME_KEY = "name";
     public static final String LAT_KEY = "lat";
     public static final String LON_KEY = "lon";
+    private String mState;
     private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback;
 
     @BindView(R.id.detail_photo)
@@ -103,6 +105,27 @@ public class DetailActivity extends AppCompatActivity
 
     private GoogleApiClient mGoogleApiClient;
 
+    @Override
+    public void onBackPressed() {
+        Log.i(LOG_TAG, "BACK PRESSED");
+        if (mState != null){
+            setResult(RESULT_OK, new Intent().putExtra(Intent.EXTRA_TEXT, mState));
+        } else{
+            Log.i(LOG_TAG, "STATE IS NULL");
+        }
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,9 +207,8 @@ public class DetailActivity extends AppCompatActivity
                     mCollapsingToolbar.setTitle(name);
                     mNameTV.setText(name);
                     mNameTV.setContentDescription(name);
-
-                    String cityState = (getString(R.string.city_state,
-                            data.getString(Utility.CITY), data.getString(Utility.STATE)));
+                    mState = data.getString(Utility.STATE);
+                    String cityState = (getString(R.string.city_state, data.getString(Utility.CITY), mState));
                     mCityStateTV.setText(cityState);
                     mCityStateTV.setContentDescription(cityState);
                     mCostInState = data.getInt(Utility.TUITION_IN_STATE);
