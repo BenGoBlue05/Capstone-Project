@@ -22,11 +22,12 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation"
+            android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,7 +38,6 @@
         <service
             android:name=".service.CollegeService"
             android:exported="false" />
-
 
         <provider
             android:name=".data.CollegeProvider"
@@ -50,16 +50,19 @@
             android:parentActivityName=".activities.MainActivity">
             <intent-filter>
                 <data android:scheme="http" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
 
         <service
-            android:name=".service.CollegeFavoriteService"
+            android:name=".service.CollegeFavoriteWidgetService"
             android:exported="false" />
 
         <receiver android:name=".widget.CollegeWidget">
@@ -87,6 +90,12 @@
         <service
             android:name=".service.DetailService"
             android:exported="false" />
+        <service
+            android:name=".service.CollegeFbService"
+            android:exported="false" />
+        <service
+            android:name=".service.FavoriteService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

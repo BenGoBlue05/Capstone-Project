@@ -12,7 +12,7 @@
 //import com.scholar.dollar.android.dollarscholarbenlewis.R;
 //import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
 //import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
-//import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeFavoriteService;
+//import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeFavoriteWidgetService;
 //
 ///**
 // * Implementation of App Widget functionality.
@@ -22,7 +22,7 @@
 //    @Override
 //    public void onReceive(Context context, Intent intent) {
 //        super.onReceive(context, intent);
-//        if (intent.getAction().equals(CollegeFavoriteService.ACTION_DATA_UPDATED)){
+//        if (intent.getAction().equals(CollegeFavoriteWidgetService.ACTION_DATA_UPDATED)){
 //            AppWidgetManager manager = AppWidgetManager.getInstance(context);
 //            int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(context, getClass()));
 //            manager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);

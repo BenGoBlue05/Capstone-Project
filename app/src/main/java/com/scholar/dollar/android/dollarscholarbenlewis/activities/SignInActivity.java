@@ -66,27 +66,34 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_in: " + user.getUid());
                     Log.i(LOG_TAG, "ON_AUTH_STARTED");
-                    String displayName = user.getDisplayName();
-                    String email = user.getEmail();
-                    String photoUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
                     String id = user.getUid();
-                    User usr = new User(displayName, email, photoUrl);
-                    Map<String, Object> values = usr.toMap();
-
-                    Log.i(LOG_TAG, "NAME: " + displayName);
-                    Log.i(LOG_TAG, "EMAIL: " + email);
-                    Log.i(LOG_TAG, "PHOTO_URL: " + photoUrl);
-                    Log.i(LOG_TAG, "USER_ID: " + id);
-
-                    mDatabase.child("users").child(id).setValue(values);
+                    if (mDatabase.child("users").child(id) == null){
+                        createNewUser(user);
+                    }
                 } else {
                     // User is signed out
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
                 }
             }
         };
+    }
+
+    private void createNewUser(@NonNull FirebaseUser user){
+        String id = user.getUid();
+        String displayName = user.getDisplayName();
+        String email = user.getEmail();
+        String photoUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
+        User usr = new User(displayName, email, photoUrl);
+        Map<String, Object> values = usr.toMap();
+
+        Log.i(LOG_TAG, "NAME: " + displayName);
+        Log.i(LOG_TAG, "EMAIL: " + email);
+        Log.i(LOG_TAG, "PHOTO_URL: " + photoUrl);
+        Log.i(LOG_TAG, "USER_ID: " + id);
+        mDatabase.child("users").child(id).setValue(values);
     }
 
     @Override
@@ -127,13 +134,14 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.i(LOG_TAG, "signIn:onComplete:" + task.isSuccessful());
+                        hideProgressDialog();
                         if (!task.isSuccessful()) {
                             Log.i(LOG_TAG, "signInWithCredential", task.getException());
                             Toast.makeText(SignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
                         startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                        hideProgressDialog();
                     }
                 });
     }

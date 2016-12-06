@@ -49,7 +49,7 @@ public final class CollegeService extends IntentService {
     public static final String[] MAIN_FIELDS = {ID, NAME, SCHOOL_URL, CITY, STATE, MED_EARNINGS_10_YEARS,
             IN_STATE_TUITION_AND_FEES, OUT_STATE_TUITION_AND_FEES, OWNERSHIP, GRADUATION_RATE_4_YEARS,
             GRADUATION_RATE_6_YEARS, UNDERGRAD_SIZE, LATITUDE, LONGITUDE, LOCALE, ADMISSION_RATE};
-    public String FIELDS_PARAMS = Utility.buildFieldsUrl(new ArrayList<>(Arrays.asList(MAIN_FIELDS)));
+    public static final String FIELDS_PARAMS = Utility.buildFieldsUrl(new ArrayList<>(Arrays.asList(MAIN_FIELDS)));
 
     //filters
     public static final String PREDOMINANT_DEGREE = "school.degrees_awarded.predominant=3"; // 3: bachelors

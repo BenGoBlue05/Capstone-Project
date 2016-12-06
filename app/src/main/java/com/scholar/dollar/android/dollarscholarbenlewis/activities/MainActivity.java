@@ -31,6 +31,7 @@ import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.FavoriteService;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
@@ -89,6 +90,7 @@ public class MainActivity extends BaseActivity implements
             finish();
             return;
         } else {
+            startService(new Intent(this, FavoriteService.class));
             mUsername = mFirebaseUser.getDisplayName();
             mPhotoUrl = mFirebaseUser.getPhotoUrl() != null ? mFirebaseUser.getPhotoUrl().toString() : null;
         }

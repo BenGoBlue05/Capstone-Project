@@ -11,18 +11,18 @@ import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 /**
 
  */
-public class CollegeFavoriteService extends IntentService {
+public class CollegeFavoriteWidgetService extends IntentService {
 
-    private static final String LOG_TAG = CollegeFavoriteService.class.getSimpleName();
+    private static final String LOG_TAG = CollegeFavoriteWidgetService.class.getSimpleName();
 
     public static final String  ACTION_DATA_UPDATED =
             "com.scholar.dollar.android.dollarscholarbenlewis.ACTION_DATA_UPDATED";
-    public CollegeFavoriteService(String name) {
+    public CollegeFavoriteWidgetService(String name) {
         super(name);
     }
 
-    public CollegeFavoriteService(){
-        super(CollegeFavoriteService.class.getSimpleName());
+    public CollegeFavoriteWidgetService(){
+        super(CollegeFavoriteWidgetService.class.getSimpleName());
     }
 
     public void updateWidgets(){

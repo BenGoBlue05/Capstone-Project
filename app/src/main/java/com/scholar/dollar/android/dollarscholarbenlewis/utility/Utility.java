@@ -145,6 +145,7 @@ public final class Utility {
     public static final String ACT_FILTER = "2014.admissions.act_scores.midpoint.cumulative__range=10.."; //act scores signals undergraduate program
     public static final String CSC_API_KEY = "api_key=" + BuildConfig.COLLEGE_SCORECARD_API_KEY;
     public static final String[] BASE_FILTERS = {CSC_API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER, ACT_FILTER};
+    public static final String FAVORITES_SYNC_KEY = "favorites_sync";
 
 
     public static String buildFieldsUrl(ArrayList<String> fields) {
@@ -158,7 +159,7 @@ public final class Utility {
     public static String buildFields(ArrayList<String[]> fieldArrays) {
         ArrayList<String> fieldList = new ArrayList<>();
         for (String[] fieldArray : fieldArrays) {
-            fieldList.addAll(new ArrayList<String>(Arrays.asList(fieldArray)));
+            fieldList.addAll(new ArrayList<>(Arrays.asList(fieldArray)));
         }
         return buildFieldsUrl(fieldList);
     }

@@ -1,5 +1,5 @@
 <resources xmlns:xliff="http://schemas.android.com/tools">
-    <string name="app_name">Dollar Scholar</string>
+    <string name="app_name">Dollar&#36;cholar</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="colleges">Colleges</string>
@@ -64,7 +64,6 @@
     <string name="all">All</string>
     <string name="loading">Loading…</string>
     <string name="percentiles">25th, Median, and 75th Percentile of entering class</string>
-
 
 
     <string name="finance">Finance</string>
