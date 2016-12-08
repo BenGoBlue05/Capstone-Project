@@ -172,7 +172,7 @@ public class DebtFragment extends Fragment implements LoaderManager.LoaderCallba
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            set = new BarDataSet(entries, getResources().getString(R.string.average_net_price));
+            set = new BarDataSet(entries, getResources().getString(R.string.average_net_cost));
             set.setColor(Color.RED);
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);

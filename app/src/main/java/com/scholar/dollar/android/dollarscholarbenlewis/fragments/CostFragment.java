@@ -217,17 +217,6 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
             case COST_LOADER:
                 Log.i(LOG_TAG, "LOADER ID IDENTIFIED");
 
-                if (mIsPublic){
-                    mInStateLL.setVisibility(View.VISIBLE);
-                    mOutStateLabelTV.setVisibility(View.VISIBLE);
-                    mInStateTV.setText(Utility.formatThousandsCircle(
-                            (data.getInt(COL_IN_STATE))));
-                } else {
-                    mInStateLL.setVisibility(View.GONE);
-                    mOutStateLabelTV.setVisibility(View.GONE);
-                }
-                mOutStateTV.setText(Utility.formatThousandsCircle(
-                        (data.getInt(COL_OUT_STATE))));
                 mCost0to30 = (float) data.getInt(COL_COST_0to30);
                 mCost30to48 = (float) data.getInt(COL_COST_30to48);
                 mCost48to75 = (float) data.getInt(COL_COST_48to75);
@@ -277,7 +266,7 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            set = new BarDataSet(entries, getResources().getString(R.string.average_net_price));
+            set = new BarDataSet(entries, getResources().getString(R.string.average_net_cost));
             set.setColor(Color.RED);
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);

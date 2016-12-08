@@ -1,12 +1,15 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +17,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -22,6 +24,7 @@ import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,6 +39,8 @@ import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
@@ -54,7 +59,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends AppCompatActivity
+public class DetailActivity extends BaseActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
         GoogleApiClient.OnConnectionFailedListener,
         CostFragment.CostClickListener {
@@ -65,6 +70,7 @@ public class DetailActivity extends AppCompatActivity
     public boolean mIsPublic;
     public int mCostInState;
     public int mCostOutState;
+    private boolean mIsFavorite;
 
     private static final int COLLEGE_MAIN_LOADER = 100;
     private static final int PLACE_LOADER = 200;
@@ -72,8 +78,11 @@ public class DetailActivity extends AppCompatActivity
     public static final String NAME_KEY = "name";
     public static final String LAT_KEY = "lat";
     public static final String LON_KEY = "lon";
+    private DatabaseReference mUserRef;
+    private DatabaseReference mCollegeRef;
     private String mState;
     private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback;
+    private AppBarLayout.OnOffsetChangedListener mAppBarListener;
 
     @BindView(R.id.detail_photo)
     ImageView mBackgroundPhotoIV;
@@ -99,6 +108,11 @@ public class DetailActivity extends AppCompatActivity
     PieChart mAdmissionPieChart;
     @BindView(R.id.detail_grad_piechart)
     PieChart mGradRatePieChart;
+    @BindView(R.id.detail_app_bar)
+    AppBarLayout mAppBar;
+    @BindView(R.id.detail_fab)
+    FloatingActionButton mFab;
+
 //    @BindView(R.id.detail_grad4yrs_tv)
 //    TextView m4yearGradRateTV;
 
@@ -108,9 +122,9 @@ public class DetailActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Log.i(LOG_TAG, "BACK PRESSED");
-        if (mState != null){
+        if (mState != null) {
             setResult(RESULT_OK, new Intent().putExtra(Intent.EXTRA_TEXT, mState));
-        } else{
+        } else {
             Log.i(LOG_TAG, "STATE IS NULL");
         }
         finish();
@@ -118,7 +132,7 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -141,6 +155,24 @@ public class DetailActivity extends AppCompatActivity
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        mUserRef = db.child("users").child(getUid());
+        mCollegeRef = db.child("csc-ref").child(String.valueOf(mCollegeId));
+
+        mAppBarListener = new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset < -mAppBar.getHeight() / 2) {
+                    //toolbar is collapsed here
+                    //write your code here
+                    mFab.hide();
+                } else {
+                    mFab.show();
+                }
+            }
+        };
+
+
         mDisplayPhotoResultCallback = new ResultCallback<PlacePhotoResult>() {
             @Override
             public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
@@ -203,6 +235,7 @@ public class DetailActivity extends AppCompatActivity
                     }
 
                 } else {
+
                     String name = data.getString(Utility.NAME);
                     mCollapsingToolbar.setTitle(name);
                     mNameTV.setText(name);
@@ -218,6 +251,29 @@ public class DetailActivity extends AppCompatActivity
                     mOwnershipTV.setText(ownership);
                     mOwnershipTV.setContentDescription(ownership);
                     mSizeTV.setText(Utility.formatThousandsCircle((float) data.getInt(Utility.SIZE)));
+                    mIsFavorite = data.getInt(Utility.FAVORITE) == 1;
+                    mFab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            boolean newFav = !mIsFavorite;
+                            int newFavInt = newFav ? 1 : 0;
+                            ContentValues values = new ContentValues();
+                            values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, newFavInt);
+                            getContentResolver().update(CollegeContract.CollegeMainEntry.buildMainWithCollegeId(mCollegeId),
+                                    values, null, null);
+                            if (mUserRef != null){
+                                Utility.onStarClicked(mUserRef, true, mCollegeId, newFav, getUid());
+                            }
+                            if (mCollegeRef != null){
+                                Utility.onStarClicked(mCollegeRef, false, mCollegeId, newFav, getUid());
+                            }
+                            int star = newFav ? R.drawable.ic_star_yellow_24dp : R.drawable.ic_star_gray_24dp;
+                            mFab.setImageDrawable(getDrawable(star));
+                            mIsFavorite = newFav;
+                        }
+                    });
+
+
                     Picasso.with(this).load(data.getString(Utility.LOGO))
                             .placeholder(R.drawable.ic_school_black_24dp).into(mLogoIV);
                     createPieChart(mAdmissionPieChart, data.getDouble(Utility.ADMISSION_RATE));
@@ -327,9 +383,22 @@ public class DetailActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mAppBar.addOnOffsetChangedListener(mAppBarListener);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAppBar.removeOnOffsetChangedListener(mAppBarListener);
+    }
+
+    @Override
     public void onCalculatorButtonClicked(String uri) {
         Log.i(LOG_TAG, "CALCULATOR BUTTON CLICKED");
-        if (!uri.contains("http")){
+        if (!uri.contains("http")) {
             uri = "https://" + uri;
         }
         Log.i(LOG_TAG, "URI: " + uri);

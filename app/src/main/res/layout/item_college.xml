@@ -68,7 +68,7 @@
                 </LinearLayout>
             </LinearLayout>
             <ImageView
-                android:id="@+id/logo_iv"
+                android:id="@+id/college_logo"
                 android:layout_width="@dimen/logo_height"
                 android:layout_height="@dimen/logo_height"
                 android:contentDescription="@string/logo"

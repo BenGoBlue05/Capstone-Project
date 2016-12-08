@@ -15,12 +15,12 @@
             android:gravity="center_horizontal"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-            android:text="@string/price_by_family_income"
+            android:text="@string/cost_by_family_income"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/average_net_price"
+            android:text="@string/average_net_cost"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textSize="12sp"
             android:layout_gravity="bottom"/>

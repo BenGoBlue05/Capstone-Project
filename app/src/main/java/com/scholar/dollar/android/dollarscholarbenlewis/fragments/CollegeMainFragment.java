@@ -20,19 +20,13 @@ import android.widget.ImageView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
 import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
-import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeBasic;
-import com.scholar.dollar.android.dollarscholarbenlewis.model.User;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
@@ -116,8 +110,8 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
                 DatabaseReference userFavRef = mDatabase.child("users").child(mUid);
                 DatabaseReference collegeRef = mDatabase.child("csc-ref").child(String.valueOf(collegeId));
-                onStarClicked(userFavRef, true, collegeId, !isFavorite);
-                onStarClicked(collegeRef, false, collegeId, !isFavorite);
+                Utility.onStarClicked(userFavRef, true, collegeId, !isFavorite, mUid);
+                Utility.onStarClicked(collegeRef, false, collegeId, !isFavorite, mUid);
             }
         });
         recyclerView.setAdapter(mCollegeAdapter);
@@ -127,73 +121,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
         return rootView;
     }
 
-    private void onStarClicked(DatabaseReference ref, boolean isUser, final int collegeId, final boolean newFavorite) {
-        if (!isUser) {
-            ref.runTransaction(new Transaction.Handler() {
-                @Override
-                public Transaction.Result doTransaction(MutableData mutableData) {
-                    CollegeBasic college = mutableData.getValue(CollegeBasic.class);
 
-                    if (college == null) {
-                        return Transaction.success(mutableData);
-                    }
-
-                    if (newFavorite) {
-                        if (!college.stars.containsKey(mUid)) {
-                            college.starCount = college.starCount + 1;
-                            college.stars.put(mUid, true);
-                        }
-                    } else {
-                        if (college.stars.containsKey(mUid)) {
-                            college.starCount = college.starCount - 1;
-                            college.stars.remove(mUid);
-                        }
-                    }
-                    // Set value and report transaction success
-                    mutableData.setValue(college);
-                    return Transaction.success(mutableData);
-                }
-
-                @Override
-                public void onComplete(DatabaseError databaseError, boolean b,
-                                       DataSnapshot dataSnapshot) {
-                    // Transaction completed
-                    Log.d(LOG_TAG, "postTransaction:onComplete:" + databaseError);
-                }
-            });
-        } else {
-            ref.runTransaction(new Transaction.Handler() {
-                @Override
-                public Transaction.Result doTransaction(MutableData mutableData) {
-                    User user = mutableData.getValue(User.class);
-                    if (user == null) {
-                        return Transaction.success(mutableData);
-                    }
-
-                    if (newFavorite){
-                        if (!user.favorites.containsKey(String.valueOf(collegeId))){
-                            user.favoritesCount = user.favoritesCount + 1;
-                            user.favorites.put(String.valueOf(collegeId), true);
-                        }
-                    } else{
-                        if (user.favorites.containsKey(String.valueOf(collegeId))){
-                            user.favoritesCount = user.favoritesCount - 1;
-                            user.favorites.remove(String.valueOf(collegeId));
-                        }
-                    }
-                    // Set value and report transaction success
-                    mutableData.setValue(user);
-                    return Transaction.success(mutableData);
-                }
-
-                @Override
-                public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                    Log.d(LOG_TAG, "postTransaction:onComplete:" + databaseError);
-                }
-            });
-        }
-
-    }
 
 
     @Override

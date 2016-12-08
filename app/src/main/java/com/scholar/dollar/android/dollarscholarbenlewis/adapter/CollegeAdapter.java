@@ -128,7 +128,7 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
         @BindView(R.id.main_tuition_is_tv) TextView mTuitionIsTV;
         @BindView(R.id.tuition_os_tv) TextView mTuitionOsTV;
         @BindView(R.id.earnings_tv) TextView mEarningsTV;
-        @BindView(R.id.logo_iv) ImageView mLogoIV;
+        @BindView(R.id.college_logo) ImageView mLogoIV;
         @BindView(R.id.main_is_ll) LinearLayout mInStateLL;
         @BindView(R.id.main_os_label_tv) TextView mOutStateLabelTV;
         @BindView(R.id.item_star_tv) ImageView mStarTV;

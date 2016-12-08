@@ -50,9 +50,7 @@
             android:parentActivityName=".activities.MainActivity">
             <intent-filter>
                 <data android:scheme="http" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -95,7 +93,7 @@
             android:exported="false" />
         <service
             android:name=".service.FavoriteService"
-            android:exported="false"></service>
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -1,7 +1,14 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.utility;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.scholar.dollar.android.dollarscholarbenlewis.BuildConfig;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
+import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeBasic;
+import com.scholar.dollar.android.dollarscholarbenlewis.model.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -188,5 +195,74 @@ public final class Utility {
     public static String formatThousandsCircle(float i){
         int thousand = Math.round(i / 1000f);
         return Integer.toString(thousand);
+    }
+
+    public static void onStarClicked(DatabaseReference ref, boolean isUser, final int collegeId, final boolean newFavorite,
+                               final String uId) {
+        if (!isUser) {
+            ref.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    CollegeBasic college = mutableData.getValue(CollegeBasic.class);
+
+                    if (college == null) {
+                        return Transaction.success(mutableData);
+                    }
+
+                    if (newFavorite) {
+                        if (!college.stars.containsKey(uId)) {
+                            college.starCount = college.starCount + 1;
+                            college.stars.put(uId, true);
+                        }
+                    } else {
+                        if (college.stars.containsKey(uId)) {
+                            college.starCount = college.starCount - 1;
+                            college.stars.remove(uId);
+                        }
+                    }
+                    // Set value and report transaction success
+                    mutableData.setValue(college);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean b,
+                                       DataSnapshot dataSnapshot) {
+                    // Transaction completed
+
+                }
+            });
+        } else {
+            ref.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    User user = mutableData.getValue(User.class);
+                    if (user == null) {
+                        return Transaction.success(mutableData);
+                    }
+
+                    if (newFavorite){
+                        if (!user.favorites.containsKey(String.valueOf(collegeId))){
+                            user.favoritesCount = user.favoritesCount + 1;
+                            user.favorites.put(String.valueOf(collegeId), true);
+                        }
+                    } else{
+                        if (user.favorites.containsKey(String.valueOf(collegeId))){
+                            user.favoritesCount = user.favoritesCount - 1;
+                            user.favorites.remove(String.valueOf(collegeId));
+                        }
+                    }
+                    // Set value and report transaction success
+                    mutableData.setValue(user);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                }
+            });
+        }
+
     }
 }

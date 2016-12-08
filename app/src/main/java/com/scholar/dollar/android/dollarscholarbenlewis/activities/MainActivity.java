@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity implements
                 this, R.array.states, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(spinnerAdapter);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             Log.i(LOG_TAG, "SAVED INSTANCE STATE NOT NULL");
             int position = savedInstanceState.getInt(STATE_POSITION_KEY);
             Log.i(LOG_TAG, "POSITION: " + position);
@@ -206,9 +206,10 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -225,8 +226,6 @@ public class MainActivity extends BaseActivity implements
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-//            case R.id.fb:
-//                startService(new Intent(this, CollegeBasicService.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -234,10 +233,10 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE){
-            if (resultCode == RESULT_OK){
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 String state = data.getStringExtra(Intent.EXTRA_TEXT);
-                if (mSpinner != null){
+                if (mSpinner != null) {
                     String[] stateAbbrevs = getResources().getStringArray(R.array.state_abbrevs);
                     mSpinner.setSelection(Arrays.asList(stateAbbrevs).indexOf(state));
                 }
