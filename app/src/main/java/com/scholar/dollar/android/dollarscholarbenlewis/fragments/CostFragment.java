@@ -296,7 +296,6 @@ public class CostFragment extends Fragment implements LoaderManager.LoaderCallba
 
         PieDataSet set = new PieDataSet(entries, "");
         set.setColors(colors);
-
         PieData pieData = new PieData(set);
         pieData.setValueTextColor(Color.TRANSPARENT);
 

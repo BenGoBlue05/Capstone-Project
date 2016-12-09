@@ -29,7 +29,7 @@
                     android:paddingStart="@dimen/activity_horizontal_margin"
                     android:paddingEnd="@dimen/activity_horizontal_margin"
                     android:paddingTop="@dimen/activity_horizontal_margin"
-                    android:text="@string/salary"
+                    android:text="@string/earnings"
                     android:paddingBottom="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title" />
                 <TextView
@@ -37,6 +37,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="@string/percentiles"
+                    android:textSize="12sp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/six_eight_ten"
                     android:textStyle="italic"
                     android:textSize="12sp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />

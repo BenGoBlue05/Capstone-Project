@@ -119,22 +119,13 @@ public class DetailActivity extends BaseActivity
 
     private GoogleApiClient mGoogleApiClient;
 
-    @Override
-    public void onBackPressed() {
-        Log.i(LOG_TAG, "BACK PRESSED");
-        if (mState != null) {
-            setResult(RESULT_OK, new Intent().putExtra(Intent.EXTRA_TEXT, mState));
-        } else {
-            Log.i(LOG_TAG, "STATE IS NULL");
-        }
-        finish();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                setResult(RESULT_OK, new Intent().putExtra(Intent.EXTRA_TEXT, mState));
+                supportFinishAfterTransition();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -155,6 +146,7 @@ public class DetailActivity extends BaseActivity
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         mUserRef = db.child("users").child(getUid());
         mCollegeRef = db.child("csc-ref").child(String.valueOf(mCollegeId));
@@ -252,6 +244,8 @@ public class DetailActivity extends BaseActivity
                     mOwnershipTV.setContentDescription(ownership);
                     mSizeTV.setText(Utility.formatThousandsCircle((float) data.getInt(Utility.SIZE)));
                     mIsFavorite = data.getInt(Utility.FAVORITE) == 1;
+                    int star = mIsFavorite ? R.drawable.ic_star_yellow_24dp : R.drawable.ic_star_gray_24dp;
+                    mFab.setImageDrawable(getDrawable(star));
                     mFab.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -261,10 +255,10 @@ public class DetailActivity extends BaseActivity
                             values.put(CollegeContract.CollegeMainEntry.IS_FAVORITE, newFavInt);
                             getContentResolver().update(CollegeContract.CollegeMainEntry.buildMainWithCollegeId(mCollegeId),
                                     values, null, null);
-                            if (mUserRef != null){
+                            if (mUserRef != null) {
                                 Utility.onStarClicked(mUserRef, true, mCollegeId, newFav, getUid());
                             }
-                            if (mCollegeRef != null){
+                            if (mCollegeRef != null) {
                                 Utility.onStarClicked(mCollegeRef, false, mCollegeId, newFav, getUid());
                             }
                             int star = newFav ? R.drawable.ic_star_yellow_24dp : R.drawable.ic_star_gray_24dp;
@@ -406,4 +400,5 @@ public class DetailActivity extends BaseActivity
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
         startActivity(intent);
     }
+
 }

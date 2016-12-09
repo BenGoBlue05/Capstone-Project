@@ -1,7 +1,6 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.fragments;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,8 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
-import com.scholar.dollar.android.dollarscholarbenlewis.activities.DetailActivity;
-import com.scholar.dollar.android.dollarscholarbenlewis.activities.MainActivity;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
@@ -89,10 +86,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.ITEM_ID, Integer.toString(collegeId));
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-                Intent intent = new Intent(getContext(), DetailActivity.class)
-                        .putExtra(Utility.COLLEGE_ID_KEY, collegeId)
-                        .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic);
-                getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE);
+                ((OnCollegeClickedListener) getActivity()).onCollegeClicked(collegeId, isPublic, vh);
             }
         }, new CollegeAdapter.StarClickHandler() {
             @Override
@@ -177,6 +171,10 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCollegeAdapter.swapCursor(data);
+    }
+
+    public interface OnCollegeClickedListener{
+        void onCollegeClicked(int collegeId, boolean isPublic, CollegeAdapter.CollegeAdapterViewHolder vh);
     }
 
 

@@ -1,10 +1,12 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -44,6 +46,8 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+        Window window = getWindow();
+        window.setStatusBarColor(Color.BLACK);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();

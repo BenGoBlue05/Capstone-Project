@@ -141,6 +141,10 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
             mStarTV.setOnClickListener(this);
         }
 
+        public View getLogoIV(){
+            return mLogoIV;
+        }
+
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();

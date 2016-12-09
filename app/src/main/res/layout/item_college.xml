@@ -73,7 +73,8 @@
                 android:layout_height="@dimen/logo_height"
                 android:contentDescription="@string/logo"
                 android:scaleType="fitCenter"
-                tools:src="@drawable/ic_school_black_24dp" />
+                tools:src="@drawable/ic_school_black_24dp"
+                android:transitionName="@string/logo_transition"/>
 
         </LinearLayout>
 

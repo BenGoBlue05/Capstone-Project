@@ -63,7 +63,8 @@
             android:gravity="center"
             android:text="@string/years_after_entry"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textStyle="italic"/>
 
 
     </LinearLayout>

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
@@ -28,6 +29,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.scholar.dollar.android.dollarscholarbenlewis.R;
+import com.scholar.dollar.android.dollarscholarbenlewis.adapter.CollegeAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
@@ -41,7 +43,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        CollegeMainFragment.OnCollegeClickedListener {
 
     public static final String ANONYMOUS = "anonymous";
     private static final String STATE_POSITION_KEY = "state_position_key";
@@ -79,7 +82,7 @@ public class MainActivity extends BaseActivity implements
         ButterKnife.bind(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        Log.i(LOG_TAG, "LATEST CODE");
+//        Log.i(LOG_TAG, "LATEST CODE");
 
         if (mFirebaseUser == null) {
             Intent publicCollegesIntent = new Intent(this, CollegeService.class)
@@ -248,5 +251,15 @@ public class MainActivity extends BaseActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_POSITION_KEY, mSpinner.getSelectedItemPosition());
+    }
+
+    @Override
+    public void onCollegeClicked(int collegeId, boolean isPublic, CollegeAdapter.CollegeAdapterViewHolder vh) {
+        Intent intent = new Intent(this, DetailActivity.class)
+                .putExtra(Utility.COLLEGE_ID_KEY, collegeId)
+                .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, vh.getLogoIV(), getString(R.string.logo_transition));
+        startActivityForResult(intent, MainActivity.REQUEST_CODE, options.toBundle());
     }
 }
