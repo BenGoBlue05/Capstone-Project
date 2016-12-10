@@ -81,7 +81,6 @@
     <string name="logo">School logo</string>
     <string name="favorites_button">Add to favorites button</string>
     <string name="no_info">No college info available</string>
-    <string name="cost_calculator">Cost Calculator</string>
 
     <string name="four_years">4 years</string>
     <string name="six_years">6 years</string>
@@ -121,5 +120,5 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="logo_transition" translatable="false">TN_LOGO</string>
 
-    <string name="price_calculator">Price Calculator</string>
+    <string name="cost_calculator">Cost Calculator</string>
 </resources>

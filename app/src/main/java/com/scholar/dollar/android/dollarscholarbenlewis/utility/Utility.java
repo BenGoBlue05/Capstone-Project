@@ -18,9 +18,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Created by benjaminlewis on 11/2/16.
- */
 
 public final class Utility {
 
@@ -29,10 +26,6 @@ public final class Utility {
     public static String PUBLIC_COLLEGE_KEY = "publicCollegeKey";
     public static String FAVORITE_COLLEGE_KEY = "favoriteCollegeKey";
     public static String STATE_KEY = "stateKey";
-    public static String NAME_KEY = "nameKey";
-    public static String LON_KEY = "lonKey";
-    public static String LAT_KEY = "latKey";
-
 
     public static String[] EARNINGS_COLUMNS = {
             CollegeContract.EarningsEntry.EARNINGS_6YRS_25PCT,
@@ -45,7 +38,6 @@ public final class Utility {
             CollegeContract.EarningsEntry.EARNINGS_10YRS_50PCT,
             CollegeContract.EarningsEntry.EARNINGS_10YRS_75PCT
     };
-
 
 
     public final static String[] PLACE_COLUMNS = {
@@ -72,7 +64,6 @@ public final class Utility {
             CollegeContract.CollegeMainEntry.IS_FAVORITE,
             CollegeContract.CollegeMainEntry.ADMISSION_RATE
     };
-
 
 
     public static String[] ADMISSION_COLUMNS = {
@@ -146,13 +137,7 @@ public final class Utility {
 
 
     //filters
-    public static final String PREDOMINANT_DEGREE = "school.degrees_awarded.predominant=3"; // 3: bachelors
-    public static final String LEVEL = "school.institutional_characteristics.level=1"; // 1: 4 year school
-    public static final String COHORT_INFO_FILTER = "2008.completion.6_yr_completion.loan_students__range=20..";
-    public static final String ACT_FILTER = "2014.admissions.act_scores.midpoint.cumulative__range=10.."; //act scores signals undergraduate program
     public static final String CSC_API_KEY = "api_key=" + BuildConfig.COLLEGE_SCORECARD_API_KEY;
-    public static final String[] BASE_FILTERS = {CSC_API_KEY, PREDOMINANT_DEGREE, LEVEL, COHORT_INFO_FILTER, ACT_FILTER};
-    public static final String FAVORITES_SYNC_KEY = "favorites_sync";
 
 
     public static String buildFieldsUrl(ArrayList<String> fields) {
@@ -192,13 +177,13 @@ public final class Utility {
         return "id=" + collegeId + "&" + CSC_API_KEY + "&";
     }
 
-    public static String formatThousandsCircle(float i){
+    public static String formatThousandsCircle(float i) {
         int thousand = Math.round(i / 1000f);
         return Integer.toString(thousand);
     }
 
     public static void onStarClicked(DatabaseReference ref, boolean isUser, final int collegeId, final boolean newFavorite,
-                               final String uId) {
+                                     final String uId) {
         if (!isUser) {
             ref.runTransaction(new Transaction.Handler() {
                 @Override
@@ -241,13 +226,13 @@ public final class Utility {
                         return Transaction.success(mutableData);
                     }
 
-                    if (newFavorite){
-                        if (!user.favorites.containsKey(String.valueOf(collegeId))){
+                    if (newFavorite) {
+                        if (!user.favorites.containsKey(String.valueOf(collegeId))) {
                             user.favoritesCount = user.favoritesCount + 1;
                             user.favorites.put(String.valueOf(collegeId), true);
                         }
-                    } else{
-                        if (user.favorites.containsKey(String.valueOf(collegeId))){
+                    } else {
+                        if (user.favorites.containsKey(String.valueOf(collegeId))) {
                             user.favoritesCount = user.favoritesCount - 1;
                             user.favorites.remove(String.valueOf(collegeId));
                         }
@@ -263,6 +248,170 @@ public final class Utility {
                 }
             });
         }
-
     }
+
+
+    private static String trimCA(String name) {
+        name = name.trim();
+        String calPolyLong = "California Polytechnic State University";
+        String calPoly = "Cal Poly";
+        String calStateSanBern = "California State University-San Bernardino";
+        if (name.startsWith(calPolyLong)) {
+            return calPoly + name.substring(calPolyLong.length());
+        }
+        if (name.contains(calStateSanBern)) {
+            return "Cal State-San Bernardino";
+        }
+        return name;
+    }
+
+    private static String trimCT(String name) {
+        name = name.trim();
+        String uconnLong = "University of Connecticut";
+        String uconn = "UConn";
+        if (name.startsWith(uconnLong)) {
+            if (name.contains("Avery Point") || name.contains("Tri-Campus")) {
+                return uconn + name.substring(uconnLong.length());
+            }
+        }
+        return name;
+    }
+
+    private static String trimIA(String name) {
+        if (name.contains("Faith Baptist Bible College")) {
+            return "Faith Baptist Bible College";
+        }
+        return name;
+    }
+
+    private static String trimIN(String name) {
+        if (name.contains("Indiana University") && name.contains("Purdue University")) {
+            if (name.contains("Fort Wayne")) {
+                return "IPFW";
+            }
+            if (name.contains("Indianapolis")) {
+                return "IUPUI";
+            }
+        }
+        return name;
+    }
+
+    private static String trimLA(String name) {
+        String lsuFull = "Louisiana State University";
+        if (name.contains(lsuFull)) {
+            if (name.contains("Agricultural")){
+                return lsuFull;
+            }
+            return "LSU" + name.substring(lsuFull.length());
+        }
+        return name;
+    }
+
+    private static String trimMA(String name) {
+        String umassLong = "University of Massachusetts";
+        String umass = "UMass";
+        if (name.contains(umassLong)) {
+            return umass + name.substring(umassLong.length());
+        }
+        return name;
+    }
+
+    private static String trimMO(String name) {
+        if (name.contains("Missouri University of Science and Technology")) {
+            return "Missouri S&T";
+        }
+        if (name.contains("Calvary Bible College")) {
+            return "Calvary Bible College";
+        }
+        return name;
+    }
+
+    private static String trimNJ(String name) {
+        String fd = "Fairleigh Dickinson University";
+        if (name.contains(fd)) {
+            if (name.contains("Metropolitan")) {
+                return fd;
+            }
+            return fd + "-Florham";
+        }
+        return name;
+    }
+
+    private static String trimNY(String name) {
+        if (name.contains("Cooper Union for the Advancement of Science and Art")) {
+            return "Cooper Union";
+        }
+        return name;
+    }
+
+    private static String trimPA(String name) {
+        name = name.trim();
+        String pennLong = "Pennsylvania State University-";
+        if (name.startsWith(pennLong)) {
+            if (name.contains("Main Campus")) {
+                return "Penn State-Main Campus";
+            }
+            return name.substring(pennLong.length());
+        }
+        if (name.contains("East Stroudsburg University")) {
+            return "East Stroudsburg University";
+        }
+        if (name.contains("Shippensburg University")) {
+            return "Shippensburg University";
+        }
+        return name;
+    }
+
+    private static String trimTN(String name) {
+        if (name.contains("Baptist Memorial College of Health Sciences")) {
+            return "Baptist College of Health Sciences";
+        }
+        if (name.contains("Tennessee Technological University")) {
+            return "Tennessee Tech";
+        }
+        if (name.contains("Tennessee-Chattanooga")){
+            return "Tennessee-Chattanooga";
+        }
+        return name;
+    }
+
+    private static String trimVA(String name) {
+        if (name.contains("University of Virginia's College at Wise")) {
+            return "UVa College at Wise";
+        }
+        return name;
+    }
+
+    public static String fitName(String stateAbbrev, String college){
+        switch (stateAbbrev){
+            case "CA":
+                return trimCA(college);
+            case "CT":
+                return trimCT(college);
+            case "IA":
+                return trimIA(college);
+            case "IN":
+                return trimIN(college);
+            case "LA":
+                return trimLA(college);
+            case "MA":
+                return trimMA(college);
+            case "MO":
+                return trimMO(college);
+            case "PA":
+                return trimPA(college);
+            case "NJ":
+                return trimNJ(college);
+            case "NY":
+                return trimNY(college);
+            case "TN":
+                return trimTN(college);
+            case "VA":
+                return trimVA(college);
+            default:
+                return college;
+        }
+    }
+
+
 }

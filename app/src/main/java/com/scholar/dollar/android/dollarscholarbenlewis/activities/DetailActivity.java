@@ -227,12 +227,12 @@ public class DetailActivity extends BaseActivity
                     }
 
                 } else {
-
-                    String name = data.getString(Utility.NAME);
-                    mCollapsingToolbar.setTitle(name);
-                    mNameTV.setText(name);
-                    mNameTV.setContentDescription(name);
                     mState = data.getString(Utility.STATE);
+                    String name = data.getString(Utility.NAME);
+                    String fitName = Utility.fitName(mState, name);
+                    mCollapsingToolbar.setTitle(fitName);
+                    mNameTV.setText(fitName);
+                    mNameTV.setContentDescription(fitName);
                     String cityState = (getString(R.string.city_state, data.getString(Utility.CITY), mState));
                     mCityStateTV.setText(cityState);
                     mCityStateTV.setContentDescription(cityState);

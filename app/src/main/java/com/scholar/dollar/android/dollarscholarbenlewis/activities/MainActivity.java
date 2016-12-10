@@ -153,9 +153,10 @@ public class MainActivity extends BaseActivity implements
                     }
                     CollegeMainFragment collegeMainFragment = (CollegeMainFragment) mPageAdapter.getItem(0);
                     CollegeMainFragment publicFragment = (CollegeMainFragment) mPageAdapter.getItem(1);
-
                     collegeMainFragment.setState(mStateAbbrev);
                     publicFragment.setState(mStateAbbrev);
+                    collegeMainFragment.scrollToTop();
+                    publicFragment.scrollToTop();
                 }
                 if (mStateAbbrev.equals(getString(R.string.all))) {
                     mToolbar.setTitle(getString(R.string.app_name));
@@ -171,6 +172,7 @@ public class MainActivity extends BaseActivity implements
                 Log.i(LOG_TAG, "NOTHING SELECTED FOR SPINNER");
             }
         };
+
         mSpinner.setOnItemSelectedListener(mStateListener);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)

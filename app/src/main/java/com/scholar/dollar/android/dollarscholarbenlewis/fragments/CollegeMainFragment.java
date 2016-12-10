@@ -45,6 +45,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     private String mState;
     private Bundle mArgs;
     private String mUid;
+    private RecyclerView mRecyclerView;
 
     public CollegeMainFragment() {
     }
@@ -70,7 +71,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
         mArgs = getArguments() != null ? getArguments() : null;
         mIsPublic = mArgs != null && mArgs.getBoolean(Utility.PUBLIC_COLLEGE_KEY, false);
@@ -108,9 +109,9 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 Utility.onStarClicked(collegeRef, false, collegeId, !isFavorite, mUid);
             }
         });
-        recyclerView.setAdapter(mCollegeAdapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(mCollegeAdapter);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         getLoaderManager().initLoader(COLLEGE_LOADER, mArgs, this);
         return rootView;
     }
@@ -175,6 +176,10 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
 
     public interface OnCollegeClickedListener{
         void onCollegeClicked(int collegeId, boolean isPublic, CollegeAdapter.CollegeAdapterViewHolder vh);
+    }
+
+    public void scrollToTop(){
+        mRecyclerView.smoothScrollToPosition(0);
     }
 
 

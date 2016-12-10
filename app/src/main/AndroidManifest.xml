@@ -59,38 +59,38 @@
                 android:value=".activities.MainActivity" />
         </activity>
 
-        <service
-            android:name=".service.CollegeFavoriteWidgetService"
-            android:exported="false" />
+        <!--<service-->
+            <!--android:name=".service.CollegeFavoriteWidgetService"-->
+            <!--android:exported="false" />-->
 
-        <receiver android:name=".widget.CollegeWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.scholar.dollar.android.dollarscholarbenlewis.ACTION_DATA_UPDATED" />
-            </intent-filter>
+        <!--<receiver android:name=".widget.CollegeWidget">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+                <!--<action android:name="com.scholar.dollar.android.dollarscholarbenlewis.ACTION_DATA_UPDATED" />-->
+            <!--</intent-filter>-->
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/college_widget_info" />
-        </receiver>
+            <!--<meta-data-->
+                <!--android:name="android.appwidget.provider"-->
+                <!--android:resource="@xml/college_widget_info" />-->
+        <!--</receiver>-->
 
-        <service
-            android:name=".widget.CollegeRemoteViewService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service
-            android:name=".service.CollegeBasicService"
-            android:exported="false" />
+        <!--<service-->
+            <!--android:name=".widget.CollegeRemoteViewService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="false"-->
+            <!--android:permission="android.permission.BIND_REMOTEVIEWS" />-->
+        <!--<service-->
+            <!--android:name=".service.CollegeBasicService"-->
+            <!--android:exported="false" />-->
         <service
             android:name=".service.PlacesService"
             android:exported="false" />
         <service
             android:name=".service.DetailService"
             android:exported="false" />
-        <service
-            android:name=".service.CollegeFbService"
-            android:exported="false" />
+        <!--<service-->
+            <!--android:name=".service.CollegeFbService"-->
+            <!--android:exported="false" />-->
         <service
             android:name=".service.FavoriteService"
             android:exported="false" />
