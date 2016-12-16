@@ -26,6 +26,7 @@ public final class Utility {
     public static String PUBLIC_COLLEGE_KEY = "publicCollegeKey";
     public static String FAVORITE_COLLEGE_KEY = "favoriteCollegeKey";
     public static String STATE_KEY = "stateKey";
+    public static String ALL_KEY = "allKey";
 
     public static String[] EARNINGS_COLUMNS = {
             CollegeContract.EarningsEntry.EARNINGS_6YRS_25PCT,

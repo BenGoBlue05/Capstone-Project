@@ -179,7 +179,7 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void scrollToTop(){
-        mRecyclerView.smoothScrollToPosition(0);
+        mRecyclerView.scrollToPosition(0);
     }
 
 

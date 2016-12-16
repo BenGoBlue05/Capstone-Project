@@ -71,6 +71,7 @@ public class DetailActivity extends BaseActivity
     public int mCostInState;
     public int mCostOutState;
     private boolean mIsFavorite;
+    private boolean mIsFromAllColleges;
 
     private static final int COLLEGE_MAIN_LOADER = 100;
     private static final int PLACE_LOADER = 200;
@@ -124,7 +125,8 @@ public class DetailActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT_OK, new Intent().putExtra(Intent.EXTRA_TEXT, mState));
+                String selectedState = !mIsFromAllColleges ? mState : getString(R.string.all);
+                setResult(RESULT_OK, new Intent().putExtra(Intent.EXTRA_TEXT, selectedState));
                 supportFinishAfterTransition();
                 return true;
             default:
@@ -138,6 +140,7 @@ public class DetailActivity extends BaseActivity
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
         mCollegeId = getIntent().getIntExtra(Utility.COLLEGE_ID_KEY, -1);
+        mIsFromAllColleges = getIntent().getBooleanExtra(Utility.ALL_KEY, false);
         setSupportActionBar(mToolbar);
         ActionBar supportActionBar = getSupportActionBar();
         setupDetailViewPager(mViewPager);
@@ -292,6 +295,7 @@ public class DetailActivity extends BaseActivity
                 }
         }
     }
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

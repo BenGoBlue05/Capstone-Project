@@ -260,6 +260,9 @@ public class MainActivity extends BaseActivity implements
         Intent intent = new Intent(this, DetailActivity.class)
                 .putExtra(Utility.COLLEGE_ID_KEY, collegeId)
                 .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic);
+        if (mState == null || mState.equals(getString(R.string.all))){
+            intent.putExtra(Utility.ALL_KEY, true);
+        }
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 this, vh.getLogoIV(), getString(R.string.logo_transition));
         startActivityForResult(intent, MainActivity.REQUEST_CODE, options.toBundle());
