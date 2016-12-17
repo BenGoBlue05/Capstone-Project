@@ -67,9 +67,9 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeAdapter.CollegeA
 
         boolean isFavorite = mCursor.getInt(Utility.FAVORITE) == 1;
         if (isFavorite) {
-            holder.mStarTV.setImageResource(R.drawable.ic_star_yellow_24dp);
+            holder.mStarTV.setImageResource(R.drawable.star_yellow);
         } else{
-            holder.mStarTV.setImageResource(R.drawable.ic_star_gray_24dp);
+            holder.mStarTV.setImageResource(R.drawable.star_gray);
         }
 
         float earnings = (float) mCursor.getInt(Utility.EARNINGS);

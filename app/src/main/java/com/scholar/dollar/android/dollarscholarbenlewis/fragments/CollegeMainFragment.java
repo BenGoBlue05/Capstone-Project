@@ -98,9 +98,9 @@ public class CollegeMainFragment extends Fragment implements LoaderManager.Loade
                 getContext().getContentResolver().update(CollegeContract.CollegeMainEntry.buildMainWithCollegeId(collegeId),
                         values, null, null);
                 if (!isFavorite) {
-                    star.setImageResource(R.drawable.ic_star_yellow_24dp);
+                    star.setImageResource(R.drawable.star_yellow);
                 } else {
-                    star.setImageResource(R.drawable.ic_star_gray_24dp);
+                    star.setImageResource(R.drawable.star_gray);
                 }
 
                 DatabaseReference userFavRef = mDatabase.child("users").child(mUid);

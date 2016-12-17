@@ -247,7 +247,7 @@ public class DetailActivity extends BaseActivity
                     mOwnershipTV.setContentDescription(ownership);
                     mSizeTV.setText(Utility.formatThousandsCircle((float) data.getInt(Utility.SIZE)));
                     mIsFavorite = data.getInt(Utility.FAVORITE) == 1;
-                    int star = mIsFavorite ? R.drawable.ic_star_yellow_24dp : R.drawable.ic_star_gray_24dp;
+                    int star = mIsFavorite ? R.drawable.star_green : R.drawable.star_white;
                     mFab.setImageDrawable(getDrawable(star));
                     mFab.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -264,7 +264,7 @@ public class DetailActivity extends BaseActivity
                             if (mCollegeRef != null) {
                                 Utility.onStarClicked(mCollegeRef, false, mCollegeId, newFav, getUid());
                             }
-                            int star = newFav ? R.drawable.ic_star_yellow_24dp : R.drawable.ic_star_gray_24dp;
+                            int star = newFav ? R.drawable.star_green : R.drawable.star_white;
                             mFab.setImageDrawable(getDrawable(star));
                             mIsFavorite = newFav;
                         }

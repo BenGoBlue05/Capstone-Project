@@ -90,6 +90,7 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:$rootProject.playServicesVersion"
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile "com.firebase:firebase-jobdispatcher:$rootProject.firebaseJobDispatcherVersion"
 
     // Dependencies for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"

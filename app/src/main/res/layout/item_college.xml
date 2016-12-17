@@ -92,7 +92,7 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_star_gray_24dp"
+                    android:src="@drawable/star_gray"
                     android:layout_gravity="bottom"
                     android:id="@+id/item_star_tv"/>
 
