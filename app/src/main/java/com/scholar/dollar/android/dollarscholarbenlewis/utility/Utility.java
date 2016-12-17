@@ -1,5 +1,8 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.utility;
 
+import android.content.ContentValues;
+import android.content.Context;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,6 +13,9 @@ import com.scholar.dollar.android.dollarscholarbenlewis.data.CollegeContract;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.CollegeBasic;
 import com.scholar.dollar.android.dollarscholarbenlewis.model.User;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +23,13 @@ import java.util.Arrays;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService.AND;
+import static com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService.API_KEY_PARAM;
+import static com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService.KEYWORD_PARAM;
+import static com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService.LOCATION_PARAM;
+import static com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService.PLACES_BASE_URL;
+import static com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesService.TYPE_PARAM;
 
 
 public final class Utility {
@@ -27,6 +40,7 @@ public final class Utility {
     public static String FAVORITE_COLLEGE_KEY = "favoriteCollegeKey";
     public static String STATE_KEY = "stateKey";
     public static String ALL_KEY = "allKey";
+    public static String ACTION_GET_PLACE_IDS = "place-id-tag";
 
     public static String[] EARNINGS_COLUMNS = {
             CollegeContract.EarningsEntry.EARNINGS_6YRS_25PCT,
@@ -414,7 +428,31 @@ public final class Utility {
         }
     }
 
+    public static void updatePlace(Context context, String json, int collegeId) {
+        try {
+            JSONObject college = new JSONObject(json)
+                    .getJSONArray("results")
+                    .getJSONObject(0);
+            String placeId = college.getString("place_id");
+            String name = college.getString("name");
+            ContentValues values = new ContentValues();
+            values.put(CollegeContract.PlaceEntry.PLACE_ID, placeId);
+            values.put(CollegeContract.PlaceEntry.PLACE_NAME, name);
+            context.getContentResolver().update(CollegeContract.PlaceEntry.buildPlaceWithCollegeId(collegeId),
+                    values, null, null);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static String buildPlaceStringUrl(double lat, double lon, String name){
+        return PLACES_BASE_URL + LOCATION_PARAM + lat + "," + lon + AND + KEYWORD_PARAM +
+                name + AND + TYPE_PARAM + "university" + AND + API_KEY_PARAM + BuildConfig.NEARBY_API_KEY;
+    }
 
+    public static void addPlaceId(Context context, double lat, double lon, String name, int collegeId) throws IOException {
+        String url = buildPlaceStringUrl(lat, lon, name);
+        updatePlace(context, fetch(url), collegeId);
+    }
 
 }

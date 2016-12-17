@@ -1,5 +1,6 @@
 package com.scholar.dollar.android.dollarscholarbenlewis.activities;
 
+import android.app.AlarmManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +24,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.facebook.stetho.Stetho;
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,6 +41,7 @@ import com.scholar.dollar.android.dollarscholarbenlewis.adapter.PageAdapter;
 import com.scholar.dollar.android.dollarscholarbenlewis.fragments.CollegeMainFragment;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.CollegeService;
 import com.scholar.dollar.android.dollarscholarbenlewis.service.FavoriteService;
+import com.scholar.dollar.android.dollarscholarbenlewis.service.PlacesFbJobService;
 import com.scholar.dollar.android.dollarscholarbenlewis.utility.Utility;
 
 import java.util.ArrayList;
@@ -89,6 +97,7 @@ public class MainActivity extends BaseActivity implements
                     .putExtra(Utility.PUBLIC_COLLEGE_KEY, true);
             startService(new Intent(this, CollegeService.class));
             startService(publicCollegesIntent);
+            setDispatcher();
             startActivity(new Intent(this, SignInActivity.class));
             finish();
             return;
@@ -260,11 +269,29 @@ public class MainActivity extends BaseActivity implements
         Intent intent = new Intent(this, DetailActivity.class)
                 .putExtra(Utility.COLLEGE_ID_KEY, collegeId)
                 .putExtra(Utility.PUBLIC_COLLEGE_KEY, isPublic);
-        if (mState == null || mState.equals(getString(R.string.all))){
+        if (mState == null || mState.equals(getString(R.string.all))) {
             intent.putExtra(Utility.ALL_KEY, true);
         }
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 this, vh.getLogoIV(), getString(R.string.logo_transition));
         startActivityForResult(intent, MainActivity.REQUEST_CODE, options.toBundle());
     }
+
+    public synchronized void setDispatcher() {
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+        final Job.Builder builder = dispatcher.newJobBuilder()
+                .setService(PlacesFbJobService.class)
+                .setTag(Utility.ACTION_GET_PLACE_IDS)
+                .setRecurring(true)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.executionWindow(
+                        (int) AlarmManager.INTERVAL_DAY,
+                        (int) AlarmManager.INTERVAL_DAY + (int) AlarmManager.INTERVAL_FIFTEEN_MINUTES))
+                .setReplaceCurrent(true)
+                .setConstraints(
+                        Constraint.ON_UNMETERED_NETWORK,
+                        Constraint.DEVICE_CHARGING);
+        dispatcher.mustSchedule(builder.build());
+    }
+
 }
